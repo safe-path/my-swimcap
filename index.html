@@ -111,6 +111,8 @@ h1 em,h2 em,h3 em{font-style:italic}
 .hero h1 em{display:inline}
 .hero__sub{margin:24px auto 0;max-width:46ch;font-size:clamp(16px,1.4vw,19px);color:rgba(247,247,242,.82)}
 .hero__cta{margin-top:34px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero__price{margin:18px auto 0;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(247,247,242,.72)}
+.hero__price b{color:#fff;font-weight:500}
 /* schwebende Pills */
 .pill{position:absolute;z-index:2;display:inline-flex;align-items:center;gap:.55em;font-size:13px;font-weight:500;
   padding:10px 16px;border-radius:var(--r-pill);backdrop-filter:blur(8px);white-space:nowrap;animation:floaty 6s var(--e) infinite}
@@ -269,7 +271,13 @@ section{position:relative}
 .q .pm::before{width:100%;height:1.5px}.q .pm::after{width:1.5px;height:100%}
 .q[aria-expanded="true"] .pm::after{transform:scaleY(0)}
 .q .a{max-height:0;overflow:hidden;transition:max-height .45s var(--e)}
-.q .a p{padding:0 0 26px;color:var(--ink-60);font-size:16px;line-height:1.6;max-width:70ch}
+.q .a p{padding:0 0 14px;color:var(--ink-60);font-size:16px;line-height:1.6;max-width:70ch}
+.q .a p:last-child{padding-bottom:26px}
+.faq-list{margin:6px 0 18px;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.faq-list li{font-size:15px;color:var(--ink);padding-left:18px;position:relative}
+.faq-list li::before{content:"";position:absolute;left:0;top:.65em;width:6px;height:6px;border-radius:50%;background:var(--ink-45)}
+.faq-list b{font-weight:500}
+.faq-list .hl{color:var(--amber);font-weight:600}
 
 /* ===================== FINAL CTA ===================== */
 .cta{text-align:center;overflow:hidden}
@@ -368,11 +376,11 @@ section{position:relative}
 
 <!-- ===================== HERO ===================== -->
 <section class="hero">
-  <div class="hero__bg"><img src="Bilder/cap-hand-pool.jpg" alt="Bedruckte Badekappe am Pool" /></div>
+  <div class="hero__bg"><img src="Bilder/cap-hand-pool.webp" alt="Bedruckte Badekappe am Pool" /></div>
 
   <span class="pill pill--dark pill--1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Fertig in 4–5 Wochen</span>
   <span class="pill pill--dark pill--2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Kostenloser Design-Entwurf</span>
-  <span class="pill pill--dark pill--3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 0 1 0-20"/></svg>Beliebige Farbauswahl</span>
+  <span class="pill pill--dark pill--3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".7" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".7" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".7" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".7" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.94 0 1.65-.76 1.65-1.69 0-.44-.17-.84-.43-1.13-.27-.29-.44-.65-.44-1.13 0-.93.75-1.69 1.67-1.69h1.99c3.05 0 5.55-2.5 5.55-5.55C21.99 6.01 17.46 2 12 2Z"/></svg>Beliebige Farbauswahl</span>
 
   <div class="hero__in">
     <span class="eyebrow reveal">Badekappen für Vereine</span>
@@ -382,10 +390,11 @@ section{position:relative}
       <button class="btn btn--light btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
       <a class="btn btn--lightghost btn--lg" href="#ablauf"><span class="btn__t"><span>So geht's</span><span>So geht's</span></span></a>
     </div>
+    <p class="hero__price reveal">Schon ab <b>5,90 €</b> pro Stück · ab 25 Stück</p>
   </div>
 
   <button type="button" class="contact-card" data-open-modal>
-    <div class="photo"><img src="Bilder/thomas.jpg" alt="Thomas" onerror="this.style.display='none'" /></div>
+    <div class="photo"><img src="Bilder/thomas.webp" alt="Thomas" onerror="this.style.display='none'" /></div>
     <div class="body">
       <div class="t">Dein <b>persönlicher</b> Ansprechpartner<span>Thomas, baut dir in 48 h den ersten Design-Entwurf.</span></div>
       <div class="cc-cta"><span>Jetzt anfragen</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
@@ -405,17 +414,17 @@ section{position:relative}
       <article class="ucard reveal">
         <div class="lbl"><b>Zahlreiche Farben</b><span>01</span></div>
         <p>16 Badekappenfarben zur Auswahl – und bis zu 6 Druckfarben für euer Logo.</p>
-        <div class="pic"><img src="Bilder/caps-rainbow.jpg" alt="Badekappen in vielen Farben" /></div>
+        <div class="pic"><img src="Bilder/caps-rainbow.webp" alt="Badekappen in vielen Farben" /></div>
       </article>
       <article class="ucard reveal">
         <div class="lbl"><b>Individuelles Design</b><span>02</span></div>
         <p>Wir erstellen euch auf Anfrage gern ein Design – komplett kostenlos.</p>
-        <div class="pic"><img src="Bilder/action-swimmer.jpg" alt="Schwimmer mit bedruckter Vereinskappe" /></div>
+        <div class="pic"><img src="Bilder/action-swimmer.webp" alt="Schwimmer mit bedruckter Vereinskappe" /></div>
       </article>
       <article class="ucard reveal">
         <div class="lbl"><b>Kostenlose Lieferung</b><span>03</span></div>
         <p>In 4–5 Wochen am Beckenrand – mit Sendungsverfolgung direkt zu euch.</p>
-        <div class="pic"><img src="Bilder/packaging-box.jpg" alt="Fertige Badekappen im Versandkarton" /></div>
+        <div class="pic"><img src="Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton" /></div>
       </article>
     </div>
   </div>
@@ -431,22 +440,22 @@ section{position:relative}
     </div>
     <div class="models">
       <article class="model">
-        <div class="pic"><img src="Bilder/model-3d.jpg" alt="3D-Badekappe" /></div>
+        <div class="pic"><img src="Bilder/model-3d.webp" alt="3D-Badekappe" /></div>
         <span class="tag">Premium</span><h3>3D-Badekappe</h3><p>Volumengeformt und faltenfrei. Die hochwertige Optik fürs ganze Team.</p>
         <button class="order" data-open-modal>Jetzt bestellen →</button>
       </article>
       <article class="model">
-        <div class="pic"><img src="Bilder/model-silikon.jpg" alt="Silikon-Badekappe" /></div>
+        <div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon-Badekappe" /></div>
         <span class="tag">Bestseller</span><h3>Silikon</h3><p>Der Klassiker. 100 % Silikon, rutschfeste Innenseite, robust.</p>
         <button class="order" data-open-modal>Jetzt bestellen →</button>
       </article>
       <article class="model">
-        <div class="pic"><img src="Bilder/model-stoff.jpg" alt="Stoff-Badekappe" /></div>
+        <div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff-Badekappe" /></div>
         <span class="tag">Leicht</span><h3>Stoff</h3><p>Dünn und anschmiegsam. Ideal für Freiwasser, Einsteiger und Schule.</p>
         <button class="order" data-open-modal>Jetzt bestellen →</button>
       </article>
       <article class="model">
-        <div class="pic"><img src="Bilder/model-frauen.jpg" alt="Frauen-Badekappe" /></div>
+        <div class="pic"><img src="Bilder/model-frauen.webp" alt="Frauen-Badekappe" /></div>
         <span class="tag">Komfort</span><h3>Frauen-Badekappe</h3><p>Extra Volumen für lange Haare. Sitzt bequem und sauber.</p>
         <button class="order" data-open-modal>Jetzt bestellen →</button>
       </article>
@@ -468,10 +477,10 @@ section{position:relative}
       </div>
     </div>
     <div class="pblocks" id="pblocks">
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-1-anfrage.png" alt="Online-Anfrage über Konfigurator"></div><div class="pb__body"><div class="pb__n">01</div><h3>Anfrage</h3><p>Modell, ungefähre Stückzahl und euer Logo schicken – dauert keine drei Minuten.</p><div class="meta">~ heute</div></div></div>
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-2-design.jpg" alt="Designer setzt euer Logo auf die Kappe"></div><div class="pb__body"><div class="pb__n">02</div><h3>Kostenloses Design</h3><p>Wir legen euer Logo auf die Kappe, bereiten den Druck auf und schicken euch einen Entwurf samt Angebot.</p><div class="meta">1–2 Tage</div></div></div>
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-3-druck.jpg" alt="Siebdruck auf der Kappe in Europa"></div><div class="pb__body"><div class="pb__n">03</div><h3>Freigabe &amp; Druck</h3><p>Ihr gebt frei, wir produzieren im Siebdruck in Europa. Erst nach eurem Go.</p><div class="meta">Produktion</div></div></div>
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-4-lieferung.jpg" alt="Fertige Badekappen im Versandkarton"></div><div class="pb__body"><div class="pb__n">04</div><h3>Lieferung</h3><p>Mit Sendungsverfolgung direkt zu euch. Mit individuellen Namen rund eine Woche mehr.</p><div class="meta">4–5 Wochen</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-1-anfrage.webp" alt="Online-Anfrage über Konfigurator"></div><div class="pb__body"><div class="pb__n">01</div><h3>Anfrage</h3><p>Modell, ungefähre Stückzahl und euer Logo schicken – dauert keine drei Minuten.</p><div class="meta">~ heute</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-2-design.webp" alt="Designer setzt euer Logo auf die Kappe"></div><div class="pb__body"><div class="pb__n">02</div><h3>Kostenloses Design</h3><p>Wir legen euer Logo auf die Kappe, bereiten den Druck auf und schicken euch einen Entwurf samt Angebot.</p><div class="meta">1–2 Tage</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-3-druck.webp" alt="Siebdruck auf der Kappe in Europa"></div><div class="pb__body"><div class="pb__n">03</div><h3>Freigabe &amp; Druck</h3><p>Ihr gebt frei, wir produzieren im Siebdruck in Europa. Erst nach eurem Go.</p><div class="meta">Produktion</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton"></div><div class="pb__body"><div class="pb__n">04</div><h3>Lieferung</h3><p>Mit Sendungsverfolgung direkt zu euch. Mit individuellen Namen rund eine Woche mehr.</p><div class="meta">4–5 Wochen</div></div></div>
     </div>
   </div>
 </section>
@@ -494,7 +503,7 @@ section{position:relative}
 
     <!-- CTA-Band (vorher Bigband) -->
     <div class="ctaband reveal">
-      <img src="Bilder/action-swimmer.jpg" alt="Schwimmer im Wettkampf mit bedruckter Vereinskappe" />
+      <img src="Bilder/action-swimmer.webp" alt="Schwimmer im Wettkampf mit bedruckter Vereinskappe" />
       <div class="madeby madeby--lg"><span>Made by</span><img src="Bilder/teamfreaks-logo.svg" alt="Teamfreaks" /></div>
       <div class="ctaband__in">
         <h3>Hol dir <em>dein Logo</em> auf die Kappe.</h3>
@@ -510,7 +519,7 @@ section{position:relative}
     <div class="sec-head reveal"><span class="eyebrow">FAQ</span><h2>Antworten auf die häufigsten <em>Fragen</em>.</h2></div>
     <div class="faq reveal">
       <div class="q"><button aria-expanded="false"><span>Ab wie vielen Kappen kann ich bestellen?</span><span class="pm"></span></button><div class="a"><p>Ab <b class="hl">25 Stück</b> – auch für einzelne Jahrgänge, Staffeln oder Gruppen. Je größer die Menge, desto günstiger die einzelne Kappe.</p></div></div>
-      <div class="q"><button aria-expanded="false"><span>Was kostet eine bedruckte Badekappe?</span><span class="pm"></span></button><div class="a"><p>Der Preis hängt von Modell, Menge, Druckseiten und Farben ab. Nach eurer Anfrage bekommt ihr ein kostenloses, unverbindliches Angebot inklusive Design-Entwurf – meist in 1–2 Tagen.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span>Was kostet eine bedruckte Badekappe?</span><span class="pm"></span></button><div class="a"><p>Wir erstellen euch ein individuelles Angebot. Als Richtwerte:</p><ul class="faq-list"><li><b>Teambadekappe</b> · ab 50 Stück · <b>ab 6,50 €</b> pro Stück</li><li><b>Vereinsbadekappen</b> · ab 100 Stück · <b class="hl">ab 5,90 €</b> pro Stück</li><li><b>Badekappen mit individuellen Namen</b> · ab 50 Stück · <b>ab 12,00 €</b> pro Stück</li></ul><p>Der genaue Preis hängt von Modell, Menge, Druckseiten und Farben ab. Nach eurer Anfrage bekommt ihr ein kostenloses, unverbindliches Angebot inklusive Design-Entwurf – meist in 1–2 Tagen.</p></div></div>
       <div class="q"><button aria-expanded="false"><span>Wie lange dauert die Lieferung?</span><span class="pm"></span></button><div class="a"><p>Nach Freigabe ca. 4–5 Wochen (Produktion in Europa). Mit individuellen Namen rund eine Woche mehr. Express ist gegen Aufpreis möglich.</p></div></div>
       <div class="q"><button aria-expanded="false"><span>Welche Modelle gibt es?</span><span class="pm"></span></button><div class="a"><p>3D-Badekappe (volumengeformt), Silikon (Standard), Stoff (dünn &amp; leicht) und die Frauen-Badekappe mit extra Volumen für lange Haare – jeweils für Erwachsene und Kinder.</p></div></div>
       <div class="q"><button aria-expanded="false"><span>Wie viele Farben kann mein Logo haben?</span><span class="pm"></span></button><div class="a"><p>Bis zu 6 Farben pro Seite im Siebdruck, Vorder- und Rückseite. Ein- oder mehrfarbig – wir bereiten euer Logo passend auf.</p></div></div>
@@ -555,10 +564,10 @@ section{position:relative}
       <div class="fstep active" data-step="1">
         <h3>Wähl dein Modell.</h3><p class="hint">Unsicher? Wähl das, was am ehesten passt – wir beraten.</p>
         <div class="mcards" data-group="modell">
-          <div class="mc" data-val="3D-Badekappe"><div class="pic"><img src="Bilder/model-3d.jpg" alt="3D"></div><b>3D</b></div>
-          <div class="mc" data-val="Silikon"><div class="pic"><img src="Bilder/model-silikon.jpg" alt="Silikon"></div><b>Silikon</b></div>
-          <div class="mc" data-val="Stoff"><div class="pic"><img src="Bilder/model-stoff.jpg" alt="Stoff"></div><b>Stoff</b></div>
-          <div class="mc" data-val="Frauen-Badekappe"><div class="pic"><img src="Bilder/model-frauen.jpg" alt="Frauen"></div><b>Frauen</b></div>
+          <div class="mc" data-val="3D-Badekappe"><div class="pic"><img src="Bilder/model-3d.webp" alt="3D"></div><b>3D</b></div>
+          <div class="mc" data-val="Silikon"><div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon"></div><b>Silikon</b></div>
+          <div class="mc" data-val="Stoff"><div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff"></div><b>Stoff</b></div>
+          <div class="mc" data-val="Frauen-Badekappe"><div class="pic"><img src="Bilder/model-frauen.webp" alt="Frauen"></div><b>Frauen</b></div>
         </div>
         <div class="flbl">Ungefähre Stückzahl</div>
         <div class="chips" data-group="menge"><span class="chip" data-val="25–50">25–50</span><span class="chip" data-val="50–100">50–100</span><span class="chip" data-val="100–250">100–250</span><span class="chip" data-val="250+">250+</span></div>
@@ -597,7 +606,7 @@ section{position:relative}
       </div>
     </form>
     <div class="modal__media">
-      <img src="Bilder/vereine-cluster.jpg" alt="Bedruckte Vereins-Badekappen" />
+      <img src="Bilder/vereine-cluster.webp" alt="Bedruckte Vereins-Badekappen" />
     </div>
   </div>
 </div>
@@ -639,7 +648,7 @@ if(window.gsap && window.ScrollTrigger){
   var html='';
   order.forEach(function(n){
     var nn=(n<10?'0':'')+n;
-    html+='<img src="Bilder/grid/cap-'+nn+'.jpg" alt="Vereins-Badekappe" loading="lazy">';
+    html+='<img src="Bilder/grid/cap-'+nn+'.webp" alt="Vereins-Badekappe" loading="lazy">';
   });
   g.innerHTML=html;
 })();

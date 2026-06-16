@@ -29,3 +29,11 @@ formular-demo.html
 Bilder/openart-*
 Bilder/Screenshot*
 Bilder/MSC_IMG_*
+
+# Original-JPGs/PNGs lokal behalten, aber nicht ins Repo (WebPs werden ausgeliefert)
+Bilder/*.jpg
+Bilder/*.jpeg
+Bilder/*.png
+Bilder/grid/*.jpg
+Bilder/grid/*.jpeg
+Bilder/grid/*.png
