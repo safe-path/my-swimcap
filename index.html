@@ -252,15 +252,15 @@ section{position:relative}
 /* CTA-Band (ehem. Bigband) */
 .ctaband{position:relative;border-radius:var(--r-card-lg);overflow:hidden;min-height:380px;aspect-ratio:2.4/1;margin-top:72px;display:flex;align-items:center}
 @media(max-width:760px){.ctaband{aspect-ratio:4/5}}
-.ctaband img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ctaband img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:58% 42%}
 .ctaband::after{content:"";position:absolute;inset:0;background:linear-gradient(95deg,rgba(12,12,11,.74) 0%,rgba(12,12,11,.32) 58%,rgba(12,12,11,.2) 100%)}
 .ctaband__in{position:relative;z-index:2;padding:clamp(28px,5vw,64px);color:#fff;max-width:680px}
 .ctaband__in h3{font-family:var(--serif);font-weight:400;font-size:clamp(28px,4.2vw,52px);line-height:1.06;letter-spacing:-.02em}
 .ctaband__in .btn{margin-top:26px}
 /* Made by Teamfreaks Badge — neu aufgebaut, damit Logo wirklich sichtbar ist */
-.madeby--lg{top:clamp(20px,3vw,32px);right:clamp(20px,3vw,32px);display:inline-flex;align-items:center;gap:12px;background:rgba(247,247,242,.96);box-shadow:0 12px 30px -10px rgba(0,0,0,.4);border-radius:var(--r-pill);padding:9px 18px 9px 14px}
-.madeby--lg span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-45)}
-.madeby--lg img{height:22px;width:auto;display:block;filter:invert(1) brightness(.15)}
+.madeby--lg{top:clamp(20px,3vw,32px);right:clamp(20px,3vw,32px);display:inline-flex;align-items:center;gap:12px;background:rgba(20,19,18,.55);backdrop-filter:blur(8px);box-shadow:inset 0 0 0 1px rgba(247,247,242,.2);border-radius:var(--r-pill);padding:10px 20px 10px 17px}
+.madeby--lg span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,247,242,.62)}
+.madeby--lg img{height:23px;width:auto;display:block}
 
 /* ===================== FAQ ===================== */
 .faq{margin-top:46px;max-width:880px}
@@ -280,17 +280,30 @@ section{position:relative}
 .faq-list .hl{color:var(--amber);font-weight:600}
 
 /* ===================== FINAL CTA ===================== */
-.cta{text-align:center;overflow:hidden}
-.cta__marq{font-family:var(--serif);font-size:clamp(60px,12vw,150px);letter-spacing:-.04em;line-height:1;color:transparent;-webkit-text-stroke:1px var(--paper-14);white-space:nowrap;display:flex;gap:.4em;width:max-content;animation:scrollx 30s linear infinite;opacity:.6}
 @keyframes scrollx{to{transform:translateX(-33.33%)}}
-.cta__in{position:relative;z-index:2;margin-top:-.4em}
-.cta h2{font-size:clamp(40px,7vw,92px);letter-spacing:-.04em;max-width:14ch;margin:0 auto}
-.cta p{color:var(--paper-55);font-size:18px;max-width:42ch;margin:22px auto 0}
-.cta__row{margin-top:36px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.cta__person{margin-top:40px;display:inline-flex;align-items:center;gap:13px;background:var(--walnut);border-radius:var(--r-pill);padding:8px 20px 8px 8px}
-.cta__person .av{width:40px;height:40px;border-radius:var(--r-pill);overflow:hidden;background:linear-gradient(150deg,#3a4a55,#1b242a);display:grid;place-items:center;font-family:var(--serif);font-size:16px;color:#eaf2f5}
-.cta__person .av img{width:100%;height:100%;object-fit:cover}
-.cta__person span{font-size:13px;color:var(--paper-55);text-align:left}.cta__person b{color:var(--parchment)}
+.cta-final{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--parchment) 0%,#edeff0 100%)}
+.cta-final__marq{position:absolute;top:7%;left:0;font-family:var(--serif);font-size:clamp(56px,11vw,140px);letter-spacing:-.04em;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(25,24,24,.07);white-space:nowrap;display:flex;gap:.4em;width:max-content;animation:scrollx 34s linear infinite;pointer-events:none;z-index:0}
+.cta-final__grid{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,64px);align-items:center}
+@media(max-width:920px){.cta-final__grid{grid-template-columns:1fr;gap:36px}}
+.cta-final__person{display:inline-flex;align-items:center;gap:11px;background:rgba(247,247,242,.72);box-shadow:inset 0 0 0 1px var(--ink-08);border-radius:var(--r-pill);padding:6px 16px 6px 6px;margin-bottom:26px}
+.cta-final__person .av{width:34px;height:34px;border-radius:var(--r-pill);overflow:hidden;flex:none;background:var(--stone)}
+.cta-final__person .av img{width:100%;height:100%;object-fit:cover}
+.cta-final__person .t{font-size:13px;color:var(--ink-60)}.cta-final__person .t b{color:var(--ink);font-weight:600}
+.cta-final h2{font-size:clamp(34px,5.4vw,62px);letter-spacing:-.03em;line-height:1.03}
+.cta-final p{font-size:18px;color:var(--ink-60);margin-top:20px;max-width:40ch}
+.cta-final__row{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.cta-final__price{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-45);margin-top:22px}
+.cta-final__price b{color:var(--ink);font-weight:500}
+.cta-final__media{border-radius:var(--r-card-lg);overflow:hidden;aspect-ratio:1/1;background:var(--stone)}
+.cta-final__media img{width:100%;height:100%;object-fit:cover;object-position:88% 50%}
+@media(max-width:920px){.cta-final__media{aspect-ratio:16/11}}
+/* SEO */
+.seo__grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(32px,5vw,72px)}
+@media(max-width:820px){.seo__grid{grid-template-columns:1fr;gap:22px}}
+.seo h2{font-size:clamp(26px,3.4vw,42px);letter-spacing:-.02em;margin-top:14px;line-height:1.08}
+.seo__body p{font-size:15px;line-height:1.7;color:var(--ink-60);margin-bottom:16px;max-width:64ch}
+.seo__body p:last-child{margin-bottom:0}
+.seo__body b{color:var(--ink);font-weight:500}
 
 /* ===================== FOOTER ===================== */
 .footer{background:var(--walnut);color:var(--parchment);padding:80px var(--pad) 40px}
@@ -504,10 +517,10 @@ section{position:relative}
 
     <!-- CTA-Band (vorher Bigband) -->
     <div class="ctaband reveal">
-      <img src="Bilder/action-swimmer.webp" alt="Schwimmer im Wettkampf mit bedruckter Vereinskappe" />
+      <img src="Bilder/hero-swimmer.webp" alt="Schwimmer mit bedruckter TSC-Berlin-Vereinskappe" />
       <div class="madeby madeby--lg"><span>Made by</span><img src="Bilder/teamfreaks-logo.svg" alt="Teamfreaks" /></div>
       <div class="ctaband__in">
-        <h3>Hol dir <em>dein Logo</em> auf die Kappe.</h3>
+        <h3>Holt <em>euren Verein</em> auf<br>die Kappe.</h3>
         <button class="btn btn--light btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
       </div>
     </div>
@@ -530,16 +543,39 @@ section{position:relative}
 </section>
 
 <!-- ===================== FINAL CTA ===================== -->
-<section class="sec sec--dark cta">
-  <div class="cta__marq" aria-hidden="true"><span>Anfrage — Design — Druck — Lieferung —&nbsp;</span><span>Anfrage — Design — Druck — Lieferung —&nbsp;</span><span>Anfrage — Design — Druck — Lieferung —&nbsp;</span></div>
-  <div class="wrap cta__in">
-    <h2 class="reveal">Holt euren Verein <em>aufs Wasser</em>.</h2>
-    <p class="reveal">Schickt uns euer Logo – wir machen den Rest. Kostenloses Design, ab 25 Stück, fertig in 4–5 Wochen.</p>
-    <div class="cta__row reveal">
-      <button class="btn btn--light btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
-      <a class="btn btn--lightghost btn--lg" href="mailto:hallo@my-swimcap.de"><span class="btn__t"><span>hallo@my-swimcap.de</span><span>hallo@my-swimcap.de</span></span></a>
+<section class="sec cta-final">
+  <div class="cta-final__marq" aria-hidden="true"><span>Anfrage — Design — Druck — Lieferung — </span><span>Anfrage — Design — Druck — Lieferung — </span><span>Anfrage — Design — Druck — Lieferung — </span></div>
+  <div class="wrap cta-final__grid">
+    <div class="cta-final__copy reveal">
+      <div class="cta-final__person"><span class="av"><img src="Bilder/thomas.webp" alt="Thomas" /></span><span class="t"><b>Thomas</b> antwortet innerhalb von 48 h.</span></div>
+      <h2>Jetzt <em>kostenloses</em><br>Angebot sichern</h2>
+      <p>Schickt uns euer Logo – wir machen den Rest. Kostenloses Design, ab 25 Stück, fertig in 4–5 Wochen.</p>
+      <div class="cta-final__row">
+        <button class="btn btn--primary btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
+        <a class="btn btn--ghost btn--lg" href="mailto:hallo@my-swimcap.de"><span class="btn__t"><span>hallo@my-swimcap.de</span><span>hallo@my-swimcap.de</span></span></a>
+      </div>
+      <p class="cta-final__price">Schon ab <b>5,90 €</b> pro Stück · ab 25 Stück</p>
     </div>
-    <div class="cta__person reveal"><div class="av"><img src="Bilder/thomas.webp" alt="Thomas" /></div><span><b>Thomas</b> antwortet meist innerhalb von 24 h.</span></div>
+    <div class="cta-final__media reveal">
+      <img src="Bilder/vereine-cluster.webp" alt="Bedruckte Vereins-Badekappen von über 100 Vereinen" />
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SEO ===================== -->
+<section class="sec sec--stone seo">
+  <div class="wrap">
+    <div class="seo__grid">
+      <div class="reveal">
+        <span class="eyebrow">Badekappen bedrucken</span>
+        <h2>Badekappen bedrucken lassen –<br>für deinen <em>Verein</em></h2>
+      </div>
+      <div class="seo__body reveal">
+        <p>Ihr möchtet <b>Badekappen für euren Verein bedrucken lassen</b>? Bei swimcap bedrucken wir hochwertige <b>Silikon-Badekappen</b> und Stoff-Badekappen mit eurem Vereinslogo – ein- oder mehrfarbig, mit bis zu sechs Druckfarben pro Seite. Ob Schwimmverein, Triathlon-Team, DLRG-Ortsgruppe, Schwimmschule oder Schulklasse: Schon ab 25 Stück fertigen wir eure <b>individuellen Badekappen</b> in Wettkampfqualität.</p>
+        <p>Egal ob <b>Badekappen mit Logo</b>, <b>Badekappen mit Namen</b> oder Startnummern – wir erstellen euch vorab kostenlos einen Design-Entwurf, den ihr freigebt, bevor wir drucken. Produziert wird im Siebdruck in Europa, geliefert in vier bis fünf Wochen inklusive Sendungsverfolgung. Über 100 Vereine vertrauen bereits auf unseren Badekappen-Service.</p>
+        <p>Wählt aus vier Modellen: der klassischen <b>Silikon-Badekappe</b>, der volumengeformten 3D-Badekappe, der dünnen Stoff-Badekappe fürs Freiwasser oder der Frauen-Badekappe mit extra Platz für lange Haare. <b>Schwimmkappen bedrucken</b> war nie einfacher – fordert jetzt euer kostenloses, unverbindliches Angebot an, schon ab 5,90 € pro Stück.</p>
+      </div>
+    </div>
   </div>
 </section>
 
