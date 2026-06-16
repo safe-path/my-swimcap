@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>swimcap — Badekappen für deinen Verein | bedruckt, ab 25 Stück</title>
+<meta name="description" content="Bedruckte Badekappen für Vereine: Wettkampf-Silikon aus Europa, mit eurem Logo. Bis zu 6 Farben, kostenloses Design vorab, ab 25 Stück, fertig in 4–5 Wochen. 3D, Silikon, Stoff & Frauen-Badekappen." />
+
+<!-- ============================================================
+     swimcap — Homepage (Halden-Miller-Designsystem)
+     Editorial light theme · IBM Plex Serif/Sans/Mono · Parchment/Charcoal
+     NATIVES Scrollen (kein Lenis, kein GSAP) · Reveals: IntersectionObserver
+     Hero konzept-treu (dunkel, zentriert, Overlays) · Sticky-Ablauf
+     Anfrage als Modal · Ein Service der Teamfreaks
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+
+<style>
+/* ===================== TOKENS ===================== */
+:root{
+  --parchment:#f7f7f2; --linen:#efede7; --stone:#e1dcd5;
+  --ink:#191818; --obsidian:#1e1c1b; --walnut:#22201f;
+  --ink-60:rgba(25,24,24,.6); --ink-45:rgba(25,24,24,.45); --ink-12:rgba(25,24,24,.12); --ink-08:rgba(25,24,24,.08);
+  --paper-80:rgba(247,247,242,.8); --paper-55:rgba(247,247,242,.55); --paper-14:rgba(247,247,242,.14);
+  --amber:#c56a21;
+  --serif:"IBM Plex Serif",Georgia,serif; --sans:"IBM Plex Sans",Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r-btn:16px; --r-card:14px; --r-card-lg:18px; --r-input:9px; --r-pill:9999px;
+  --e:cubic-bezier(.22,.61,.36,1); --e2:cubic-bezier(.76,0,.24,1);
+  --maxw:1320px; --pad:clamp(20px,4.5vw,48px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{font-family:var(--sans);font-size:16px;line-height:1.5;color:var(--ink);background:var(--parchment);-webkit-font-smoothing:antialiased;overflow-x:clip}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+::selection{background:var(--ink);color:var(--parchment)}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:400;line-height:1.08;letter-spacing:-.02em}
+h1 em,h2 em,h3 em{font-style:italic}
+.eyebrow{font-family:var(--mono);text-transform:uppercase;font-size:11px;letter-spacing:.1em;color:var(--ink-60);display:inline-flex;align-items:center;background:rgba(25,24,24,.06);border-radius:var(--r-pill);padding:7px 14px}
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad)}
+
+/* ===================== BUTTONS ===================== */
+.btn{position:relative;display:inline-flex;align-items:center;gap:.6em;font-family:var(--sans);font-weight:500;font-size:15px;
+  padding:14px 24px;border-radius:var(--r-btn);overflow:hidden;transition:transform .35s var(--e),background .3s,color .3s,box-shadow .3s;white-space:nowrap}
+.btn__t{position:relative;display:inline-block;overflow:hidden;line-height:1.15}
+.btn__t span{display:block;transition:transform .45s var(--e2)}
+.btn__t span:last-child{position:absolute;top:0;left:0;transform:translateY(120%)}
+.btn:hover .btn__t span:first-child{transform:translateY(-120%)}
+.btn:hover .btn__t span:last-child{transform:translateY(0)}
+.btn svg{flex:none;transition:transform .35s var(--e)}
+.btn:hover svg{transform:translate(3px,-3px)}
+.btn--primary{background:var(--ink);color:var(--parchment);box-shadow:inset 0 1px 0 rgba(247,247,242,.14),inset 0 -1px 0 rgba(0,0,0,.2)}
+.btn--primary:hover{transform:translateY(-2px)}
+.btn--ghost{box-shadow:inset 0 0 0 1px var(--ink-12);color:var(--ink)}
+.btn--ghost:hover{box-shadow:inset 0 0 0 1px var(--ink);transform:translateY(-2px)}
+.btn--light{background:var(--parchment);color:var(--ink)}
+.btn--light:hover{transform:translateY(-2px)}
+.btn--lightghost{box-shadow:inset 0 0 0 1px var(--paper-14);color:var(--parchment)}
+.btn--lightghost:hover{box-shadow:inset 0 0 0 1px var(--parchment);transform:translateY(-2px)}
+.btn--lg{font-size:16px;padding:16px 28px}
+.btn--sm{font-size:13px;padding:10px 16px;border-radius:12px}
+
+/* ===================== NAV ===================== */
+.nav{position:fixed;inset:0 0 auto 0;z-index:1000;display:flex;align-items:center;justify-content:space-between;
+  padding:18px var(--pad);transition:background .4s var(--e),padding .4s var(--e),box-shadow .4s,backdrop-filter .4s}
+.nav .brand,.nav .nav__links a,.nav .nav__burger span{color:var(--parchment)}
+.nav .nav__burger span{background:var(--parchment)}
+.nav .nav__links a{color:var(--paper-80)}
+.nav .by{color:var(--paper-55)}
+.nav .btn--navcta{background:var(--parchment);color:var(--ink)}
+.nav.scrolled{background:rgba(247,247,242,.85);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--ink-08);padding:12px var(--pad)}
+.nav.scrolled .brand,.nav.scrolled .nav__links a{color:var(--ink)}
+.nav.scrolled .nav__links a{color:var(--ink-60)}
+.nav.scrolled .by{color:var(--ink-45)}
+.nav.scrolled .nav__burger span{background:var(--ink)}
+.nav.scrolled .btn--navcta{background:var(--ink);color:var(--parchment)}
+.brand{font-family:var(--serif);font-size:24px;letter-spacing:-.03em;display:flex;align-items:baseline;gap:.45em}
+.brand i{font-style:italic}
+.brand .by{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.nav__links{display:flex;gap:30px;align-items:center}
+.nav__links a{font-size:14px;transition:color .25s;position:relative}
+.nav__links a::after{content:"";position:absolute;left:0;bottom:-4px;width:0;height:1px;background:currentColor;transition:width .35s var(--e)}
+.nav__links a:hover::after{width:100%}
+.nav__right{display:flex;align-items:center;gap:14px}
+.nav__burger{display:none;width:42px;height:42px;border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--paper-14);flex-direction:column;gap:5px;align-items:center;justify-content:center}
+.nav.scrolled .nav__burger{box-shadow:inset 0 0 0 1px var(--ink-12)}
+.nav__burger span{width:16px;height:1.5px;transition:.3s}
+@media(max-width:920px){.nav__links{display:none}.nav__right .btn--navcta{display:none}.nav__burger{display:flex}}
+
+.mmenu{position:fixed;inset:0;z-index:999;background:var(--parchment);transform:translateY(-100%);transition:transform .5s var(--e2);
+  display:flex;flex-direction:column;justify-content:center;gap:6px;padding:var(--pad);visibility:hidden}
+.mmenu.open{transform:translateY(0);visibility:visible}
+.mmenu a{font-family:var(--serif);font-size:38px;letter-spacing:-.02em;padding:8px 0;border-bottom:1px solid var(--ink-08)}
+.mmenu .btn{margin-top:24px;align-self:flex-start}
+
+/* ===================== HERO (dunkel, vollflächig, zentriert) ===================== */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;
+  color:var(--parchment);overflow:hidden;padding:140px var(--pad) 56px}
+.hero__bg{position:absolute;inset:0;z-index:0}
+.hero__bg img{width:100%;height:100%;object-fit:cover;object-position:55% 46%;transform:scale(1.48);transform-origin:54% 47%}
+.hero__bg::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(180deg,rgba(12,12,11,.55) 0%,rgba(12,12,11,.35) 40%,rgba(12,12,11,.78) 100%),
+  radial-gradient(70% 60% at 50% 42%,transparent 40%,rgba(12,12,11,.4) 100%)}
+.hero__in{position:relative;z-index:2;max-width:880px;width:100%}
+.hero .eyebrow{color:rgba(247,247,242,.85);background:rgba(247,247,242,.14);box-shadow:none}
+.hero h1{font-size:clamp(34px,5.1vw,64px);letter-spacing:-.03em;margin:20px 0 0;color:#fff}
+.hero h1 em{display:inline}
+.hero__sub{margin:24px auto 0;max-width:46ch;font-size:clamp(16px,1.4vw,19px);color:rgba(247,247,242,.82)}
+.hero__cta{margin-top:34px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+/* schwebende Pills */
+.pill{position:absolute;z-index:2;display:inline-flex;align-items:center;gap:.55em;font-size:13px;font-weight:500;
+  padding:10px 16px;border-radius:var(--r-pill);backdrop-filter:blur(8px);white-space:nowrap;animation:floaty 6s var(--e) infinite}
+.pill svg{width:15px;height:15px}
+.pill--dark{background:rgba(20,19,18,.62);color:var(--parchment);box-shadow:inset 0 0 0 1px rgba(247,247,242,.14)}
+.pill--light{background:rgba(247,247,242,.92);color:var(--ink);box-shadow:0 10px 30px -14px rgba(0,0,0,.5)}
+.pill--1{top:40%;left:16%;animation-delay:0s}
+.pill--2{top:23%;right:18%;animation-delay:1.2s}
+.pill--3{top:60%;right:14%;animation-delay:.6s}
+@keyframes floaty{50%{transform:translateY(-9px)}}
+@media(max-width:760px){.pill--1{top:14%;left:5%}.pill--2{top:19%;right:5%}.pill--3{bottom:20%;right:6%}.pill{font-size:12px;padding:8px 13px}}
+/* Ansprechpartner-Karte unten links */
+.contact-card{position:absolute;z-index:3;left:var(--pad);bottom:30px;display:flex;gap:16px;align-items:stretch;text-align:left;
+  background:rgba(22,21,20,.6);backdrop-filter:blur(12px);box-shadow:inset 0 0 0 1px rgba(247,247,242,.14);
+  border-radius:18px;padding:14px;max-width:440px;cursor:pointer;transition:transform .35s var(--e),background .3s}
+.contact-card:hover{transform:translateY(-2px);background:rgba(22,21,20,.72)}
+.contact-card .photo{width:96px;flex:none;border-radius:12px;overflow:hidden;background:linear-gradient(150deg,#d2e1e7,#9db4bd)}
+.contact-card .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.contact-card .body{display:flex;flex-direction:column;justify-content:space-between;padding:3px 4px 3px 0;flex:1}
+.contact-card .t{font-size:14.5px;line-height:1.42;color:rgba(247,247,242,.96)}
+.contact-card .t b{font-weight:600}
+.contact-card .t span{display:block;margin-top:3px;color:rgba(247,247,242,.66);font-weight:400}
+.contact-card .cc-cta{display:inline-flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;width:100%}
+.contact-card:hover .cc-cta svg{transform:translateX(4px)}
+.contact-card .cc-cta svg{width:18px;height:18px;transition:transform .35s var(--e)}
+@media(max-width:600px){.contact-card{display:none}}
+.scrollcue{position:absolute;z-index:3;bottom:28px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-55);display:flex;flex-direction:column;align-items:center;gap:7px}
+.scrollcue i{width:1px;height:30px;background:linear-gradient(var(--parchment),transparent);animation:cue 1.8s var(--e) infinite}
+@keyframes cue{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media(max-width:600px){.scrollcue{display:none}}
+
+/* ===================== SECTION SCAFFOLD + REVEAL ===================== */
+section{position:relative}
+[id]{scroll-margin-top:90px}
+.sec{padding:clamp(72px,11vh,128px) 0}
+.sec--linen{background:var(--linen)}
+.sec--stone{background:var(--stone)}
+.sec--dark{background:var(--obsidian);color:var(--parchment)}
+.sec--dark .eyebrow{color:var(--paper-55);background:rgba(247,247,242,.08);box-shadow:none}
+.sec-head{max-width:760px}
+.sec-head.center{margin-inline:auto;text-align:center}
+.sec-head h2{font-size:clamp(30px,4.6vw,52px);margin-top:16px}
+.sec-head p{font-size:18px;color:var(--ink-60);margin-top:16px;max-width:48ch}
+.sec-head.center p{margin-inline:auto}
+.sec--dark .sec-head p{color:var(--paper-55)}
+
+.js .reveal{opacity:0;filter:blur(11px);transform:translateY(20px);transition:opacity .9s var(--e),filter .9s var(--e),transform .9s var(--e)}
+.reveal.in{opacity:1;filter:blur(0);transform:none}
+@media (prefers-reduced-motion:reduce){.js .reveal{opacity:1;transform:none}}
+
+/* ===================== USP IMAGE CARDS ===================== */
+.ucards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px;align-items:start}
+@media(max-width:860px){.ucards{grid-template-columns:1fr;max-width:440px;margin-inline:auto}.ucard{margin-top:0!important}}
+.ucard{background:linear-gradient(180deg,var(--linen) 0%,var(--linen) 50%,rgba(239,237,231,0) 100%);border-radius:var(--r-card-lg) var(--r-card-lg) 0 0;padding:26px 26px 0;overflow:hidden}
+.ucard:nth-child(2){margin-top:48px}
+.ucard:nth-child(3){margin-top:96px}
+.ucard .lbl{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+.ucard .lbl b{font-family:var(--serif);font-weight:400;font-size:22px;letter-spacing:-.01em}
+.ucard .lbl span{font-family:var(--mono);font-size:12px;color:var(--ink-45)}
+.ucard p{font-size:14px;color:var(--ink-60);line-height:1.55;margin:14px 0 24px;max-width:30ch}
+.ucard .pic{margin:0 -26px;aspect-ratio:4/5;overflow:hidden}
+.ucard .pic img{width:100%;height:100%;object-fit:cover;display:block;-webkit-mask-image:linear-gradient(to bottom,#000 50%,transparent 100%);mask-image:linear-gradient(to bottom,#000 50%,transparent 100%)}
+
+/* ===================== MODELS ===================== */
+.models{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:54px}
+@media(max-width:980px){.models{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.models{grid-template-columns:1fr;max-width:420px;margin-inline:auto}}
+.model{display:flex;flex-direction:column}
+.model .pic{aspect-ratio:1/1;background:var(--parchment);border-radius:var(--r-card);overflow:hidden;margin-bottom:18px}
+.model .pic img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--e)}
+.model:hover .pic img{transform:scale(1.04)}
+.model .tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-45)}
+.model h3{font-size:23px;margin:9px 0 8px;letter-spacing:-.02em}
+.model p{font-size:14px;color:var(--ink-60);line-height:1.55;flex:1}
+.model .order{margin-top:16px;display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);width:fit-content;padding-bottom:3px;box-shadow:inset 0 -1px 0 var(--ink);transition:gap .3s var(--e),box-shadow .3s}
+.model .order:hover{gap:.9em;box-shadow:inset 0 -1px 0 transparent}
+.sec--linen .model .pic{background:#fff}
+
+/* ===================== PROCESS (sticky) ===================== */
+.proc{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(40px,6vw,90px);margin-top:30px;align-items:start}
+@media(max-width:920px){.proc{grid-template-columns:1fr;gap:8px}}
+.rail{position:sticky;top:120px}
+@media(max-width:920px){.rail{position:static;margin-bottom:24px}}
+.rail h2{font-size:clamp(30px,4.4vw,50px)}
+.rail__track{display:flex;gap:16px;margin-top:36px}
+.rail__bar{width:3px;flex:none;background:var(--paper-14);border-radius:99px;position:relative;overflow:hidden}
+.rail__fill{position:absolute;inset:0 0 auto 0;height:0%;background:var(--parchment);border-radius:99px;transition:height .35s var(--e)}
+@media(max-width:920px){.rail__track{display:none}}
+.rail__steps{display:flex;flex-direction:column;gap:22px;padding-top:2px}
+.rail__steps li{list-style:none;font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--paper-55);transition:color .3s}
+.rail__steps li.on{color:var(--parchment)}
+.pblocks{display:flex;flex-direction:column;gap:clamp(20px,4vw,40px)}
+.pb{background:var(--walnut);border-radius:var(--r-card-lg);overflow:hidden;display:grid;grid-template-rows:auto auto}
+.pb .pic{aspect-ratio:16/9;overflow:hidden;background:#11100f}
+.pb .pic img{width:100%;height:100%;object-fit:cover}
+.pb__body{padding:26px 28px 30px}
+.pb__n{font-family:var(--mono);font-size:12px;color:var(--paper-55);letter-spacing:.06em}
+.pb h3{font-size:26px;margin:10px 0 8px;color:var(--parchment)}
+.pb p{font-size:15px;color:var(--paper-55);line-height:1.55;max-width:46ch}
+.pb .meta{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--paper-55);margin-top:14px}
+
+/* ===================== PROOF / STATS ===================== */
+.bigband{border-radius:var(--r-card-lg);overflow:hidden;aspect-ratio:2.3/1;min-height:340px;position:relative;margin-bottom:52px}
+.bigband::after{content:"";position:absolute;inset:0;background:linear-gradient(85deg,rgba(12,12,11,.72) 0%,rgba(12,12,11,.2) 52%,rgba(12,12,11,.4) 100%)}
+@media(max-width:760px){.bigband{aspect-ratio:3/4}}
+.bigband img{width:100%;height:100%;object-fit:cover}
+.bigband__cap{position:absolute;z-index:2;left:clamp(24px,4vw,48px);bottom:clamp(24px,4vw,42px);right:clamp(24px,4vw,48px);color:#fff;max-width:min(60%,600px)}
+@media(max-width:760px){.bigband__cap{max-width:none}}
+.bigband__cap .e{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.bigband__cap b{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.1vw,40px);line-height:1.12;letter-spacing:-.02em;display:block;margin-top:10px}
+.bigband__cap b em{font-style:italic}
+.madeby{position:absolute;z-index:2;top:clamp(20px,3vw,30px);right:clamp(20px,3vw,30px);display:inline-flex;align-items:center;gap:10px;background:rgba(20,19,18,.5);backdrop-filter:blur(8px);box-shadow:inset 0 0 0 1px rgba(247,247,242,.18);border-radius:var(--r-pill);padding:9px 16px 9px 15px}
+.madeby span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(247,247,242,.7)}
+.madeby img{height:15px;width:auto;display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;border-top:1px solid var(--ink-12);border-bottom:1px solid var(--ink-12);padding:38px 0}
+@media(max-width:560px){.stats{grid-template-columns:1fr 1fr;gap:28px}}
+.stat b{font-family:var(--serif);font-weight:300;font-size:clamp(40px,5vw,58px);letter-spacing:-.02em;display:block;line-height:1}
+.stat span{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-45);margin-top:10px;display:block}
+/* Pinterest-Grid */
+.pgrid{columns:5;column-gap:14px;margin-top:46px}
+@media(max-width:1100px){.pgrid{columns:4}}
+@media(max-width:820px){.pgrid{columns:3}}
+@media(max-width:520px){.pgrid{columns:2}}
+.pgrid img{width:100%;margin:0 0 16px;border-radius:var(--r-card);break-inside:avoid;display:block;background:var(--linen)}
+/* CTA-Band (ehem. Bigband) */
+.ctaband{position:relative;border-radius:var(--r-card-lg);overflow:hidden;min-height:380px;aspect-ratio:2.4/1;margin-top:72px;display:flex;align-items:center}
+@media(max-width:760px){.ctaband{aspect-ratio:4/5}}
+.ctaband img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ctaband::after{content:"";position:absolute;inset:0;background:linear-gradient(95deg,rgba(12,12,11,.74) 0%,rgba(12,12,11,.32) 58%,rgba(12,12,11,.2) 100%)}
+.ctaband__in{position:relative;z-index:2;padding:clamp(28px,5vw,64px);color:#fff;max-width:680px}
+.ctaband__in h3{font-family:var(--serif);font-weight:400;font-size:clamp(28px,4.2vw,52px);line-height:1.06;letter-spacing:-.02em}
+.ctaband__in .btn{margin-top:26px}
+/* Made by Teamfreaks Badge — neu aufgebaut, damit Logo wirklich sichtbar ist */
+.madeby--lg{top:clamp(20px,3vw,32px);right:clamp(20px,3vw,32px);display:inline-flex;align-items:center;gap:12px;background:rgba(247,247,242,.96);box-shadow:0 12px 30px -10px rgba(0,0,0,.4);border-radius:var(--r-pill);padding:9px 18px 9px 14px}
+.madeby--lg span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-45)}
+.madeby--lg img{height:22px;width:auto;display:block;filter:invert(1) brightness(.15)}
+
+/* ===================== FAQ ===================== */
+.faq{margin-top:46px;max-width:880px}
+.q{border-top:1px solid var(--ink-12)}.q:last-child{border-bottom:1px solid var(--ink-12)}
+.q button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:26px 0;text-align:left;font-family:var(--serif);font-size:clamp(19px,2.3vw,25px);letter-spacing:-.02em}
+.q .pm{flex:none;width:20px;height:20px;position:relative}
+.q .pm::before,.q .pm::after{content:"";position:absolute;inset:0;margin:auto;background:var(--ink);transition:transform .35s var(--e)}
+.q .pm::before{width:100%;height:1.5px}.q .pm::after{width:1.5px;height:100%}
+.q[aria-expanded="true"] .pm::after{transform:scaleY(0)}
+.q .a{max-height:0;overflow:hidden;transition:max-height .45s var(--e)}
+.q .a p{padding:0 0 26px;color:var(--ink-60);font-size:16px;line-height:1.6;max-width:70ch}
+
+/* ===================== FINAL CTA ===================== */
+.cta{text-align:center;overflow:hidden}
+.cta__marq{font-family:var(--serif);font-size:clamp(60px,12vw,150px);letter-spacing:-.04em;line-height:1;color:transparent;-webkit-text-stroke:1px var(--paper-14);white-space:nowrap;display:flex;gap:.4em;width:max-content;animation:scrollx 30s linear infinite;opacity:.6}
+@keyframes scrollx{to{transform:translateX(-33.33%)}}
+.cta__in{position:relative;z-index:2;margin-top:-.4em}
+.cta h2{font-size:clamp(40px,7vw,92px);letter-spacing:-.04em;max-width:14ch;margin:0 auto}
+.cta p{color:var(--paper-55);font-size:18px;max-width:42ch;margin:22px auto 0}
+.cta__row{margin-top:36px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cta__person{margin-top:40px;display:inline-flex;align-items:center;gap:13px;background:var(--walnut);border-radius:var(--r-pill);padding:8px 20px 8px 8px}
+.cta__person .av{width:40px;height:40px;border-radius:var(--r-pill);background:linear-gradient(150deg,#3a4a55,#1b242a);display:grid;place-items:center;font-family:var(--serif);font-size:16px;color:#eaf2f5}
+.cta__person span{font-size:13px;color:var(--paper-55);text-align:left}.cta__person b{color:var(--parchment)}
+
+/* ===================== FOOTER ===================== */
+.footer{background:var(--walnut);color:var(--parchment);padding:80px var(--pad) 40px}
+.footer__grid{max-width:var(--maxw);margin-inline:auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
+@media(max-width:820px){.footer__grid{grid-template-columns:1fr 1fr}}@media(max-width:480px){.footer__grid{grid-template-columns:1fr}}
+.footer__grid p{color:var(--paper-55);font-size:14px;margin-top:16px;max-width:32ch;line-height:1.6}
+.footer h4{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-55);margin-bottom:18px;font-weight:500}
+.footer a{display:block;color:var(--paper-80);font-size:14px;margin-bottom:11px;transition:color .25s;width:fit-content}
+.footer a:hover{color:var(--parchment)}
+.footer__bottom{max-width:var(--maxw);margin:56px auto 0;padding-top:24px;border-top:1px solid var(--paper-14);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--paper-55)}
+
+/* ===================== MODAL (Anfrage) ===================== */
+.modal{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(20,19,18,.55);backdrop-filter:blur(7px)}
+.modal.open{display:flex;animation:fade .3s var(--e)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal__card{position:relative;width:min(940px,100%);max-height:94vh;overflow:hidden;background:var(--parchment);border-radius:var(--r-card-lg);
+  display:grid;grid-template-columns:1.05fr .95fr;box-shadow:0 50px 120px -40px rgba(0,0,0,.7);animation:pop .4s var(--e)}
+@keyframes pop{from{transform:translateY(14px) scale(.98)}to{transform:none}}
+@media(max-width:820px){.modal__card{grid-template-columns:1fr;max-height:92vh;overflow:auto}}
+.modal__form{padding:clamp(24px,3vw,40px);overflow:auto;max-height:94vh}
+@media(max-width:820px){.modal__form{max-height:none}}
+.modal__media{position:relative;background:var(--stone)}
+.modal__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:88% 50%}
+.modal__media .cap{position:absolute;left:20px;right:20px;bottom:20px;background:rgba(20,19,18,.6);backdrop-filter:blur(6px);color:var(--parchment);border-radius:var(--r-card);padding:14px 16px}
+.modal__media .cap .k{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-55)}
+.modal__media .cap .v{font-family:var(--serif);font-size:18px;margin-top:3px}
+@media(max-width:820px){.modal__media{min-height:200px;order:-1}}
+.modal__close{position:absolute;top:14px;right:14px;z-index:5;width:40px;height:40px;border-radius:var(--r-pill);background:rgba(247,247,242,.9);display:grid;place-items:center;font-size:1.4rem;color:var(--ink);box-shadow:0 6px 20px -8px rgba(0,0,0,.4)}
+.modal__close:hover{background:#fff}
+
+.fbar{height:3px;background:var(--ink-12);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.fbar i{display:block;height:100%;width:25%;background:var(--ink);transition:width .5s var(--e)}
+.fmeta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-45);margin-bottom:16px}
+.fmeta b{color:var(--ink)}
+.fstep{display:none;animation:fade .4s var(--e)}.fstep.active{display:block}
+.fstep h3{font-size:24px;letter-spacing:-.02em;margin-bottom:5px}.fstep .hint{font-size:14px;color:var(--ink-60);margin-bottom:18px}
+.flbl{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-45);margin:16px 0 9px}.flbl:first-child{margin-top:0}
+.mcards{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}@media(max-width:480px){.mcards{grid-template-columns:1fr 1fr}}
+.mc{cursor:pointer;border-radius:11px;overflow:hidden;background:#fff;box-shadow:inset 0 0 0 1px var(--ink-08);transition:.2s var(--e);text-align:center;padding-bottom:8px}
+.mc:hover{outline:1.5px solid var(--ink-45);outline-offset:-1.5px;transform:translateY(-2px)}.mc.sel{outline:2px solid var(--ink);outline-offset:-2px;box-shadow:none}
+.mc .pic{aspect-ratio:1/1;background:var(--linen);overflow:hidden}.mc .pic img{width:100%;height:100%;object-fit:cover}
+.mc b{display:block;font-weight:500;font-size:12px;margin-top:7px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:14px;padding:9px 14px;border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--ink-12);cursor:pointer;transition:.2s var(--e);user-select:none}
+.chip:hover{box-shadow:inset 0 0 0 1px var(--ink-45)}.chip.sel{background:var(--ink);color:var(--parchment);box-shadow:none}
+.field{margin-bottom:14px}.field label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-45);margin-bottom:7px}
+.field input,.field textarea{width:100%;background:#fff;box-shadow:inset 0 0 0 1px var(--ink-12);border:none;border-radius:var(--r-input);padding:12px 14px;font-family:var(--sans);font-size:15px;color:var(--ink)}
+.field textarea{resize:vertical;min-height:78px}
+.field input:focus,.field textarea:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--ink)}.field input::placeholder,.field textarea::placeholder{color:var(--ink-45)}
+.field input[type=date]{appearance:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:480px){.two{grid-template-columns:1fr}}
+.upload{border:1.5px dashed var(--ink-12);border-radius:var(--r-card);padding:20px;text-align:center;cursor:pointer;transition:.2s;background:#fff}
+.upload:hover,.upload.drag{border-color:var(--ink);background:var(--linen)}
+.upload b{display:block;font-weight:500;font-size:14px}.upload span{display:block;font-size:12px;color:var(--ink-45);margin-top:3px}
+.upload .o{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-45);box-shadow:inset 0 0 0 1px var(--ink-12);border-radius:99px;padding:2px 9px}
+.preview{display:none;align-items:center;gap:12px;margin-top:12px;padding:11px;border-radius:var(--r-card);box-shadow:inset 0 0 0 1px var(--ink-12)}.preview.show{display:flex}
+.preview img{width:42px;height:42px;border-radius:6px;object-fit:contain;background:#fff}.preview .pm2{flex:1;min-width:0}.preview b{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.preview span{font-size:12px;color:var(--ink-45)}.preview .rm{cursor:pointer;color:var(--ink-45);padding:2px 6px}
+.check-line{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink-60);cursor:pointer;margin-top:6px}.check-line input{width:auto;margin-top:3px;accent-color:var(--ink)}
+.fnav{display:flex;justify-content:space-between;gap:12px;margin-top:24px}.fnav .btn--ghost[disabled]{opacity:.35;pointer-events:none}
+.thanks{display:none;text-align:center;padding:30px 0}.thanks.show{display:block;animation:fade .5s var(--e)}
+.thanks .ok{width:58px;height:58px;border-radius:var(--r-pill);background:var(--ink);color:var(--parchment);display:grid;place-items:center;margin:0 auto 16px;font-size:1.6rem}
+.thanks h3{font-size:24px;margin-bottom:9px}.thanks p{color:var(--ink-60);max-width:32ch;margin:0 auto}
+.hl{color:var(--ink)}
+</style>
+<script>document.documentElement.className+=' js';</script>
+</head>
+<body id="top">
+
+<!-- ===================== NAV ===================== -->
+<header class="nav" id="nav">
+  <a class="brand" href="#top">swim<i>cap</i><span class="by">by Teamfreaks</span></a>
+  <nav class="nav__links">
+    <a href="#modelle">Modelle</a><a href="#ablauf">Ablauf</a><a href="#vereine">Vereine</a><a href="#faq">FAQ</a>
+  </nav>
+  <div class="nav__right">
+    <button class="btn btn--navcta" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span></button>
+    <button class="nav__burger" id="burger" aria-label="Menü"><span></span><span></span></button>
+  </div>
+</header>
+<div class="mmenu" id="mmenu">
+  <a href="#modelle">Modelle</a><a href="#ablauf">Ablauf</a><a href="#vereine">Vereine</a><a href="#faq">FAQ</a>
+  <button class="btn btn--primary btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span></button>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="hero__bg"><img src="Bilder/cap-hand-pool.jpg" alt="Bedruckte Badekappe am Pool" /></div>
+
+  <span class="pill pill--dark pill--1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Fertig in 4–5 Wochen</span>
+  <span class="pill pill--dark pill--2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Kostenloser Design-Entwurf</span>
+  <span class="pill pill--dark pill--3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 0 1 0-20"/></svg>Beliebige Farbauswahl</span>
+
+  <div class="hero__in">
+    <span class="eyebrow reveal">Badekappen für Vereine</span>
+    <h1 class="reveal">Badekappen bedruckt<br>für <em>deinen Verein</em>.</h1>
+    <p class="hero__sub reveal">Wettkampf-Silikon aus Europa, mit eurem Logo. Ab 25 Stück, kostenloses Design vorab, fertig in 4–5 Wochen.</p>
+    <div class="hero__cta reveal">
+      <button class="btn btn--light btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
+      <a class="btn btn--lightghost btn--lg" href="#ablauf"><span class="btn__t"><span>So geht's</span><span>So geht's</span></span></a>
+    </div>
+  </div>
+
+  <button type="button" class="contact-card" data-open-modal>
+    <div class="photo"><img src="Bilder/thomas.jpg" alt="Thomas" onerror="this.style.display='none'" /></div>
+    <div class="body">
+      <div class="t">Dein <b>persönlicher</b> Ansprechpartner<span>Thomas, baut dir in 48 h den ersten Design-Entwurf.</span></div>
+      <div class="cc-cta"><span>Jetzt anfragen</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+    </div>
+  </button>
+  <div class="scrollcue"><span>Scroll</span><i></i></div>
+</section>
+
+<!-- ===================== USP CARDS ===================== -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow center">Darum swimcap</span>
+      <h2>Badekappen in <em>Wettkampfqualität</em><br>— schon ab 25 Stück.</h2>
+    </div>
+    <div class="ucards">
+      <article class="ucard reveal">
+        <div class="lbl"><b>Zahlreiche Farben</b><span>01</span></div>
+        <p>16 Badekappenfarben zur Auswahl – und bis zu 6 Druckfarben für euer Logo.</p>
+        <div class="pic"><img src="Bilder/caps-rainbow.jpg" alt="Badekappen in vielen Farben" /></div>
+      </article>
+      <article class="ucard reveal">
+        <div class="lbl"><b>Individuelles Design</b><span>02</span></div>
+        <p>Wir erstellen euch auf Anfrage gern ein Design – komplett kostenlos.</p>
+        <div class="pic"><img src="Bilder/action-swimmer.jpg" alt="Schwimmer mit bedruckter Vereinskappe" /></div>
+      </article>
+      <article class="ucard reveal">
+        <div class="lbl"><b>Kostenlose Lieferung</b><span>03</span></div>
+        <p>In 4–5 Wochen am Beckenrand – mit Sendungsverfolgung direkt zu euch.</p>
+        <div class="pic"><img src="Bilder/packaging-box.jpg" alt="Fertige Badekappen im Versandkarton" /></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MODELS ===================== -->
+<section class="sec sec--linen" id="modelle">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Modelle</span>
+      <h2>Unsere Modelle.</h2>
+      <p>Vom volumengeformten 3D-Silikon bis zur dünnen Stoffkappe. Unsicher? Wir empfehlen euch das passende Modell.</p>
+    </div>
+    <div class="models">
+      <article class="model">
+        <div class="pic"><img src="Bilder/model-3d.jpg" alt="3D-Badekappe" /></div>
+        <span class="tag">Premium</span><h3>3D-Badekappe</h3><p>Volumengeformt und faltenfrei. Die hochwertige Optik fürs ganze Team.</p>
+        <button class="order" data-open-modal>Jetzt bestellen →</button>
+      </article>
+      <article class="model">
+        <div class="pic"><img src="Bilder/model-silikon.jpg" alt="Silikon-Badekappe" /></div>
+        <span class="tag">Bestseller</span><h3>Silikon</h3><p>Der Klassiker. 100 % Silikon, rutschfeste Innenseite, robust.</p>
+        <button class="order" data-open-modal>Jetzt bestellen →</button>
+      </article>
+      <article class="model">
+        <div class="pic"><img src="Bilder/model-stoff.jpg" alt="Stoff-Badekappe" /></div>
+        <span class="tag">Leicht</span><h3>Stoff</h3><p>Dünn und anschmiegsam. Ideal für Freiwasser, Einsteiger und Schule.</p>
+        <button class="order" data-open-modal>Jetzt bestellen →</button>
+      </article>
+      <article class="model">
+        <div class="pic"><img src="Bilder/model-frauen.jpg" alt="Frauen-Badekappe" /></div>
+        <span class="tag">Komfort</span><h3>Frauen-Badekappe</h3><p>Extra Volumen für lange Haare. Sitzt bequem und sauber.</p>
+        <button class="order" data-open-modal>Jetzt bestellen →</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROCESS (sticky) ===================== -->
+<section class="sec sec--dark" id="ablauf">
+  <div class="wrap proc">
+    <div class="rail">
+      <span class="eyebrow reveal">Ablauf</span>
+      <h2 class="reveal" style="margin-top:16px">In vier Schritten ins <em>Becken</em>.</h2>
+      <div class="rail__track">
+        <div class="rail__bar"><div class="rail__fill" id="railFill"></div></div>
+        <ul class="rail__steps" id="railSteps">
+          <li>01 — Anfrage</li><li>02 — Kostenloses Design</li><li>03 — Freigabe &amp; Druck</li><li>04 — Lieferung</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pblocks" id="pblocks">
+      <div class="pb reveal"><div class="pic"><img src="Bilder/cap-hand-pool.jpg" alt=""></div><div class="pb__body"><div class="pb__n">01</div><h3>Anfrage</h3><p>Modell, ungefähre Stückzahl und euer Logo schicken – dauert keine drei Minuten.</p><div class="meta">~ heute</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/hero-swimmer.jpg" alt=""></div><div class="pb__body"><div class="pb__n">02</div><h3>Kostenloses Design</h3><p>Wir legen euer Logo auf die Kappe, bereiten den Druck auf und schicken euch einen Entwurf samt Angebot.</p><div class="meta">1–2 Tage</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/action-swimmer.jpg" alt=""></div><div class="pb__body"><div class="pb__n">03</div><h3>Freigabe &amp; Druck</h3><p>Ihr gebt frei, wir produzieren im Siebdruck in Europa. Erst nach eurem Go.</p><div class="meta">Produktion</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/packaging-box.jpg" alt=""></div><div class="pb__body"><div class="pb__n">04</div><h3>Lieferung</h3><p>Mit Sendungsverfolgung direkt zu euch. Mit individuellen Namen rund eine Woche mehr.</p><div class="meta">4–5 Wochen</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROOF / VEREINE ===================== -->
+<section class="sec" id="vereine">
+  <div class="wrap">
+    <div class="stats stats--top">
+      <div class="stat reveal"><b data-count="100" data-suffix="+">100+</b><span>Vereine &amp; Teams</span></div>
+      <div class="stat reveal"><b data-count="25">25</b><span>Stück Mindestmenge</span></div>
+      <div class="stat reveal"><b data-count="6">6</b><span>Farben pro Seite</span></div>
+      <div class="stat reveal"><b data-count="5" data-final="4–5">4–5</b><span>Wochen Lieferzeit</span></div>
+    </div>
+
+    <div class="sec-head reveal" style="margin-top:80px"><span class="eyebrow">Bisherige Badekappen</span><h2 style="margin-top:16px">Über 100 Vereine tragen schon ihr <em>Logo</em>.</h2></div>
+    <div class="pgrid" id="pgrid"></div>
+
+    <!-- CTA-Band (vorher Bigband) -->
+    <div class="ctaband reveal">
+      <img src="Bilder/action-swimmer.jpg" alt="Schwimmer im Wettkampf mit bedruckter Vereinskappe" />
+      <div class="madeby madeby--lg"><span>Made by</span><img src="Bilder/teamfreaks-logo.svg" alt="Teamfreaks" /></div>
+      <div class="ctaband__in">
+        <h3>Hol dir <em>dein Logo</em> auf die Kappe.</h3>
+        <button class="btn btn--light btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section class="sec sec--stone" id="faq">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">FAQ</span><h2>Antworten auf die häufigsten <em>Fragen</em>.</h2></div>
+    <div class="faq reveal">
+      <div class="q"><button aria-expanded="false"><span>Ab wie vielen Kappen kann ich bestellen?</span><span class="pm"></span></button><div class="a"><p>Ab <b class="hl">25 Stück</b> – auch für einzelne Jahrgänge, Staffeln oder Gruppen. Je größer die Menge, desto günstiger die einzelne Kappe.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span>Was kostet eine bedruckte Badekappe?</span><span class="pm"></span></button><div class="a"><p>Der Preis hängt von Modell, Menge, Druckseiten und Farben ab. Nach eurer Anfrage bekommt ihr ein kostenloses, unverbindliches Angebot inklusive Design-Entwurf – meist in 1–2 Tagen.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span>Wie lange dauert die Lieferung?</span><span class="pm"></span></button><div class="a"><p>Nach Freigabe ca. 4–5 Wochen (Produktion in Europa). Mit individuellen Namen rund eine Woche mehr. Express ist gegen Aufpreis möglich.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span>Welche Modelle gibt es?</span><span class="pm"></span></button><div class="a"><p>3D-Badekappe (volumengeformt), Silikon (Standard), Stoff (dünn &amp; leicht) und die Frauen-Badekappe mit extra Volumen für lange Haare – jeweils für Erwachsene und Kinder.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span>Wie viele Farben kann mein Logo haben?</span><span class="pm"></span></button><div class="a"><p>Bis zu 6 Farben pro Seite im Siebdruck, Vorder- und Rückseite. Ein- oder mehrfarbig – wir bereiten euer Logo passend auf.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span>Sehe ich die Kappe vor dem Druck?</span><span class="pm"></span></button><div class="a"><p>Ja, immer. Ihr bekommt einen kostenlosen Design-Entwurf zur Freigabe. Erst nach eurem Go drucken wir.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FINAL CTA ===================== -->
+<section class="sec sec--dark cta">
+  <div class="cta__marq" aria-hidden="true"><span>Anfrage — Design — Druck — Lieferung —&nbsp;</span><span>Anfrage — Design — Druck — Lieferung —&nbsp;</span><span>Anfrage — Design — Druck — Lieferung —&nbsp;</span></div>
+  <div class="wrap cta__in">
+    <h2 class="reveal">Holt euren Verein <em>aufs Wasser</em>.</h2>
+    <p class="reveal">Schickt uns euer Logo – wir machen den Rest. Kostenloses Design, ab 25 Stück, fertig in 4–5 Wochen.</p>
+    <div class="cta__row reveal">
+      <button class="btn btn--light btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
+      <a class="btn btn--lightghost btn--lg" href="mailto:hallo@my-swimcap.de"><span class="btn__t"><span>hallo@my-swimcap.de</span><span>hallo@my-swimcap.de</span></span></a>
+    </div>
+    <div class="cta__person reveal"><div class="av">T</div><span><b>Thomas</b> antwortet meist innerhalb von 24 h.</span></div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="footer__grid">
+    <div><a class="brand" href="#top" style="color:var(--parchment)">swim<i>cap</i></a><p>Bedruckte Badekappen für Vereine, Staffeln &amp; Schwimmschulen. Ein Service der Teamfreaks.</p></div>
+    <div><h4>Produkt</h4><a href="#modelle">Modelle</a><a href="#ablauf">Ablauf</a><a href="#vereine">Vereine</a><a href="#faq">FAQ</a></div>
+    <div><h4>Anfrage</h4><a href="#" data-open-modal>Badekappen bestellen</a><a href="#" data-open-modal>Angebot anfordern</a><a href="mailto:hallo@my-swimcap.de">hallo@my-swimcap.de</a></div>
+    <div><h4>Teamfreaks</h4><a href="https://teamfreaks.de" target="_blank" rel="noopener">teamfreaks.de</a><a href="#">Vereinsshops</a><a href="#">Sockfab</a></div>
+  </div>
+  <div class="footer__bottom"><span>© 2026 swimcap · ein Service der Teamfreaks · Elsterstraße 65 · 04109 Leipzig</span><span>Impressum · Datenschutz · AGB</span></div>
+</footer>
+
+<!-- ===================== MODAL (Anfrage) ===================== -->
+<div class="modal" id="anfrageModal" role="dialog" aria-modal="true" aria-label="Badekappen bestellen" aria-hidden="true">
+  <div class="modal__card">
+    <button class="modal__close" data-close-modal aria-label="Schließen">×</button>
+    <form class="modal__form" id="wizard" novalidate>
+      <div class="fbar"><i class="fill"></i></div>
+      <div class="fmeta"><span>Schritt <b class="now">1</b> / 4</span><span class="lab">Modell</span></div>
+
+      <div class="fstep active" data-step="1">
+        <h3>Wähl dein Modell.</h3><p class="hint">Unsicher? Wähl das, was am ehesten passt – wir beraten.</p>
+        <div class="mcards" data-group="modell">
+          <div class="mc" data-val="3D-Badekappe"><div class="pic"><img src="Bilder/model-3d.jpg" alt="3D"></div><b>3D</b></div>
+          <div class="mc" data-val="Silikon"><div class="pic"><img src="Bilder/model-silikon.jpg" alt="Silikon"></div><b>Silikon</b></div>
+          <div class="mc" data-val="Stoff"><div class="pic"><img src="Bilder/model-stoff.jpg" alt="Stoff"></div><b>Stoff</b></div>
+          <div class="mc" data-val="Frauen-Badekappe"><div class="pic"><img src="Bilder/model-frauen.jpg" alt="Frauen"></div><b>Frauen</b></div>
+        </div>
+        <div class="flbl">Ungefähre Stückzahl</div>
+        <div class="chips" data-group="menge"><span class="chip" data-val="25–50">25–50</span><span class="chip" data-val="50–100">50–100</span><span class="chip" data-val="100–250">100–250</span><span class="chip" data-val="250+">250+</span></div>
+        <div class="flbl">Logo-Farben</div>
+        <div class="chips" data-group="farben"><span class="chip" data-val="1-farbig">1-farbig</span><span class="chip" data-val="2–3 Farben">2–3 Farben</span><span class="chip" data-val="4+ Farben">4+ Farben</span><span class="chip" data-val="weiß noch nicht">weiß noch nicht</span></div>
+      </div>
+
+      <div class="fstep" data-step="2">
+        <h3>Termin &amp; Logo.</h3><p class="hint">Logo direkt mitschicken spart eine Runde – ist aber optional.</p>
+        <div class="field"><label>Wunschtermin (optional)</label><input type="date" name="termin"></div>
+        <div class="flbl">Individuelle Namen / Nummern?</div>
+        <div class="chips" data-group="namen"><span class="chip" data-val="Nein">Nein</span><span class="chip" data-val="Ja, mit Namen">Ja, mit Namen</span><span class="chip" data-val="Beraten lassen">Beraten lassen</span></div>
+        <div class="flbl">Vereinslogo</div>
+        <div class="upload" id="dropzone"><input type="file" id="logoInput" accept="image/*,.pdf,.ai,.eps,.svg" hidden><b>Logo hochladen</b><span>Drag &amp; Drop oder klicken · PNG, JPG, PDF, SVG, AI</span><span class="o">Optional</span></div>
+        <div class="preview" id="preview"></div>
+      </div>
+
+      <div class="fstep" data-step="3">
+        <h3>Euer Verein.</h3><p class="hint">Damit wir wissen, wen wir vor uns haben.</p>
+        <div class="field"><label>Verein / Team / Schule</label><input name="verein" placeholder="z. B. SV Delphin Leipzig"></div>
+        <div class="field"><label>Dein Name</label><input name="name" placeholder="Vor- &amp; Nachname"></div>
+        <div class="field"><label>Anmerkungen / Sonderwünsche (optional)</label><textarea name="notiz" rows="3" placeholder="z. B. Sponsoren-Aufdruck, bestimmte Farben, Fragen …"></textarea></div>
+      </div>
+
+      <div class="fstep" data-step="4">
+        <h3>Fast geschafft.</h3><p class="hint">Wohin schicken wir Entwurf &amp; Angebot? Antwort in 24 h.</p>
+        <div class="field"><label>E-Mail</label><input type="email" name="email" placeholder="name@verein.de" required></div>
+        <label class="check-line"><input type="checkbox" name="dsgvo"> <span>Ich bin mit der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage einverstanden (Datenschutz).</span></label>
+      </div>
+
+      <div class="thanks" id="thanks"><div class="ok">✓</div><h3>Anfrage ist raus!</h3><p>Danke! Wir melden uns innerhalb von 24 Stunden mit Entwurf &amp; Angebot.</p></div>
+
+      <div class="fnav" id="fnav">
+        <button type="button" class="btn btn--ghost" id="prev" disabled><span class="btn__t"><span>← Zurück</span><span>← Zurück</span></span></button>
+        <button type="button" class="btn btn--primary" id="next"><span class="btn__t"><span>Weiter →</span><span>Weiter →</span></span></button>
+      </div>
+    </form>
+    <div class="modal__media">
+      <img src="Bilder/vereine-cluster.jpg" alt="Bedruckte Vereins-Badekappen" />
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ---------- Nav scroll state ---------- */
+var nav=document.getElementById('nav');
+function onScroll(){nav.classList.toggle('scrolled',window.scrollY>window.innerHeight*0.6);}
+onScroll();addEventListener('scroll',onScroll,{passive:true});
+
+/* ---------- Mobile menu ---------- */
+var mmenu=document.getElementById('mmenu');
+document.getElementById('burger').addEventListener('click',function(){mmenu.classList.toggle('open');});
+mmenu.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){mmenu.classList.remove('open');});});
+
+/* ---------- Reveals (IntersectionObserver) ---------- */
+(function(){
+  var els=[].slice.call(document.querySelectorAll('.reveal'));
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+  var io=new IntersectionObserver(function(ents){ents.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  els.forEach(function(e){io.observe(e);});
+  addEventListener('load',function(){var vh=innerHeight||0;els.forEach(function(e){if(e.getBoundingClientRect().top<vh*0.98)e.classList.add('in');});});
+})();
+
+/* ---------- GSAP: Modelle einzeln einblenden (Blur-Stagger, kein Lenis → kein Scroll-Hijack) ---------- */
+if(window.gsap && window.ScrollTrigger){
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.from('.models .model',{autoAlpha:0,filter:'blur(20px)',yPercent:6,duration:1.1,ease:'power3.out',stagger:.14,
+    scrollTrigger:{trigger:'.models',start:'top 82%',once:true}});
+}
+
+/* ---------- Pinterest-Grid (Vereins-Badekappen) ---------- */
+(function(){
+  var g=document.getElementById('pgrid'); if(!g)return;
+  // 30 kuratierte Vereinskappen-Bilder, gemischt für visuelles Interesse
+  var order=[17,9,24,12,28,6,21,15,2,19,10,27,5,22,14,8,29,4,18,11,25,7,20,13,26,16,23,30,1,3];
+  var html='';
+  order.forEach(function(n){
+    var nn=(n<10?'0':'')+n;
+    html+='<img src="Bilder/grid/cap-'+nn+'.jpg" alt="Vereins-Badekappe" loading="lazy">';
+  });
+  g.innerHTML=html;
+})();
+
+/* ---------- Count-up (nativ) ---------- */
+(function(){
+  function up(el){var end=+el.getAttribute('data-count'),suf=el.getAttribute('data-suffix')||'',fin=el.getAttribute('data-final'),t0=null,d=1300;
+    function s(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/d,1);el.textContent=Math.round(end*(1-Math.pow(1-p,3)))+suf;if(p<1)requestAnimationFrame(s);else if(fin)el.textContent=fin;}requestAnimationFrame(s);}
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){up(en.target);io.unobserve(en.target);}});},{threshold:.6});
+  document.querySelectorAll('[data-count]').forEach(function(el){io.observe(el);});
+})();
+
+/* ---------- Sticky-Ablauf: Fortschritt + aktiver Schritt ---------- */
+(function(){
+  var fill=document.getElementById('railFill'),steps=[].slice.call(document.querySelectorAll('#railSteps li')),blocks=[].slice.call(document.querySelectorAll('#pblocks .pb'));
+  if(!fill||!blocks.length)return;
+  function upd(){
+    var c=innerHeight*0.5,active=-1;
+    blocks.forEach(function(b,i){if(b.getBoundingClientRect().top<c)active=i;});
+    if(active<0)active=0;
+    steps.forEach(function(l,i){l.classList.toggle('on',i<=active);});
+    fill.style.height=((active+1)/blocks.length*100)+'%';
+  }
+  addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd();
+})();
+
+/* ---------- FAQ ---------- */
+document.querySelectorAll('.q button').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var open=btn.getAttribute('aria-expanded')==='true',a=btn.parentElement.querySelector('.a');
+    btn.setAttribute('aria-expanded',String(!open));a.style.maxHeight=open?null:a.scrollHeight+'px';
+  });
+});
+
+/* ---------- Modal öffnen/schließen ---------- */
+(function(){
+  var modal=document.getElementById('anfrageModal');
+  function open(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+  function close(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+  document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();mmenu.classList.remove('open');open();});});
+  modal.querySelectorAll('[data-close-modal]').forEach(function(b){b.addEventListener('click',close);});
+  modal.addEventListener('click',function(e){if(e.target===modal)close();});
+  addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))close();});
+})();
+
+/* ---------- Multistep Wizard ---------- */
+(function(){
+  var form=document.getElementById('wizard');
+  var steps=[].slice.call(form.querySelectorAll('.fstep'));
+  var fill=form.querySelector('.fill'),now=form.querySelector('.now'),lab=form.querySelector('.lab');
+  var prev=document.getElementById('prev'),next=document.getElementById('next');
+  var fnav=document.getElementById('fnav'),meta=form.querySelector('.fmeta'),thanks=document.getElementById('thanks');
+  var labels=['Modell','Termin & Logo','Verein','Kontakt'];var cur=0;
+  form.querySelectorAll('[data-group]').forEach(function(g){g.addEventListener('click',function(e){var it=e.target.closest('.mc,.chip');if(!it||!g.contains(it))return;g.querySelectorAll('.mc,.chip').forEach(function(x){x.classList.remove('sel');});it.classList.add('sel');});});
+  function setNext(){next.querySelectorAll('.btn__t span').forEach(function(s){s.textContent=cur===steps.length-1?'Anfrage senden →':'Weiter →';});}
+  function render(){steps.forEach(function(s,i){s.classList.toggle('active',i===cur);});fill.style.width=((cur+1)/steps.length*100)+'%';now.textContent=cur+1;lab.textContent=labels[cur];prev.disabled=cur===0;setNext();}
+  prev.onclick=function(){if(cur>0){cur--;render();}};
+  next.onclick=function(){if(cur<steps.length-1){cur++;render();}else submit();};
+  function submit(){var data=Object.fromEntries(new FormData(form).entries());form.querySelectorAll('[data-group]').forEach(function(g){var s=g.querySelector('.sel');data[g.dataset.group]=s?s.dataset.val:'';});data.logo=window.__logo?window.__logo.name:'(keins)';console.log('swimcap Anfrage:',data);steps.forEach(function(s){s.classList.remove('active');});fnav.style.display='none';meta.style.display='none';fill.style.width='100%';thanks.classList.add('show');}
+  render();
+  var dz=document.getElementById('dropzone'),input=document.getElementById('logoInput'),pv=document.getElementById('preview');
+  dz.addEventListener('click',function(){input.click();});
+  ['dragenter','dragover'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});});
+  ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});});
+  dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)handle(e.dataTransfer.files[0]);});
+  input.addEventListener('change',function(){if(input.files.length)handle(input.files[0]);});
+  function fmt(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(0)+' KB':(b/1048576).toFixed(1)+' MB';}
+  function handle(f){window.__logo=f;var ext=(f.name.split('.').pop()||'').toUpperCase();pv.innerHTML=(f.type.indexOf('image/')===0?'<img alt="">':'<div class="pico">'+ext+'</div>')+'<div class="pm2"><b>'+f.name+'</b><span>'+fmt(f.size)+' · bereit</span></div><span class="rm">×</span>';pv.classList.add('show');dz.style.display='none';if(f.type.indexOf('image/')===0)pv.querySelector('img').src=URL.createObjectURL(f);pv.querySelector('.rm').onclick=function(){window.__logo=null;input.value='';pv.classList.remove('show');pv.innerHTML='';dz.style.display='';};}
+})();
+</script>
+</body>
+</html>

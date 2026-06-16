@@ -1,0 +1,31 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Node / Tooling
+node_modules/
+npm-debug.log*
+
+# Vercel
+.vercel
+
+# Editor
+.idea/
+.vscode/
+*.log
+
+# Interne Claude-/Memory-Konfigs
+.claude/
+
+# Asset-Sammlungen, die nicht von index.html referenziert werden
+Vereinsbadekappen/
+Badekappen Produktbilder/
+
+# Alte Konzept-/Demo-Dateien (Backup, nicht zu deployen)
+index-konzept-teal.html
+formular-demo.html
+
+# Openart-Originale (umbenannte Kopien wie hero-swimmer.jpg liegen daneben)
+Bilder/openart-*
+Bilder/Screenshot*
+Bilder/MSC_IMG_*
