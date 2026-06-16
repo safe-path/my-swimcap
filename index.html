@@ -102,6 +102,14 @@ h1 em,h2 em,h3 em{font-style:italic}
 .mmenu.open{transform:translateY(0);visibility:visible}
 .mmenu a{font-family:var(--serif);font-size:38px;letter-spacing:-.02em;padding:8px 0;border-bottom:1px solid var(--ink-08)}
 .mmenu .btn{margin-top:24px;align-self:flex-start}
+/* Nav-Zustand bei offenem Mobile-Menü (heller Hintergrund → Logo/Burger dunkel) */
+html.menu-open{overflow:hidden}
+html.menu-open .nav .brand__logo{filter:none}
+html.menu-open .nav .by{color:var(--ink-45)}
+html.menu-open .nav__burger{box-shadow:inset 0 0 0 1px var(--ink-12)}
+html.menu-open .nav__burger span{background:var(--ink)}
+html.menu-open .nav__burger span:nth-child(1){transform:translateY(3.25px) rotate(45deg)}
+html.menu-open .nav__burger span:nth-child(2){transform:translateY(-3.25px) rotate(-45deg)}
 
 /* ===================== HERO (dunkel, vollflächig, zentriert) ===================== */
 .hero{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;
@@ -129,7 +137,7 @@ h1 em,h2 em,h3 em{font-style:italic}
 .pill--2{top:23%;right:18%;animation-delay:1.2s}
 .pill--3{top:60%;right:14%;animation-delay:.6s}
 @keyframes floaty{50%{transform:translateY(-9px)}}
-@media(max-width:760px){.pill--1{top:14%;left:5%}.pill--2{top:19%;right:5%}.pill--3{bottom:20%;right:6%}.pill{font-size:12px;padding:8px 13px}}
+@media(max-width:920px){.pill--1{top:11%;left:5%}.pill--2{top:16.5%;right:5%}.pill--3{display:none}.pill{font-size:12px;padding:8px 13px}}
 /* Ansprechpartner-Karte unten links */
 .contact-card{position:absolute;z-index:3;left:var(--pad);bottom:30px;display:flex;gap:16px;align-items:stretch;text-align:left;
   background:rgba(22,21,20,.6);backdrop-filter:blur(12px);box-shadow:inset 0 0 0 1px rgba(247,247,242,.14);
@@ -712,8 +720,8 @@ onScroll();addEventListener('scroll',onScroll,{passive:true});
 
 /* ---------- Mobile menu ---------- */
 var mmenu=document.getElementById('mmenu');
-document.getElementById('burger').addEventListener('click',function(){mmenu.classList.toggle('open');});
-mmenu.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){mmenu.classList.remove('open');});});
+document.getElementById('burger').addEventListener('click',function(){var open=mmenu.classList.toggle('open');document.documentElement.classList.toggle('menu-open',open);});
+mmenu.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){mmenu.classList.remove('open');document.documentElement.classList.remove('menu-open');});});
 
 /* ---------- Reveals (IntersectionObserver) ---------- */
 (function(){
@@ -779,7 +787,7 @@ document.querySelectorAll('.q button').forEach(function(btn){
   var modal=document.getElementById('anfrageModal');
   function open(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
   function close(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
-  document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();mmenu.classList.remove('open');open();});});
+  document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();mmenu.classList.remove('open');document.documentElement.classList.remove('menu-open');open();});});
   modal.querySelectorAll('[data-close-modal]').forEach(function(b){b.addEventListener('click',close);});
   modal.addEventListener('click',function(e){if(e.target===modal)close();});
   addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))close();});
