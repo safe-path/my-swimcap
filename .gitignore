@@ -30,6 +30,9 @@ Bilder/openart-*
 Bilder/Screenshot*
 Bilder/MSC_IMG_*
 
+# Logo-Quellordner (Illustrator + JPGs) – nur Bilder/logo-*.svg werden ausgeliefert
+Logo/
+
 # Original-JPGs/PNGs lokal behalten, aber nicht ins Repo (WebPs werden ausgeliefert)
 Bilder/*.jpg
 Bilder/*.jpeg

@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>swimcap — Badekappen für deinen Verein | bedruckt, ab 25 Stück</title>
+<link rel="icon" href="Bilder/logo-mark.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="Bilder/logo-mark.svg" />
+<title>MySwimcap — Badekappen für deinen Verein | bedruckt, ab 25 Stück</title>
 <meta name="description" content="Bedruckte Badekappen für Vereine: Wettkampf-Silikon aus Europa, mit eurem Logo. Bis zu 6 Farben, kostenloses Design vorab, ab 25 Stück, fertig in 4–5 Wochen. 3D, Silikon, Stoff & Frauen-Badekappen." />
 
 <!-- ============================================================
@@ -78,9 +80,13 @@ h1 em,h2 em,h3 em{font-style:italic}
 .nav.scrolled .by{color:var(--ink-45)}
 .nav.scrolled .nav__burger span{background:var(--ink)}
 .nav.scrolled .btn--navcta{background:var(--ink);color:var(--parchment)}
-.brand{font-family:var(--serif);font-size:24px;letter-spacing:-.03em;display:flex;align-items:baseline;gap:.45em}
+.brand{font-family:var(--serif);font-size:24px;letter-spacing:-.03em;display:flex;align-items:center;gap:.6em}
 .brand i{font-style:italic}
 .brand .by{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.brand__logo{height:23px;width:auto;display:block;filter:invert(1)}
+.nav.scrolled .brand__logo{filter:none}
+.footer .brand__logo{filter:invert(1);height:26px}
+@media(max-width:380px){.nav .brand .by{display:none}}
 .nav__links{display:flex;gap:30px;align-items:center}
 .nav__links a{font-size:14px;transition:color .25s;position:relative}
 .nav__links a::after{content:"";position:absolute;left:0;bottom:-4px;width:0;height:1px;background:currentColor;transition:width .35s var(--e)}
@@ -421,7 +427,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 
 <!-- ===================== NAV ===================== -->
 <header class="nav" id="nav">
-  <a class="brand" href="#top">swim<i>cap</i><span class="by">by Teamfreaks</span></a>
+  <a class="brand" href="#top" aria-label="MySwimcap – Startseite"><img class="brand__logo" src="Bilder/logo-lockup.svg" alt="MySwimcap" /><span class="by">by Teamfreaks</span></a>
   <nav class="nav__links">
     <a href="#modelle">Modelle</a><a href="#ablauf">Ablauf</a><a href="#vereine">Vereine</a><a href="#faq">FAQ</a>
   </nav>
@@ -626,12 +632,12 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 <!-- ===================== FOOTER ===================== -->
 <footer class="footer">
   <div class="footer__grid">
-    <div><a class="brand" href="#top" style="color:var(--parchment)">swim<i>cap</i></a><p>Bedruckte Badekappen für Vereine, Staffeln &amp; Schwimmschulen. Ein Service der Teamfreaks.</p></div>
+    <div><a class="brand" href="#top" aria-label="MySwimcap"><img class="brand__logo" src="Bilder/logo-lockup.svg" alt="MySwimcap" /></a><p>Bedruckte Badekappen für Vereine, Staffeln &amp; Schwimmschulen. Ein Service der Teamfreaks.</p></div>
     <div><h4>Produkt</h4><a href="#modelle">Modelle</a><a href="#ablauf">Ablauf</a><a href="#vereine">Vereine</a><a href="#faq">FAQ</a></div>
     <div><h4>Anfrage</h4><a href="#" data-open-modal>Badekappen bestellen</a><a href="#" data-open-modal>Angebot anfordern</a><a href="mailto:hallo@my-swimcap.de">hallo@my-swimcap.de</a></div>
     <div><h4>Teamfreaks</h4><a href="https://teamfreaks.de" target="_blank" rel="noopener">teamfreaks.de</a><a href="#">Vereinsshops</a><a href="#">Sockfab</a></div>
   </div>
-  <div class="footer__bottom"><span>© 2026 swimcap · ein Service der Teamfreaks · Elsterstraße 65 · 04109 Leipzig</span><span>Impressum · Datenschutz · AGB</span></div>
+  <div class="footer__bottom"><span>© 2026 MySwimcap · ein Service der Teamfreaks · Elsterstraße 65 · 04109 Leipzig</span><span>Impressum · Datenschutz · AGB</span></div>
 </footer>
 
 <!-- ===================== MODAL (Anfrage) ===================== -->
