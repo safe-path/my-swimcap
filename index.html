@@ -388,11 +388,11 @@ html.loader-active{overflow:hidden}
 .loader-done #loader{display:none}
 #loader.hide{opacity:0;visibility:hidden;transition:opacity .6s var(--e),visibility 0s .6s}
 html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
-#loader__cap{position:relative;width:clamp(248px,40vw,430px)}
+#loader__cap{position:relative;width:clamp(280px,64vw,730px)}
 #loader__cap svg{display:block;width:100%;height:auto;overflow:visible}
 #loader__cap path{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
 #loader__cap .lc-bg{stroke:#d3d0c8;stroke-width:1}
-#loader__cap .lc-draw{stroke:var(--ink);stroke-width:1;stroke-dasharray:1;stroke-dashoffset:1;animation:capDraw 2.6s var(--e) .15s forwards}
+#loader__cap .lc-draw{stroke:var(--ink);stroke-width:1;stroke-dasharray:1;stroke-dashoffset:1;animation:capDraw 3.4s ease-in-out .15s forwards}
 #loader__text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--mono);font-weight:500;font-size:15px;letter-spacing:.01em;color:var(--ink);white-space:nowrap;opacity:0;animation:loaderTextIn .7s var(--e) .35s forwards}
 @keyframes capDraw{to{stroke-dashoffset:0}}
 @keyframes loaderTextIn{from{opacity:0}to{opacity:1}}
@@ -421,7 +421,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
   h.classList.add('loader-active');
   try{ localStorage.setItem('sc_loader_seen','1'); }catch(e){}
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var hideAt = reduce ? 900 : 3000;
+  var hideAt = reduce ? 900 : 3550;
   var ld=document.getElementById('loader');
   setTimeout(function(){ if(ld) ld.classList.add('hide'); }, hideAt);
   setTimeout(function(){ h.classList.remove('loader-active'); if(ld&&ld.parentNode) ld.parentNode.removeChild(ld); }, hideAt+650);
