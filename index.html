@@ -288,7 +288,8 @@ section{position:relative}
 .cta p{color:var(--paper-55);font-size:18px;max-width:42ch;margin:22px auto 0}
 .cta__row{margin-top:36px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 .cta__person{margin-top:40px;display:inline-flex;align-items:center;gap:13px;background:var(--walnut);border-radius:var(--r-pill);padding:8px 20px 8px 8px}
-.cta__person .av{width:40px;height:40px;border-radius:var(--r-pill);background:linear-gradient(150deg,#3a4a55,#1b242a);display:grid;place-items:center;font-family:var(--serif);font-size:16px;color:#eaf2f5}
+.cta__person .av{width:40px;height:40px;border-radius:var(--r-pill);overflow:hidden;background:linear-gradient(150deg,#3a4a55,#1b242a);display:grid;place-items:center;font-family:var(--serif);font-size:16px;color:#eaf2f5}
+.cta__person .av img{width:100%;height:100%;object-fit:cover}
 .cta__person span{font-size:13px;color:var(--paper-55);text-align:left}.cta__person b{color:var(--parchment)}
 
 /* ===================== FOOTER ===================== */
@@ -538,7 +539,7 @@ section{position:relative}
       <button class="btn btn--light btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
       <a class="btn btn--lightghost btn--lg" href="mailto:hallo@my-swimcap.de"><span class="btn__t"><span>hallo@my-swimcap.de</span><span>hallo@my-swimcap.de</span></span></a>
     </div>
-    <div class="cta__person reveal"><div class="av">T</div><span><b>Thomas</b> antwortet meist innerhalb von 24 h.</span></div>
+    <div class="cta__person reveal"><div class="av"><img src="Bilder/thomas.webp" alt="Thomas" /></div><span><b>Thomas</b> antwortet meist innerhalb von 24 h.</span></div>
   </div>
 </section>
 
