@@ -118,8 +118,8 @@ html.menu-open .nav__burger span:nth-child(2){transform:translateY(-3.25px) rota
 .hero__bg img{width:100%;height:100%;object-fit:cover;object-position:55% 46%;transform:scale(1.48);transform-origin:54% 47%}
 @media(max-width:760px){.hero__bg img{object-position:46% 40%;transform:scale(1.12);transform-origin:46% 42%}}
 .hero__bg::after{content:"";position:absolute;inset:0;background:
-  linear-gradient(180deg,rgba(12,12,11,.55) 0%,rgba(12,12,11,.35) 40%,rgba(12,12,11,.78) 100%),
-  radial-gradient(70% 60% at 50% 42%,transparent 40%,rgba(12,12,11,.4) 100%)}
+  linear-gradient(180deg,rgba(12,12,11,.46) 0%,rgba(12,12,11,.26) 40%,rgba(12,12,11,.68) 100%),
+  radial-gradient(70% 60% at 50% 42%,transparent 40%,rgba(12,12,11,.32) 100%)}
 .hero__in{position:relative;z-index:2;max-width:880px;width:100%}
 .hero .eyebrow{color:rgba(247,247,242,.85);background:rgba(247,247,242,.14);box-shadow:none}
 .hero h1{font-size:clamp(34px,5.1vw,64px);letter-spacing:-.03em;margin:20px 0 0;color:#fff}
@@ -301,6 +301,17 @@ section{position:relative}
 .faq-list li::before{content:"";position:absolute;left:0;top:.65em;width:6px;height:6px;border-radius:50%;background:var(--ink-45)}
 .faq-list b{font-weight:500}
 .faq-list .hl{color:var(--amber);font-weight:600}
+/* FAQ-Kappen rechts: gefächert (zu) → rutschen zusammen (offen) */
+#faq{position:relative;overflow:hidden}
+.faq-caps{position:absolute;top:50%;right:-150px;transform:translateY(-50%);width:min(34vw,440px);aspect-ratio:768/676;z-index:0;pointer-events:none}
+.faq-cap{position:absolute;inset:0;width:100%;height:100%;overflow:visible;transform-origin:52% 93%;transition:transform 1.05s cubic-bezier(.22,.61,.36,1)}
+.faq-cap path{fill:none;stroke:var(--ink);opacity:.17;stroke-width:1.1;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.faq-cap--1{transform:rotate(0deg)}
+.faq-cap--2{transform:rotate(8.5deg)}
+.faq-cap--3{transform:rotate(17deg)}
+#faq.faq-open .faq-cap--1,#faq.faq-open .faq-cap--2,#faq.faq-open .faq-cap--3{transform:rotate(0deg)}
+.faq-caps__label{position:absolute;top:42%;left:40%;transform:translate(-50%,-50%);font-family:var(--mono);font-size:13px;letter-spacing:.08em;color:var(--ink);opacity:.34;white-space:nowrap}
+@media(max-width:1200px){.faq-caps{display:none}}
 
 /* ===================== FINAL CTA ===================== */
 @keyframes scrollx{to{transform:translateX(-33.33%)}}
@@ -613,6 +624,12 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
       <div class="q"><button aria-expanded="false"><span>Sehe ich die Kappe vor dem Druck?</span><span class="pm"></span></button><div class="a"><p>Ja, immer. Ihr bekommt einen kostenlosen Design-Entwurf zur Freigabe. Erst nach eurem Go drucken wir.</p></div></div>
     </div>
   </div>
+  <div class="faq-caps" aria-hidden="true">
+    <svg class="faq-cap faq-cap--3" viewBox="336 145 768 676"><path d="M1039.48 711.615C1032.84 721.066 1033.05 762.757 1033.92 777.23C1034.89 793.27 1020.25 805.745 1004.49 802.558C864.133 774.206 829.733 810.605 717.785 815.142C611.778 819.408 591.581 771.182 433.137 803.585C417.584 806.771 403.219 794.404 403.921 778.526C404.623 762.649 405.001 718.798 399.115 709.779C360.449 650.59 342.034 597.99 342.034 522.005C341.98 313.548 514.465 151.589 723.24 151.589C932.014 151.589 1098.34 305.825 1097.97 521.951C1097.86 571.581 1084.73 633.471 1039.53 711.561L1039.48 711.615Z"/></svg>
+    <svg class="faq-cap faq-cap--2" viewBox="336 145 768 676"><path d="M1039.48 711.615C1032.84 721.066 1033.05 762.757 1033.92 777.23C1034.89 793.27 1020.25 805.745 1004.49 802.558C864.133 774.206 829.733 810.605 717.785 815.142C611.778 819.408 591.581 771.182 433.137 803.585C417.584 806.771 403.219 794.404 403.921 778.526C404.623 762.649 405.001 718.798 399.115 709.779C360.449 650.59 342.034 597.99 342.034 522.005C341.98 313.548 514.465 151.589 723.24 151.589C932.014 151.589 1098.34 305.825 1097.97 521.951C1097.86 571.581 1084.73 633.471 1039.53 711.561L1039.48 711.615Z"/></svg>
+    <svg class="faq-cap faq-cap--1" viewBox="336 145 768 676"><path d="M1039.48 711.615C1032.84 721.066 1033.05 762.757 1033.92 777.23C1034.89 793.27 1020.25 805.745 1004.49 802.558C864.133 774.206 829.733 810.605 717.785 815.142C611.778 819.408 591.581 771.182 433.137 803.585C417.584 806.771 403.219 794.404 403.921 778.526C404.623 762.649 405.001 718.798 399.115 709.779C360.449 650.59 342.034 597.99 342.034 522.005C341.98 313.548 514.465 151.589 723.24 151.589C932.014 151.589 1098.34 305.825 1097.97 521.951C1097.86 571.581 1084.73 633.471 1039.53 711.561L1039.48 711.615Z"/></svg>
+    <span class="faq-caps__label">Dein Logo</span>
+  </div>
 </section>
 
 <!-- ===================== FINAL CTA ===================== -->
@@ -788,6 +805,7 @@ document.querySelectorAll('.q button').forEach(function(btn){
   btn.addEventListener('click',function(){
     var open=btn.getAttribute('aria-expanded')==='true',a=btn.parentElement.querySelector('.a');
     btn.setAttribute('aria-expanded',String(!open));a.style.maxHeight=open?null:a.scrollHeight+'px';
+    document.getElementById('faq').classList.toggle('faq-open',!!document.querySelector('.q button[aria-expanded="true"]'));
   });
 });
 
