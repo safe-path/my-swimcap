@@ -40,3 +40,6 @@ Bilder/*.png
 Bilder/grid/*.jpg
 Bilder/grid/*.jpeg
 Bilder/grid/*.png
+
+# Ausnahme: Social-/OG-Vorschaubild wird ausgeliefert (von index.html referenziert)
+!Bilder/og-image.jpg
