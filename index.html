@@ -206,7 +206,11 @@ section{position:relative}
 @media(max-width:980px){.models{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.models{grid-template-columns:1fr 1fr;gap:14px;max-width:none;margin-inline:0;margin-top:32px}}
 .model{display:flex;flex-direction:column}
-.model .pic{aspect-ratio:1/1;background:var(--parchment);border-radius:var(--r-card);overflow:hidden;margin-bottom:18px}
+.model .pic{position:relative;aspect-ratio:1/1;background:var(--parchment);border-radius:var(--r-card);overflow:hidden;margin-bottom:18px}
+.popular{position:absolute;top:12px;left:12px;z-index:2;display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.02em;text-transform:uppercase;color:#3a2c05;background:linear-gradient(180deg,#ecd06a,#c8a23a);border-radius:var(--r-pill);padding:5px 11px 5px 8px;box-shadow:0 6px 16px -6px rgba(170,130,30,.65),inset 0 1px 0 rgba(255,255,255,.45)}
+.popular svg{width:13px;height:13px}
+.mc-pop{position:absolute;top:6px;left:6px;z-index:2;display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:8px;font-weight:500;letter-spacing:.01em;text-transform:uppercase;color:#3a2c05;background:linear-gradient(180deg,#ecd06a,#c8a23a);border-radius:var(--r-pill);padding:3px 6px 3px 5px;box-shadow:0 3px 8px -3px rgba(170,130,30,.55)}
+.mc-pop svg{width:9px;height:9px}
 .model .pic img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--e)}
 .model:hover .pic img{transform:scale(1.04)}
 .model .tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-45)}
@@ -214,7 +218,7 @@ section{position:relative}
 .model p{font-size:14px;color:var(--ink-60);line-height:1.55;flex:1}
 .model .order{margin-top:16px;display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);width:fit-content;padding-bottom:3px;box-shadow:inset 0 -1px 0 var(--ink);transition:gap .3s var(--e),box-shadow .3s}
 .model .order:hover{gap:.9em;box-shadow:inset 0 -1px 0 transparent}
-@media(max-width:520px){.model .pic{margin-bottom:10px}.model .tag{font-size:10px}.model h3{font-size:15px;margin:7px 0 4px;letter-spacing:-.01em}.model p{font-size:12px;line-height:1.45}.model .order{display:none}}
+@media(max-width:520px){.model .pic{margin-bottom:10px}.model .tag{font-size:10px}.model h3{font-size:15px;margin:7px 0 4px;letter-spacing:-.01em}.model p{font-size:12px;line-height:1.45}.model .order{display:none}.popular{font-size:9px;top:8px;left:8px;gap:4px;padding:4px 8px 4px 6px}.popular svg{width:11px;height:11px}}
 .sec--linen .model .pic{background:#fff}
 
 /* ===================== PROCESS (sticky) ===================== */
@@ -386,7 +390,7 @@ section{position:relative}
 .fstep h3{font-size:24px;letter-spacing:-.02em;margin-bottom:5px}.fstep .hint{font-size:14px;color:var(--ink-60);margin-bottom:18px}
 .flbl{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-45);margin:16px 0 9px}.flbl:first-child{margin-top:0}
 .mcards{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}@media(max-width:480px){.mcards{grid-template-columns:1fr 1fr}}
-.mc{cursor:pointer;border-radius:11px;overflow:hidden;background:#fff;box-shadow:inset 0 0 0 1px var(--ink-08);transition:.2s var(--e);text-align:center;padding-bottom:8px}
+.mc{position:relative;cursor:pointer;border-radius:11px;overflow:hidden;background:#fff;box-shadow:inset 0 0 0 1px var(--ink-08);transition:.2s var(--e);text-align:center;padding-bottom:8px}
 .mc:hover{outline:1.5px solid var(--ink-45);outline-offset:-1.5px;transform:translateY(-2px)}.mc.sel{outline:2px solid var(--ink);outline-offset:-2px;box-shadow:none}
 .mc .pic{aspect-ratio:1/1;background:var(--linen);overflow:hidden}.mc .pic img{width:100%;height:100%;object-fit:cover}
 .mc b{display:block;font-weight:500;font-size:12px;margin-top:7px}
@@ -547,7 +551,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
         <button class="order" data-open-modal>Jetzt bestellen →</button>
       </article>
       <article class="model">
-        <div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon-Badekappe" /></div>
+        <div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon-Badekappe" /><span class="popular"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.83 6.12 6.67.72-4.98 4.5 1.36 6.56L12 17.5 6.12 20.1l1.36-6.56-4.98-4.5 6.67-.72z"/></svg>Am beliebtesten</span></div>
         <span class="tag">Bestseller</span><h3>Silikon</h3><p>Der Klassiker. 100 % Silikon, rutschfeste Innenseite, robust.</p>
         <button class="order" data-open-modal>Jetzt bestellen →</button>
       </article>
@@ -693,7 +697,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
         <h3>Wähl dein Modell.</h3><p class="hint">Unsicher? Wähl das, was am ehesten passt – wir beraten.</p>
         <div class="mcards" data-group="modell">
           <div class="mc" data-val="3D-Badekappe"><div class="pic"><img src="Bilder/model-3d.webp" alt="3D"></div><b>3D</b></div>
-          <div class="mc" data-val="Silikon"><div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon"></div><b>Silikon</b></div>
+          <div class="mc" data-val="Silikon"><span class="mc-pop"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.83 6.12 6.67.72-4.98 4.5 1.36 6.56L12 17.5 6.12 20.1l1.36-6.56-4.98-4.5 6.67-.72z"/></svg>Am beliebtesten</span><div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon"></div><b>Silikon</b></div>
           <div class="mc" data-val="Stoff"><div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff"></div><b>Stoff</b></div>
           <div class="mc" data-val="Frauen-Badekappe"><div class="pic"><img src="Bilder/model-frauen.webp" alt="Frauen"></div><b>Frauen</b></div>
         </div>
