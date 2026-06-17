@@ -92,6 +92,17 @@ h1 em,h2 em,h3 em{font-style:italic}
 .nav__links a::after{content:"";position:absolute;left:0;bottom:-4px;width:0;height:1px;background:currentColor;transition:width .35s var(--e)}
 .nav__links a:hover::after{width:100%}
 .nav__right{display:flex;align-items:center;gap:14px}
+.langsw{display:inline-flex;align-items:center;gap:2px;background:rgba(247,247,242,.13);border-radius:var(--r-pill);padding:3px}
+.langsw__btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;font-weight:500;padding:6px 10px;border-radius:var(--r-pill);color:var(--paper-55);transition:background .25s var(--e),color .25s var(--e);cursor:pointer}
+.langsw__btn.is-on{background:var(--parchment);color:var(--ink)}
+.langsw .flag{width:17px;height:12px;border-radius:2px;display:block;flex:none;box-shadow:0 0 0 .5px rgba(0,0,0,.12)}
+.nav.scrolled .langsw{background:var(--ink-08)}
+.nav.scrolled .langsw__btn{color:var(--ink-45)}
+.nav.scrolled .langsw__btn.is-on{background:var(--ink);color:var(--parchment)}
+html.menu-open .langsw{background:var(--ink-08)}
+html.menu-open .langsw__btn{color:var(--ink-45)}
+html.menu-open .langsw__btn.is-on{background:var(--ink);color:var(--parchment)}
+@media(max-width:380px){.langsw__btn{padding:6px 7px}.langsw__btn span.lc{display:none}}
 .nav__burger{display:none;width:42px;height:42px;border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--paper-14);flex-direction:column;gap:5px;align-items:center;justify-content:center}
 .nav.scrolled .nav__burger{box-shadow:inset 0 0 0 1px var(--ink-12)}
 .nav__burger span{width:16px;height:1.5px;transition:.3s}
@@ -445,7 +456,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
       <path class="lc-bg" d="M1039.48 711.615C1032.84 721.066 1033.05 762.757 1033.92 777.23C1034.89 793.27 1020.25 805.745 1004.49 802.558C864.133 774.206 829.733 810.605 717.785 815.142C611.778 819.408 591.581 771.182 433.137 803.585C417.584 806.771 403.219 794.404 403.921 778.526C404.623 762.649 405.001 718.798 399.115 709.779C360.449 650.59 342.034 597.99 342.034 522.005C341.98 313.548 514.465 151.589 723.24 151.589C932.014 151.589 1098.34 305.825 1097.97 521.951C1097.86 571.581 1084.73 633.471 1039.53 711.561L1039.48 711.615Z"/>
       <path class="lc-draw" pathLength="1" d="M1039.48 711.615C1032.84 721.066 1033.05 762.757 1033.92 777.23C1034.89 793.27 1020.25 805.745 1004.49 802.558C864.133 774.206 829.733 810.605 717.785 815.142C611.778 819.408 591.581 771.182 433.137 803.585C417.584 806.771 403.219 794.404 403.921 778.526C404.623 762.649 405.001 718.798 399.115 709.779C360.449 650.59 342.034 597.99 342.034 522.005C341.98 313.548 514.465 151.589 723.24 151.589C932.014 151.589 1098.34 305.825 1097.97 521.951C1097.86 571.581 1084.73 633.471 1039.53 711.561L1039.48 711.615Z"/>
     </svg>
-    <span id="loader__text">Deine Badekappe lädt...</span>
+    <span id="loader__text" data-en="Your swim cap is loading…">Deine Badekappe lädt...</span>
   </div>
 </div>
 <script>
@@ -466,16 +477,20 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 <header class="nav" id="nav">
   <a class="brand" href="#top" aria-label="MySwimcap – Startseite"><img class="brand__logo" src="Bilder/logo-lockup.svg" alt="MySwimcap" /><span class="by">by Teamfreaks</span></a>
   <nav class="nav__links">
-    <a href="#modelle">Modelle</a><a href="#ablauf">Ablauf</a><a href="#vereine">Vereine</a><a href="#faq">FAQ</a>
+    <a href="#modelle" data-en="Models">Modelle</a><a href="#ablauf" data-en="Process">Ablauf</a><a href="#vereine" data-en="Clubs">Vereine</a><a href="#faq" data-en="FAQ">FAQ</a>
   </nav>
   <div class="nav__right">
-    <button class="btn btn--navcta" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span></button>
-    <button class="nav__burger" id="burger" aria-label="Menü"><span></span><span></span></button>
+    <div class="langsw" role="group" aria-label="Sprache / Language">
+      <button type="button" class="langsw__btn is-on" data-lang="de" aria-label="Deutsch"><svg class="flag" viewBox="0 0 5 3" aria-hidden="true"><rect width="5" height="3" fill="#000"/><rect width="5" height="2" y="1" fill="#D00"/><rect width="5" height="1" y="2" fill="#FFCE00"/></svg>DE</button>
+      <button type="button" class="langsw__btn" data-lang="en" aria-label="English"><svg class="flag flag--uk" viewBox="0 0 60 30" aria-hidden="true"><clipPath id="ukc"><rect width="60" height="30"/></clipPath><g clip-path="url(#ukc)"><rect width="60" height="30" fill="#012169"/><path d="M0,0 60,30 M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30 M60,0 0,30" stroke="#C8102E" stroke-width="4"/><path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/><path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/></g></svg>EN</button>
+    </div>
+    <button class="btn btn--navcta" data-open-modal data-en="Order swim caps"><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span></button>
+    <button class="nav__burger" id="burger" aria-label="Menü" data-en-aria="Menu"><span></span><span></span></button>
   </div>
 </header>
 <div class="mmenu" id="mmenu">
-  <a href="#modelle">Modelle</a><a href="#ablauf">Ablauf</a><a href="#vereine">Vereine</a><a href="#faq">FAQ</a>
-  <button class="btn btn--primary btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span></button>
+  <a href="#modelle" data-en="Models">Modelle</a><a href="#ablauf" data-en="Process">Ablauf</a><a href="#vereine" data-en="Clubs">Vereine</a><a href="#faq" data-en="FAQ">FAQ</a>
+  <button class="btn btn--primary btn--lg" data-open-modal data-en="Order swim caps"><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span></button>
 </div>
 
 <!-- ===================== HERO ===================== -->
@@ -483,27 +498,27 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
   <div class="hero__bg"><img src="Bilder/hero-neu.webp" alt="Bedruckte Badekappe am Wettkampfbecken" /></div>
 
   <div class="hero__pills">
-  <span class="pill pill--dark pill--1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Fertig in 4–5 Wochen</span>
-  <span class="pill pill--dark pill--2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Kostenloser Design-Entwurf</span>
-  <span class="pill pill--dark pill--3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".7" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".7" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".7" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".7" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.94 0 1.65-.76 1.65-1.69 0-.44-.17-.84-.43-1.13-.27-.29-.44-.65-.44-1.13 0-.93.75-1.69 1.67-1.69h1.99c3.05 0 5.55-2.5 5.55-5.55C21.99 6.01 17.46 2 12 2Z"/></svg>Beliebige Farbauswahl</span>
+  <span class="pill pill--dark pill--1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg><span data-en="Ready in 4–5 weeks">Fertig in 4–5 Wochen</span></span>
+  <span class="pill pill--dark pill--2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span data-en="Free design mockup">Kostenloser Design-Entwurf</span></span>
+  <span class="pill pill--dark pill--3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".7" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".7" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".7" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".7" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.94 0 1.65-.76 1.65-1.69 0-.44-.17-.84-.43-1.13-.27-.29-.44-.65-.44-1.13 0-.93.75-1.69 1.67-1.69h1.99c3.05 0 5.55-2.5 5.55-5.55C21.99 6.01 17.46 2 12 2Z"/></svg><span data-en="Any color you like">Beliebige Farbauswahl</span></span>
   </div>
 
   <div class="hero__in">
-    <span class="eyebrow reveal">Badekappen für Vereine</span>
-    <h1 class="reveal">Badekappen bedruckt<br>für <em>deinen Verein</em>.</h1>
-    <p class="hero__sub reveal">Wettkampf-Silikon aus Europa, mit eurem Logo. Ab 25 Stück, kostenloses Design vorab, fertig in 4–5 Wochen.</p>
+    <span class="eyebrow reveal" data-en="Swim caps for clubs">Badekappen für Vereine</span>
+    <h1 class="reveal" data-en="Custom-printed swim caps<br>for <em>your club</em>.">Badekappen bedruckt<br>für <em>deinen Verein</em>.</h1>
+    <p class="hero__sub reveal" data-en="Competition silicone from Europe, with your logo. From 25 pieces, free design mockup upfront, ready in 4–5 weeks.">Wettkampf-Silikon aus Europa, mit eurem Logo. Ab 25 Stück, kostenloses Design vorab, fertig in 4–5 Wochen.</p>
     <div class="hero__cta reveal">
-      <button class="btn btn--light btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
-      <a class="btn btn--lightghost btn--lg" href="#ablauf"><span class="btn__t"><span>So geht's</span><span>So geht's</span></span></a>
+      <button class="btn btn--light btn--lg" data-open-modal data-en="Order swim caps"><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
+      <a class="btn btn--lightghost btn--lg" href="#ablauf" data-en="How it works"><span class="btn__t"><span>So geht's</span><span>So geht's</span></span></a>
     </div>
-    <p class="hero__price reveal">Schon ab <b>5,90 €</b> pro Stück · ab 25 Stück</p>
+    <p class="hero__price reveal" data-en="From <b>€5.90</b> per cap · from 25 pieces">Schon ab <b>5,90 €</b> pro Stück · ab 25 Stück</p>
   </div>
 
   <button type="button" class="contact-card" data-open-modal>
     <div class="photo"><img src="Bilder/thomas.webp" alt="Thomas" onerror="this.style.display='none'" /></div>
     <div class="body">
-      <div class="t">Dein <b>persönlicher</b> Ansprechpartner<span>Thomas, baut dir in 48 h den ersten Design-Entwurf.</span></div>
-      <div class="cc-cta"><span>Jetzt anfragen</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+      <div class="t" data-en="Your <b>personal</b> contact<span>Thomas builds your first design mockup within 48 h.</span>">Dein <b>persönlicher</b> Ansprechpartner<span>Thomas, baut dir in 48 h den ersten Design-Entwurf.</span></div>
+      <div class="cc-cta"><span data-en="Request now">Jetzt anfragen</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
     </div>
   </button>
   <div class="scrollcue"><span>Scroll</span><i></i></div>
@@ -513,24 +528,24 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 <section class="sec">
   <div class="wrap">
     <div class="sec-head center reveal">
-      <span class="eyebrow center">Darum swimcap</span>
-      <h2>Badekappen in <em>Wettkampfqualität</em><br>— schon ab 25 Stück.</h2>
+      <span class="eyebrow center" data-en="Why swimcap">Darum swimcap</span>
+      <h2 data-en="Swim caps in <em>competition quality</em><br>— from just 25 pieces.">Badekappen in <em>Wettkampfqualität</em><br>— schon ab 25 Stück.</h2>
     </div>
     <div class="ucards">
       <article class="ucard reveal">
-        <div class="lbl"><b>Zahlreiche Farben</b><span>01</span></div>
-        <p>16 Badekappenfarben zur Auswahl – und bis zu 6 Druckfarben für euer Logo.</p>
-        <div class="pic"><img src="Bilder/caps-rainbow.webp" alt="Badekappen in vielen Farben" /></div>
+        <div class="lbl"><b data-en="Plenty of colors">Zahlreiche Farben</b><span>01</span></div>
+        <p data-en="16 cap colors to choose from – and up to 6 print colors for your logo.">16 Badekappenfarben zur Auswahl – und bis zu 6 Druckfarben für euer Logo.</p>
+        <div class="pic"><img src="Bilder/caps-rainbow.webp" alt="Badekappen in vielen Farben" data-en-alt="Swim caps in many colors" /></div>
       </article>
       <article class="ucard reveal">
-        <div class="lbl"><b>Individuelles Design</b><span>02</span></div>
-        <p>Wir erstellen euch auf Anfrage gern ein Design – komplett kostenlos.</p>
-        <div class="pic"><img src="Bilder/action-swimmer.webp" alt="Schwimmer mit bedruckter Vereinskappe" /></div>
+        <div class="lbl"><b data-en="Custom design">Individuelles Design</b><span>02</span></div>
+        <p data-en="On request we'll create a design for you – completely free.">Wir erstellen euch auf Anfrage gern ein Design – komplett kostenlos.</p>
+        <div class="pic"><img src="Bilder/action-swimmer.webp" alt="Schwimmer mit bedruckter Vereinskappe" data-en-alt="Swimmer wearing a printed club cap" /></div>
       </article>
       <article class="ucard reveal">
-        <div class="lbl"><b>Kostenlose Lieferung</b><span>03</span></div>
-        <p>In 4–5 Wochen am Beckenrand – mit Sendungsverfolgung direkt zu euch.</p>
-        <div class="pic"><img src="Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton" /></div>
+        <div class="lbl"><b data-en="Free delivery">Kostenlose Lieferung</b><span>03</span></div>
+        <p data-en="At the poolside in 4–5 weeks – with tracking, straight to you.">In 4–5 Wochen am Beckenrand – mit Sendungsverfolgung direkt zu euch.</p>
+        <div class="pic"><img src="Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton" data-en-alt="Finished swim caps in a shipping box" /></div>
       </article>
     </div>
   </div>
@@ -540,30 +555,30 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 <section class="sec sec--linen" id="modelle">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="eyebrow">Modelle</span>
-      <h2>Unsere Modelle.</h2>
-      <p>Vom volumengeformten 3D-Silikon bis zur dünnen Stoffkappe. Unsicher? Wir empfehlen euch das passende Modell.</p>
+      <span class="eyebrow" data-en="Models">Modelle</span>
+      <h2 data-en="Our models.">Unsere Modelle.</h2>
+      <p data-en="From volume-molded 3D silicone to the thin fabric cap. Not sure? We'll recommend the right model for you.">Vom volumengeformten 3D-Silikon bis zur dünnen Stoffkappe. Unsicher? Wir empfehlen euch das passende Modell.</p>
     </div>
     <div class="models">
       <article class="model">
-        <div class="pic"><img src="Bilder/model-3d.webp" alt="3D-Badekappe" /></div>
-        <span class="tag">Premium</span><h3>3D-Badekappe</h3><p>Volumengeformt und faltenfrei. Die hochwertige Optik fürs ganze Team.</p>
-        <button class="order" data-open-modal>Jetzt bestellen →</button>
+        <div class="pic"><img src="Bilder/model-3d.webp" alt="3D-Badekappe" data-en-alt="3D swim cap" /></div>
+        <span class="tag" data-en="Premium">Premium</span><h3 data-en="3D swim cap">3D-Badekappe</h3><p data-en="Volume-molded and wrinkle-free. The premium look for the whole team.">Volumengeformt und faltenfrei. Die hochwertige Optik fürs ganze Team.</p>
+        <button class="order" data-open-modal data-en="Order now →">Jetzt bestellen →</button>
       </article>
       <article class="model">
-        <div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon-Badekappe" /><span class="popular"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.83 6.12 6.67.72-4.98 4.5 1.36 6.56L12 17.5 6.12 20.1l1.36-6.56-4.98-4.5 6.67-.72z"/></svg>Am beliebtesten</span></div>
-        <span class="tag">Bestseller</span><h3>Silikon</h3><p>Der Klassiker. 100 % Silikon, rutschfeste Innenseite, robust.</p>
-        <button class="order" data-open-modal>Jetzt bestellen →</button>
+        <div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon-Badekappe" data-en-alt="Silicone swim cap" /><span class="popular"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.83 6.12 6.67.72-4.98 4.5 1.36 6.56L12 17.5 6.12 20.1l1.36-6.56-4.98-4.5 6.67-.72z"/></svg><span data-en="Most popular">Am beliebtesten</span></span></div>
+        <span class="tag" data-en="Bestseller">Bestseller</span><h3 data-en="Silicone">Silikon</h3><p data-en="The classic. 100% silicone, non-slip inside, durable.">Der Klassiker. 100 % Silikon, rutschfeste Innenseite, robust.</p>
+        <button class="order" data-open-modal data-en="Order now →">Jetzt bestellen →</button>
       </article>
       <article class="model">
-        <div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff-Badekappe" /></div>
-        <span class="tag">Leicht</span><h3>Stoff</h3><p>Dünn und anschmiegsam. Ideal für Freiwasser, Einsteiger und Schule.</p>
-        <button class="order" data-open-modal>Jetzt bestellen →</button>
+        <div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff-Badekappe" data-en-alt="Fabric swim cap" /></div>
+        <span class="tag" data-en="Light">Leicht</span><h3 data-en="Fabric">Stoff</h3><p data-en="Thin and soft. Ideal for open water, beginners and school.">Dünn und anschmiegsam. Ideal für Freiwasser, Einsteiger und Schule.</p>
+        <button class="order" data-open-modal data-en="Order now →">Jetzt bestellen →</button>
       </article>
       <article class="model">
-        <div class="pic"><img src="Bilder/model-frauen.webp" alt="Frauen-Badekappe" /></div>
-        <span class="tag">Komfort</span><h3>Frauen-Badekappe</h3><p>Extra Volumen für lange Haare. Sitzt bequem und sauber.</p>
-        <button class="order" data-open-modal>Jetzt bestellen →</button>
+        <div class="pic"><img src="Bilder/model-frauen.webp" alt="Frauen-Badekappe" data-en-alt="Women's swim cap" /></div>
+        <span class="tag" data-en="Comfort">Komfort</span><h3 data-en="Women's cap">Frauen-Badekappe</h3><p data-en="Extra volume for long hair. Comfortable, clean fit.">Extra Volumen für lange Haare. Sitzt bequem und sauber.</p>
+        <button class="order" data-open-modal data-en="Order now →">Jetzt bestellen →</button>
       </article>
     </div>
   </div>
@@ -573,20 +588,20 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 <section class="sec sec--dark" id="ablauf">
   <div class="wrap proc">
     <div class="rail">
-      <span class="eyebrow reveal">Ablauf</span>
-      <h2 class="reveal" style="margin-top:16px">In vier Schritten ins <em>Becken</em>.</h2>
+      <span class="eyebrow reveal" data-en="Process">Ablauf</span>
+      <h2 class="reveal" style="margin-top:16px" data-en="Into the <em>pool</em> in four steps.">In vier Schritten ins <em>Becken</em>.</h2>
       <div class="rail__track">
         <div class="rail__bar"><div class="rail__fill" id="railFill"></div></div>
         <ul class="rail__steps" id="railSteps">
-          <li>01 — Anfrage</li><li>02 — Kostenloses Design</li><li>03 — Freigabe &amp; Druck</li><li>04 — Lieferung</li>
+          <li data-en="01 — Request">01 — Anfrage</li><li data-en="02 — Free design">02 — Kostenloses Design</li><li data-en="03 — Approval &amp; print">03 — Freigabe &amp; Druck</li><li data-en="04 — Delivery">04 — Lieferung</li>
         </ul>
       </div>
     </div>
     <div class="pblocks" id="pblocks">
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-1-anfrage.webp" alt="Online-Anfrage über Konfigurator"></div><div class="pb__body"><div class="pb__n">01</div><h3>Anfrage</h3><p>Modell, ungefähre Stückzahl und euer Logo schicken – dauert keine drei Minuten.</p><div class="meta">~ heute</div></div></div>
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-2-design.webp" alt="Designer setzt euer Logo auf die Kappe"></div><div class="pb__body"><div class="pb__n">02</div><h3>Kostenloses Design</h3><p>Wir legen euer Logo auf die Kappe, bereiten den Druck auf und schicken euch einen Entwurf samt Angebot.</p><div class="meta">1–2 Tage</div></div></div>
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-3-druck.webp" alt="Siebdruck auf der Kappe in Europa"></div><div class="pb__body"><div class="pb__n">03</div><h3>Freigabe &amp; Druck</h3><p>Ihr gebt frei, wir produzieren im Siebdruck in Europa. Erst nach eurem Go.</p><div class="meta">Produktion</div></div></div>
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton"></div><div class="pb__body"><div class="pb__n">04</div><h3>Lieferung</h3><p>Mit Sendungsverfolgung direkt zu euch. Mit individuellen Namen rund eine Woche mehr.</p><div class="meta">4–5 Wochen</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-1-anfrage.webp" alt="Online-Anfrage über Konfigurator"></div><div class="pb__body"><div class="pb__n">01</div><h3 data-en="Request">Anfrage</h3><p data-en="Send us the model, rough quantity and your logo – takes less than three minutes.">Modell, ungefähre Stückzahl und euer Logo schicken – dauert keine drei Minuten.</p><div class="meta" data-en="~ today">~ heute</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-2-design.webp" alt="Designer setzt euer Logo auf die Kappe"></div><div class="pb__body"><div class="pb__n">02</div><h3 data-en="Free design">Kostenloses Design</h3><p data-en="We place your logo on the cap, prepare the print and send you a mockup with a quote.">Wir legen euer Logo auf die Kappe, bereiten den Druck auf und schicken euch einen Entwurf samt Angebot.</p><div class="meta" data-en="1–2 days">1–2 Tage</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-3-druck.webp" alt="Siebdruck auf der Kappe in Europa"></div><div class="pb__body"><div class="pb__n">03</div><h3 data-en="Approval &amp; print">Freigabe &amp; Druck</h3><p data-en="You approve, we produce via screen printing in Europe. Only after your go-ahead.">Ihr gebt frei, wir produzieren im Siebdruck in Europa. Erst nach eurem Go.</p><div class="meta" data-en="Production">Produktion</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton"></div><div class="pb__body"><div class="pb__n">04</div><h3 data-en="Delivery">Lieferung</h3><p data-en="With tracking, straight to you. About a week more with individual names.">Mit Sendungsverfolgung direkt zu euch. Mit individuellen Namen rund eine Woche mehr.</p><div class="meta" data-en="4–5 weeks">4–5 Wochen</div></div></div>
     </div>
   </div>
 </section>
@@ -595,16 +610,16 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 <section class="sec" id="vereine">
   <div class="wrap">
     <div class="stats stats--top">
-      <div class="stat reveal"><b data-count="100" data-suffix="+">100+</b><span>Vereine &amp; Teams</span></div>
-      <div class="stat reveal"><b data-count="25">25</b><span>Stück Mindestmenge</span></div>
-      <div class="stat reveal"><b data-count="6">6</b><span>Farben pro Seite</span></div>
-      <div class="stat reveal"><b data-count="5" data-final="4–5">4–5</b><span>Wochen Lieferzeit</span></div>
+      <div class="stat reveal"><b data-count="100" data-suffix="+">100+</b><span data-en="Clubs &amp; teams">Vereine &amp; Teams</span></div>
+      <div class="stat reveal"><b data-count="25">25</b><span data-en="Pieces minimum">Stück Mindestmenge</span></div>
+      <div class="stat reveal"><b data-count="6">6</b><span data-en="Colors per side">Farben pro Seite</span></div>
+      <div class="stat reveal"><b data-count="5" data-final="4–5">4–5</b><span data-en="Weeks delivery">Wochen Lieferzeit</span></div>
     </div>
 
-    <div class="sec-head reveal" style="margin-top:80px"><span class="eyebrow">Bisherige Badekappen</span><h2 style="margin-top:16px">Über 100 Vereine tragen schon ihr <em>Logo</em>.</h2></div>
+    <div class="sec-head reveal" style="margin-top:80px"><span class="eyebrow" data-en="Caps we've made">Bisherige Badekappen</span><h2 style="margin-top:16px" data-en="Over 100 clubs already wear their <em>logo</em>.">Über 100 Vereine tragen schon ihr <em>Logo</em>.</h2></div>
     <div class="pgrid-wrap">
       <div class="pgrid" id="pgrid"></div>
-      <div class="pgrid-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Und viele mehr</div>
+      <div class="pgrid-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg><span data-en="And many more">Und viele mehr</span></div>
     </div>
 
     <!-- CTA-Band (vorher Bigband) -->
@@ -612,8 +627,8 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
       <img src="Bilder/hero-swimmer.webp" alt="Schwimmer mit bedruckter TSC-Berlin-Vereinskappe" />
       <div class="madeby madeby--lg"><span>Made by</span><img src="Bilder/teamfreaks-logo.svg" alt="Teamfreaks" /></div>
       <div class="ctaband__in">
-        <h3>Holt <em>euren Verein</em> auf<br>die Kappe.</h3>
-        <button class="btn btn--light btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
+        <h3 data-en="Get <em>your club</em> on<br>the cap.">Holt <em>euren Verein</em> auf<br>die Kappe.</h3>
+        <button class="btn btn--light btn--lg" data-open-modal data-en="Order swim caps"><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
       </div>
     </div>
   </div>
@@ -622,14 +637,14 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 <!-- ===================== FAQ ===================== -->
 <section class="sec sec--stone" id="faq">
   <div class="wrap">
-    <div class="sec-head reveal"><span class="eyebrow">FAQ</span><h2>Antworten auf die häufigsten <em>Fragen</em>.</h2></div>
+    <div class="sec-head reveal"><span class="eyebrow">FAQ</span><h2 data-en="Answers to the most common <em>questions</em>.">Antworten auf die häufigsten <em>Fragen</em>.</h2></div>
     <div class="faq reveal">
-      <div class="q"><button aria-expanded="false"><span>Ab wie vielen Kappen kann ich bestellen?</span><span class="pm"></span></button><div class="a"><p>Ab <b class="hl">25 Stück</b> – auch für einzelne Jahrgänge, Staffeln oder Gruppen. Je größer die Menge, desto günstiger die einzelne Kappe.</p></div></div>
-      <div class="q"><button aria-expanded="false"><span>Was kostet eine bedruckte Badekappe?</span><span class="pm"></span></button><div class="a"><p>Wir erstellen euch ein individuelles Angebot. Als Richtwerte:</p><ul class="faq-list"><li><b>Teambadekappe</b> · ab 50 Stück · <b>ab 6,50 €</b> pro Stück</li><li><b>Vereinsbadekappen</b> · ab 100 Stück · <b class="hl">ab 5,90 €</b> pro Stück</li><li><b>Badekappen mit individuellen Namen</b> · ab 50 Stück · <b>ab 12,00 €</b> pro Stück</li></ul><p>Der genaue Preis hängt von Modell, Menge, Druckseiten und Farben ab. Nach eurer Anfrage bekommt ihr ein kostenloses, unverbindliches Angebot inklusive Design-Entwurf – meist in 1–2 Tagen.</p></div></div>
-      <div class="q"><button aria-expanded="false"><span>Wie lange dauert die Lieferung?</span><span class="pm"></span></button><div class="a"><p>Nach Freigabe ca. 4–5 Wochen (Produktion in Europa). Mit individuellen Namen rund eine Woche mehr. Express ist gegen Aufpreis möglich.</p></div></div>
-      <div class="q"><button aria-expanded="false"><span>Welche Modelle gibt es?</span><span class="pm"></span></button><div class="a"><p>3D-Badekappe (volumengeformt), Silikon (Standard), Stoff (dünn &amp; leicht) und die Frauen-Badekappe mit extra Volumen für lange Haare – jeweils für Erwachsene und Kinder.</p></div></div>
-      <div class="q"><button aria-expanded="false"><span>Wie viele Farben kann mein Logo haben?</span><span class="pm"></span></button><div class="a"><p>Bis zu 6 Farben pro Seite im Siebdruck, Vorder- und Rückseite. Ein- oder mehrfarbig – wir bereiten euer Logo passend auf.</p></div></div>
-      <div class="q"><button aria-expanded="false"><span>Sehe ich die Kappe vor dem Druck?</span><span class="pm"></span></button><div class="a"><p>Ja, immer. Ihr bekommt einen kostenlosen Design-Entwurf zur Freigabe. Erst nach eurem Go drucken wir.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span data-en="What's the minimum order?">Ab wie vielen Kappen kann ich bestellen?</span><span class="pm"></span></button><div class="a"><p data-en="From <b class=&quot;hl&quot;>25 pieces</b> – also for single age groups, relays or teams. The larger the quantity, the cheaper each cap.">Ab <b class="hl">25 Stück</b> – auch für einzelne Jahrgänge, Staffeln oder Gruppen. Je größer die Menge, desto günstiger die einzelne Kappe.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span data-en="What does a printed swim cap cost?">Was kostet eine bedruckte Badekappe?</span><span class="pm"></span></button><div class="a"><p data-en="We'll create an individual quote for you. As a guide:">Wir erstellen euch ein individuelles Angebot. Als Richtwerte:</p><ul class="faq-list"><li data-en="<b>Team cap</b> · from 50 pieces · <b>from €6.50</b> per cap"><b>Teambadekappe</b> · ab 50 Stück · <b>ab 6,50 €</b> pro Stück</li><li data-en="<b>Club caps</b> · from 100 pieces · <b class=&quot;hl&quot;>from €5.90</b> per cap"><b>Vereinsbadekappen</b> · ab 100 Stück · <b class="hl">ab 5,90 €</b> pro Stück</li><li data-en="<b>Caps with individual names</b> · from 50 pieces · <b>from €12.00</b> per cap"><b>Badekappen mit individuellen Namen</b> · ab 50 Stück · <b>ab 12,00 €</b> pro Stück</li></ul><p data-en="The exact price depends on model, quantity, printed sides and colors. After your request you'll get a free, no-obligation quote including a design mockup – usually within 1–2 days.">Der genaue Preis hängt von Modell, Menge, Druckseiten und Farben ab. Nach eurer Anfrage bekommt ihr ein kostenloses, unverbindliches Angebot inklusive Design-Entwurf – meist in 1–2 Tagen.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span data-en="How long does delivery take?">Wie lange dauert die Lieferung?</span><span class="pm"></span></button><div class="a"><p data-en="About 4–5 weeks after approval (production in Europe). About a week more with individual names. Express is available for a surcharge.">Nach Freigabe ca. 4–5 Wochen (Produktion in Europa). Mit individuellen Namen rund eine Woche mehr. Express ist gegen Aufpreis möglich.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span data-en="Which models are there?">Welche Modelle gibt es?</span><span class="pm"></span></button><div class="a"><p data-en="3D cap (volume-molded), silicone (standard), fabric (thin &amp; light) and the women's cap with extra volume for long hair – each for adults and kids.">3D-Badekappe (volumengeformt), Silikon (Standard), Stoff (dünn &amp; leicht) und die Frauen-Badekappe mit extra Volumen für lange Haare – jeweils für Erwachsene und Kinder.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span data-en="How many colors can my logo have?">Wie viele Farben kann mein Logo haben?</span><span class="pm"></span></button><div class="a"><p data-en="Up to 6 colors per side in screen printing, front and back. Single- or multi-color – we'll prep your logo to fit.">Bis zu 6 Farben pro Seite im Siebdruck, Vorder- und Rückseite. Ein- oder mehrfarbig – wir bereiten euer Logo passend auf.</p></div></div>
+      <div class="q"><button aria-expanded="false"><span data-en="Do I see the cap before printing?">Sehe ich die Kappe vor dem Druck?</span><span class="pm"></span></button><div class="a"><p data-en="Yes, always. You get a free design mockup to approve. We only print after your go-ahead.">Ja, immer. Ihr bekommt einen kostenlosen Design-Entwurf zur Freigabe. Erst nach eurem Go drucken wir.</p></div></div>
     </div>
   </div>
   <div class="faq-caps" aria-hidden="true">
@@ -643,17 +658,17 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 <section class="cta-final">
   <div class="wrap cta-final__inner">
     <div class="cta-final__copy reveal">
-      <div class="cta-final__person"><span class="av"><img src="Bilder/thomas.webp" alt="Thomas" /></span><span class="t"><b>Thomas</b> antwortet innerhalb von 48 h.</span></div>
-      <h2>Jetzt <em>kostenloses</em><br>Angebot sichern</h2>
-      <p>Schickt uns euer Logo – wir machen den Rest. Kostenloses Design, ab 25 Stück, fertig in 4–5 Wochen.</p>
+      <div class="cta-final__person"><span class="av"><img src="Bilder/thomas.webp" alt="Thomas" /></span><span class="t" data-en="<b>Thomas</b> replies within 48 h."><b>Thomas</b> antwortet innerhalb von 48 h.</span></div>
+      <h2 data-en="Get your <em>free</em><br>quote now">Jetzt <em>kostenloses</em><br>Angebot sichern</h2>
+      <p data-en="Send us your logo – we'll do the rest. Free design, from 25 pieces, ready in 4–5 weeks.">Schickt uns euer Logo – wir machen den Rest. Kostenloses Design, ab 25 Stück, fertig in 4–5 Wochen.</p>
       <div class="cta-final__row">
-        <button class="btn btn--primary btn--lg" data-open-modal><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
+        <button class="btn btn--primary btn--lg" data-open-modal data-en="Order swim caps"><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
         <a class="btn btn--ghost btn--lg" href="mailto:hallo@my-swimcap.de"><span class="btn__t"><span>hallo@my-swimcap.de</span><span>hallo@my-swimcap.de</span></span></a>
       </div>
-      <p class="cta-final__price">Schon ab <b>5,90 €</b> pro Stück · ab 25 Stück</p>
+      <p class="cta-final__price" data-en="From <b>€5.90</b> per cap · from 25 pieces">Schon ab <b>5,90 €</b> pro Stück · ab 25 Stück</p>
     </div>
   </div>
-  <img class="cta-final__bg" src="Bilder/vereine-cluster.webp" alt="Bedruckte Vereins-Badekappen von über 100 Vereinen" />
+  <img class="cta-final__bg" src="Bilder/vereine-cluster.webp" alt="Bedruckte Vereins-Badekappen von über 100 Vereinen" data-en-alt="Printed club swim caps from over 100 clubs" />
 </section>
 
 <!-- ===================== SEO ===================== -->
@@ -661,13 +676,13 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
   <div class="wrap">
     <div class="seo__grid">
       <div class="reveal">
-        <span class="eyebrow">Badekappen bedrucken</span>
-        <h2>Badekappen bedrucken lassen –<br>für deinen <em>Verein</em></h2>
+        <span class="eyebrow" data-en="Print swim caps">Badekappen bedrucken</span>
+        <h2 data-en="Get swim caps printed –<br>for your <em>club</em>">Badekappen bedrucken lassen –<br>für deinen <em>Verein</em></h2>
       </div>
       <div class="seo__body reveal">
-        <p>Ihr möchtet <b>Badekappen für euren Verein bedrucken lassen</b>? Bei swimcap bedrucken wir hochwertige <b>Silikon-Badekappen</b> und Stoff-Badekappen mit eurem Vereinslogo – ein- oder mehrfarbig, mit bis zu sechs Druckfarben pro Seite. Ob Schwimmverein, Triathlon-Team, DLRG-Ortsgruppe, Schwimmschule oder Schulklasse: Schon ab 25 Stück fertigen wir eure <b>individuellen Badekappen</b> in Wettkampfqualität.</p>
-        <p>Egal ob <b>Badekappen mit Logo</b>, <b>Badekappen mit Namen</b> oder Startnummern – wir erstellen euch vorab kostenlos einen Design-Entwurf, den ihr freigebt, bevor wir drucken. Produziert wird im Siebdruck in Europa, geliefert in vier bis fünf Wochen inklusive Sendungsverfolgung. Über 100 Vereine vertrauen bereits auf unseren Badekappen-Service.</p>
-        <p>Wählt aus vier Modellen: der klassischen <b>Silikon-Badekappe</b>, der volumengeformten 3D-Badekappe, der dünnen Stoff-Badekappe fürs Freiwasser oder der Frauen-Badekappe mit extra Platz für lange Haare. <b>Schwimmkappen bedrucken</b> war nie einfacher – fordert jetzt euer kostenloses, unverbindliches Angebot an, schon ab 5,90 € pro Stück.</p>
+        <p data-en="Want to <b>get swim caps printed for your club</b>? At MySwimcap we print high-quality <b>silicone swim caps</b> and fabric swim caps with your club logo – single- or multi-colour, with up to six print colours per side. Whether a swimming club, triathlon team, lifeguard group, swim school or school class: from just 25 pieces we produce your <b>custom swim caps</b> in competition quality.">Ihr möchtet <b>Badekappen für euren Verein bedrucken lassen</b>? Bei swimcap bedrucken wir hochwertige <b>Silikon-Badekappen</b> und Stoff-Badekappen mit eurem Vereinslogo – ein- oder mehrfarbig, mit bis zu sechs Druckfarben pro Seite. Ob Schwimmverein, Triathlon-Team, DLRG-Ortsgruppe, Schwimmschule oder Schulklasse: Schon ab 25 Stück fertigen wir eure <b>individuellen Badekappen</b> in Wettkampfqualität.</p>
+        <p data-en="Whether <b>swim caps with a logo</b>, <b>swim caps with names</b> or start numbers – we create a free design mockup up front, which you approve before we print. Production is screen-printed in Europe, delivered in four to five weeks including tracking. Over 100 clubs already trust our swim-cap service.">Egal ob <b>Badekappen mit Logo</b>, <b>Badekappen mit Namen</b> oder Startnummern – wir erstellen euch vorab kostenlos einen Design-Entwurf, den ihr freigebt, bevor wir drucken. Produziert wird im Siebdruck in Europa, geliefert in vier bis fünf Wochen inklusive Sendungsverfolgung. Über 100 Vereine vertrauen bereits auf unseren Badekappen-Service.</p>
+        <p data-en="Choose from four models: the classic <b>silicone swim cap</b>, the volume-moulded 3D swim cap, the thin fabric swim cap for open water or the women's swim cap with extra room for long hair. <b>Printing swim caps</b> was never easier – request your free, no-obligation quote now, from just €5.90 per cap.">Wählt aus vier Modellen: der klassischen <b>Silikon-Badekappe</b>, der volumengeformten 3D-Badekappe, der dünnen Stoff-Badekappe fürs Freiwasser oder der Frauen-Badekappe mit extra Platz für lange Haare. <b>Schwimmkappen bedrucken</b> war nie einfacher – fordert jetzt euer kostenloses, unverbindliches Angebot an, schon ab 5,90 € pro Stück.</p>
       </div>
     </div>
   </div>
@@ -677,68 +692,68 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 <footer class="footer">
   <img class="footer__watermark" src="Bilder/logo-mark.svg" alt="" aria-hidden="true" />
   <div class="footer__grid">
-    <div><a class="brand" href="#top" aria-label="MySwimcap"><img class="brand__logo" src="Bilder/logo-lockup.svg" alt="MySwimcap" /></a><p>Bedruckte Badekappen für Vereine, Staffeln &amp; Schwimmschulen. Ein Service der Teamfreaks.</p></div>
-    <div><h4>Produkt</h4><a href="#modelle">Modelle</a><a href="#ablauf">Ablauf</a><a href="#vereine">Vereine</a><a href="#faq">FAQ</a></div>
-    <div><h4>Anfrage</h4><a href="#" data-open-modal>Badekappen bestellen</a><a href="#" data-open-modal>Angebot anfordern</a><a href="mailto:hallo@my-swimcap.de">hallo@my-swimcap.de</a></div>
-    <div><h4>Teamfreaks</h4><a href="https://teamfreaks.de" target="_blank" rel="noopener">teamfreaks.de</a><a href="https://teamfreaks.de" target="_blank" rel="noopener">Vereinsshops</a><a href="https://sockfab.de" target="_blank" rel="noopener">Sockfab</a></div>
+    <div><a class="brand" href="#top" aria-label="MySwimcap"><img class="brand__logo" src="Bilder/logo-lockup.svg" alt="MySwimcap" /></a><p data-en="Printed swim caps for clubs, relay teams &amp; swim schools. A service by Teamfreaks.">Bedruckte Badekappen für Vereine, Staffeln &amp; Schwimmschulen. Ein Service der Teamfreaks.</p></div>
+    <div><h4 data-en="Product">Produkt</h4><a href="#modelle" data-en="Models">Modelle</a><a href="#ablauf" data-en="Process">Ablauf</a><a href="#vereine" data-en="Clubs">Vereine</a><a href="#faq">FAQ</a></div>
+    <div><h4 data-en="Request">Anfrage</h4><a href="#" data-open-modal data-en="Order swim caps">Badekappen bestellen</a><a href="#" data-open-modal data-en="Request a quote">Angebot anfordern</a><a href="mailto:hallo@my-swimcap.de">hallo@my-swimcap.de</a></div>
+    <div><h4>Teamfreaks</h4><a href="https://teamfreaks.de" target="_blank" rel="noopener">teamfreaks.de</a><a href="https://teamfreaks.de" target="_blank" rel="noopener" data-en="Club shops">Vereinsshops</a><a href="https://sockfab.de" target="_blank" rel="noopener">Sockfab</a></div>
   </div>
-  <div class="footer__bottom"><span>© 2026 swimcap · ein Service von Teamfreaks · Elsterstraße 65 · 04109 Leipzig</span><span class="footer__legal"><a href="#">Impressum</a> · <a href="#">Datenschutz</a> · <a href="#">AGB</a></span></div>
+  <div class="footer__bottom"><span data-en="© 2026 MySwimcap · a service by Teamfreaks · Elsterstraße 65 · 04109 Leipzig">© 2026 MySwimcap · ein Service von Teamfreaks · Elsterstraße 65 · 04109 Leipzig</span><span class="footer__legal"><a href="#" data-en="Imprint">Impressum</a> · <a href="#" data-en="Privacy">Datenschutz</a> · <a href="#" data-en="Terms">AGB</a></span></div>
 </footer>
 
 <!-- ===================== MODAL (Anfrage) ===================== -->
-<div class="modal" id="anfrageModal" role="dialog" aria-modal="true" aria-label="Badekappen bestellen" aria-hidden="true">
+<div class="modal" id="anfrageModal" role="dialog" aria-modal="true" aria-label="Badekappen bestellen" data-en-aria="Order swim caps" aria-hidden="true">
   <div class="modal__card">
-    <button class="modal__close" data-close-modal aria-label="Schließen">×</button>
+    <button class="modal__close" data-close-modal aria-label="Schließen" data-en-aria="Close">×</button>
     <form class="modal__form" id="wizard" novalidate>
       <div class="fbar"><i class="fill"></i></div>
-      <div class="fmeta"><span>Schritt <b class="now">1</b> / 4</span><span class="lab">Modell</span></div>
+      <div class="fmeta"><span><span data-en="Step">Schritt</span> <b class="now">1</b> / 4</span><span class="lab">Modell</span></div>
 
       <div class="fstep active" data-step="1">
-        <h3>Wähl dein Modell.</h3><p class="hint">Unsicher? Wähl das, was am ehesten passt – wir beraten.</p>
+        <h3 data-en="Choose your model.">Wähl dein Modell.</h3><p class="hint" data-en="Not sure? Pick the closest – we'll advise.">Unsicher? Wähl das, was am ehesten passt – wir beraten.</p>
         <div class="mcards" data-group="modell">
           <div class="mc" data-val="3D-Badekappe"><div class="pic"><img src="Bilder/model-3d.webp" alt="3D"></div><b>3D</b></div>
-          <div class="mc" data-val="Silikon"><span class="mc-pop"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.83 6.12 6.67.72-4.98 4.5 1.36 6.56L12 17.5 6.12 20.1l1.36-6.56-4.98-4.5 6.67-.72z"/></svg>Am beliebtesten</span><div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon"></div><b>Silikon</b></div>
-          <div class="mc" data-val="Stoff"><div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff"></div><b>Stoff</b></div>
-          <div class="mc" data-val="Frauen-Badekappe"><div class="pic"><img src="Bilder/model-frauen.webp" alt="Frauen"></div><b>Frauen</b></div>
+          <div class="mc" data-val="Silikon"><span class="mc-pop"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.83 6.12 6.67.72-4.98 4.5 1.36 6.56L12 17.5 6.12 20.1l1.36-6.56-4.98-4.5 6.67-.72z"/></svg><span data-en="Most popular">Am beliebtesten</span></span><div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon"></div><b data-en="Silicone">Silikon</b></div>
+          <div class="mc" data-val="Stoff"><div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff"></div><b data-en="Fabric">Stoff</b></div>
+          <div class="mc" data-val="Frauen-Badekappe"><div class="pic"><img src="Bilder/model-frauen.webp" alt="Frauen"></div><b data-en="Women's">Frauen</b></div>
         </div>
-        <div class="flbl">Ungefähre Stückzahl</div>
+        <div class="flbl" data-en="Approx. quantity">Ungefähre Stückzahl</div>
         <div class="chips" data-group="menge"><span class="chip" data-val="25–50">25–50</span><span class="chip" data-val="50–100">50–100</span><span class="chip" data-val="100–250">100–250</span><span class="chip" data-val="250+">250+</span></div>
-        <div class="flbl">Logo-Farben</div>
-        <div class="chips" data-group="farben"><span class="chip" data-val="1-farbig">1-farbig</span><span class="chip" data-val="2–3 Farben">2–3 Farben</span><span class="chip" data-val="4+ Farben">4+ Farben</span><span class="chip" data-val="weiß noch nicht">weiß noch nicht</span></div>
+        <div class="flbl" data-en="Logo colours">Logo-Farben</div>
+        <div class="chips" data-group="farben"><span class="chip" data-val="1-farbig" data-en="1 colour">1-farbig</span><span class="chip" data-val="2–3 Farben" data-en="2–3 colours">2–3 Farben</span><span class="chip" data-val="4+ Farben" data-en="4+ colours">4+ Farben</span><span class="chip" data-val="weiß noch nicht" data-en="not sure yet">weiß noch nicht</span></div>
       </div>
 
       <div class="fstep" data-step="2">
-        <h3>Termin &amp; Logo.</h3><p class="hint">Logo direkt mitschicken spart eine Runde – ist aber optional.</p>
-        <div class="field"><label>Wunschtermin</label><input type="date" name="termin" required></div>
-        <div class="flbl">Individuelle Namen / Nummern?</div>
-        <div class="chips" data-group="namen"><span class="chip" data-val="Nein">Nein</span><span class="chip" data-val="Ja, mit Namen">Ja, mit Namen</span><span class="chip" data-val="Beraten lassen">Beraten lassen</span></div>
-        <div class="flbl">Vereinslogo</div>
-        <div class="upload" id="dropzone"><input type="file" id="logoInput" accept="image/*,.pdf,.ai,.eps,.svg" hidden><b>Logo hochladen</b><span>Drag &amp; Drop oder klicken · PNG, JPG, PDF, SVG, AI</span><span class="o">Optional</span></div>
+        <h3 data-en="Date &amp; logo.">Termin &amp; Logo.</h3><p class="hint" data-en="Sending your logo now saves a round – but it's optional.">Logo direkt mitschicken spart eine Runde – ist aber optional.</p>
+        <div class="field"><label data-en="Preferred date">Wunschtermin</label><input type="date" name="termin" required></div>
+        <div class="flbl" data-en="Custom names / numbers?">Individuelle Namen / Nummern?</div>
+        <div class="chips" data-group="namen"><span class="chip" data-val="Nein" data-en="No">Nein</span><span class="chip" data-val="Ja, mit Namen" data-en="Yes, with names">Ja, mit Namen</span><span class="chip" data-val="Beraten lassen" data-en="Get advice">Beraten lassen</span></div>
+        <div class="flbl" data-en="Club logo">Vereinslogo</div>
+        <div class="upload" id="dropzone"><input type="file" id="logoInput" accept="image/*,.pdf,.ai,.eps,.svg" hidden><b data-en="Upload logo">Logo hochladen</b><span data-en="Drag &amp; drop or click · PNG, JPG, PDF, SVG, AI">Drag &amp; Drop oder klicken · PNG, JPG, PDF, SVG, AI</span><span class="o" data-en="Optional">Optional</span></div>
         <div class="preview" id="preview"></div>
       </div>
 
       <div class="fstep" data-step="3">
-        <h3>Euer Verein.</h3><p class="hint">Damit wir wissen, wen wir vor uns haben.</p>
-        <div class="field"><label>Verein / Team / Schule (optional)</label><input name="verein" placeholder="z. B. SV Delphin Leipzig"></div>
-        <div class="field"><label>Dein Name</label><input name="name" placeholder="Vor- &amp; Nachname" required></div>
-        <div class="field"><label>Anmerkungen / Sonderwünsche (optional)</label><textarea name="notiz" rows="3" placeholder="z. B. Sponsoren-Aufdruck, bestimmte Farben, Fragen …"></textarea></div>
+        <h3 data-en="Your club.">Euer Verein.</h3><p class="hint" data-en="So we know who we're dealing with.">Damit wir wissen, wen wir vor uns haben.</p>
+        <div class="field"><label data-en="Club / team / school (optional)">Verein / Team / Schule (optional)</label><input name="verein" placeholder="z. B. SV Delphin Leipzig" data-en-ph="e.g. SV Delphin Leipzig"></div>
+        <div class="field"><label data-en="Your name">Dein Name</label><input name="name" placeholder="Vor- &amp; Nachname" data-en-ph="First &amp; last name" required></div>
+        <div class="field"><label data-en="Notes / special requests (optional)">Anmerkungen / Sonderwünsche (optional)</label><textarea name="notiz" rows="3" placeholder="z. B. Sponsoren-Aufdruck, bestimmte Farben, Fragen …" data-en-ph="e.g. sponsor print, specific colours, questions …"></textarea></div>
       </div>
 
       <div class="fstep" data-step="4">
-        <h3>Fast geschafft.</h3><p class="hint">Wohin schicken wir Entwurf &amp; Angebot? Antwort in 24 h.</p>
-        <div class="field"><label>E-Mail</label><input type="email" name="email" placeholder="name@verein.de" required></div>
-        <label class="check-line"><input type="checkbox" name="dsgvo"> <span>Ich bin mit der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage einverstanden (Datenschutz).</span></label>
+        <h3 data-en="Almost done.">Fast geschafft.</h3><p class="hint" data-en="Where do we send the mockup &amp; quote? Reply within 24 h.">Wohin schicken wir Entwurf &amp; Angebot? Antwort in 24 h.</p>
+        <div class="field"><label data-en="Email">E-Mail</label><input type="email" name="email" placeholder="name@verein.de" data-en-ph="name@club.com" required></div>
+        <label class="check-line"><input type="checkbox" name="dsgvo"> <span data-en="I agree to my details being processed to handle this request (privacy policy).">Ich bin mit der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage einverstanden (Datenschutz).</span></label>
       </div>
 
-      <div class="thanks" id="thanks"><div class="ok">✓</div><h3>Anfrage ist raus!</h3><p>Danke! Wir melden uns innerhalb von 24 Stunden mit Entwurf &amp; Angebot.</p></div>
+      <div class="thanks" id="thanks"><div class="ok">✓</div><h3 data-en="Request sent!">Anfrage ist raus!</h3><p data-en="Thanks! We'll get back to you within 24 hours with a mockup &amp; quote.">Danke! Wir melden uns innerhalb von 24 Stunden mit Entwurf &amp; Angebot.</p></div>
 
       <div class="fnav" id="fnav">
-        <button type="button" class="btn btn--ghost" id="prev" disabled><span class="btn__t"><span>← Zurück</span><span>← Zurück</span></span></button>
+        <button type="button" class="btn btn--ghost" id="prev" disabled data-en="← Back"><span class="btn__t"><span>← Zurück</span><span>← Zurück</span></span></button>
         <button type="button" class="btn btn--primary" id="next"><span class="btn__t"><span>Weiter →</span><span>Weiter →</span></span></button>
       </div>
     </form>
     <div class="modal__media">
-      <img src="Bilder/vereine-cluster.webp" alt="Bedruckte Vereins-Badekappen" />
+      <img src="Bilder/vereine-cluster.webp" alt="Bedruckte Vereins-Badekappen" data-en-alt="Printed club swim caps" />
     </div>
   </div>
 </div>
@@ -834,7 +849,9 @@ document.querySelectorAll('.q button').forEach(function(btn){
   var fill=form.querySelector('.fill'),now=form.querySelector('.now'),lab=form.querySelector('.lab');
   var prev=document.getElementById('prev'),next=document.getElementById('next');
   var fnav=document.getElementById('fnav'),meta=form.querySelector('.fmeta'),thanks=document.getElementById('thanks');
-  var labels=['Modell','Termin & Logo','Verein','Kontakt'];var cur=0;
+  var WL={de:{labels:['Modell','Termin & Logo','Verein','Kontakt'],next:'Weiter →',send:'Anfrage senden →'},en:{labels:['Model','Date & logo','Club','Contact'],next:'Next →',send:'Send request →'}};
+  function WT(){return WL[window.__lang==='en'?'en':'de'];}
+  var cur=0;
   form.querySelectorAll('[data-group]').forEach(function(g){g.addEventListener('click',function(e){var it=e.target.closest('.mc,.chip');if(!it||!g.contains(it))return;g.querySelectorAll('.mc,.chip').forEach(function(x){x.classList.remove('sel');});it.classList.add('sel');updateNext();});});
   function gsel(n){var g=form.querySelector('[data-group="'+n+'"]');return !!(g&&g.querySelector('.sel'));}
   function fval(n){var el=form.querySelector('[name="'+n+'"]');return el?(el.value||'').trim():'';}
@@ -846,11 +863,12 @@ document.querySelectorAll('.q button').forEach(function(btn){
     return true;
   }
   function updateNext(){next.disabled=!validStep(cur);}
-  function setNext(){next.querySelectorAll('.btn__t span').forEach(function(s){s.textContent=cur===steps.length-1?'Anfrage senden →':'Weiter →';});}
-  function render(){steps.forEach(function(s,i){s.classList.toggle('active',i===cur);});fill.style.width=((cur+1)/steps.length*100)+'%';now.textContent=cur+1;lab.textContent=labels[cur];prev.disabled=cur===0;setNext();updateNext();}
+  function setNext(){var t=WT();next.querySelectorAll('.btn__t span').forEach(function(s){s.textContent=cur===steps.length-1?t.send:t.next;});}
+  function render(){steps.forEach(function(s,i){s.classList.toggle('active',i===cur);});fill.style.width=((cur+1)/steps.length*100)+'%';now.textContent=cur+1;lab.textContent=WT().labels[cur];prev.disabled=cur===0;setNext();updateNext();}
+  document.addEventListener('langchange',function(){lab.textContent=WT().labels[cur];setNext();});
   prev.onclick=function(){if(cur>0){cur--;render();}};
   next.onclick=function(){if(next.disabled||!validStep(cur))return;if(cur<steps.length-1){cur++;render();}else submit();};
-  function submit(){var data=Object.fromEntries(new FormData(form).entries());form.querySelectorAll('[data-group]').forEach(function(g){var s=g.querySelector('.sel');data[g.dataset.group]=s?s.dataset.val:'';});data.logo=window.__logo?window.__logo.name:'(keins)';console.log('swimcap Anfrage:',data);steps.forEach(function(s){s.classList.remove('active');});fnav.style.display='none';meta.style.display='none';fill.style.width='100%';thanks.classList.add('show');}
+  function submit(){var data=Object.fromEntries(new FormData(form).entries());form.querySelectorAll('[data-group]').forEach(function(g){var s=g.querySelector('.sel');data[g.dataset.group]=s?s.dataset.val:'';});data.logo=window.__logo?window.__logo.name:(window.__lang==='en'?'(none)':'(keins)');console.log('swimcap Anfrage:',data);steps.forEach(function(s){s.classList.remove('active');});fnav.style.display='none';meta.style.display='none';fill.style.width='100%';thanks.classList.add('show');}
   render();
   form.addEventListener('input',updateNext);
   form.addEventListener('change',updateNext);
@@ -861,7 +879,41 @@ document.querySelectorAll('.q button').forEach(function(btn){
   dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)handle(e.dataTransfer.files[0]);});
   input.addEventListener('change',function(){if(input.files.length)handle(input.files[0]);});
   function fmt(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(0)+' KB':(b/1048576).toFixed(1)+' MB';}
-  function handle(f){window.__logo=f;var ext=(f.name.split('.').pop()||'').toUpperCase();pv.innerHTML=(f.type.indexOf('image/')===0?'<img alt="">':'<div class="pico">'+ext+'</div>')+'<div class="pm2"><b>'+f.name+'</b><span>'+fmt(f.size)+' · bereit</span></div><span class="rm">×</span>';pv.classList.add('show');dz.style.display='none';if(f.type.indexOf('image/')===0)pv.querySelector('img').src=URL.createObjectURL(f);pv.querySelector('.rm').onclick=function(){window.__logo=null;input.value='';pv.classList.remove('show');pv.innerHTML='';dz.style.display='';};}
+  function handle(f){window.__logo=f;var ext=(f.name.split('.').pop()||'').toUpperCase();pv.innerHTML=(f.type.indexOf('image/')===0?'<img alt="">':'<div class="pico">'+ext+'</div>')+'<div class="pm2"><b>'+f.name+'</b><span>'+fmt(f.size)+' · '+(window.__lang==='en'?'ready':'bereit')+'</span></div><span class="rm">×</span>';pv.classList.add('show');dz.style.display='none';if(f.type.indexOf('image/')===0)pv.querySelector('img').src=URL.createObjectURL(f);pv.querySelector('.rm').onclick=function(){window.__logo=null;input.value='';pv.classList.remove('show');pv.innerHTML='';dz.style.display='';};}
+})();
+
+/* ---------- i18n (DE/EN) ---------- */
+(function(){
+  var sw=document.querySelector('.langsw'); if(!sw) return;
+  function apply(lang){
+    document.querySelectorAll('[data-en]').forEach(function(el){
+      var en=el.getAttribute('data-en'),bt=el.querySelector('.btn__t');
+      if(bt){
+        if(el.__de===undefined) el.__de=bt.children[0].innerHTML;
+        var t=lang==='en'?en:el.__de;
+        [].forEach.call(bt.children,function(s){s.innerHTML=t;});
+      }else{
+        if(el.__de===undefined) el.__de=el.innerHTML;
+        el.innerHTML=lang==='en'?en:el.__de;
+      }
+    });
+    [['data-en-ph','placeholder','__dp'],['data-en-alt','alt','__da'],['data-en-aria','aria-label','__dr']].forEach(function(m){
+      document.querySelectorAll('['+m[0]+']').forEach(function(el){
+        if(el[m[2]]===undefined) el[m[2]]=el.getAttribute(m[1])||'';
+        el.setAttribute(m[1], lang==='en'?el.getAttribute(m[0]):el[m[2]]);
+      });
+    });
+    document.documentElement.lang=lang;
+    window.__lang=lang;
+    sw.querySelectorAll('.langsw__btn').forEach(function(b){b.classList.toggle('is-on',b.dataset.lang===lang);});
+    try{localStorage.setItem('sc_lang',lang);}catch(e){}
+    document.dispatchEvent(new CustomEvent('langchange',{detail:lang}));
+  }
+  window.__applyLang=apply;
+  sw.querySelectorAll('.langsw__btn').forEach(function(b){b.addEventListener('click',function(){apply(b.dataset.lang);});});
+  var saved='de'; try{saved=localStorage.getItem('sc_lang')||'de';}catch(e){}
+  window.__lang=saved;
+  if(saved==='en') apply('en');
 })();
 </script>
 </body>
