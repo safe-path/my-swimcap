@@ -403,6 +403,12 @@ section{position:relative}
 .footer__bottom{position:relative;z-index:1;max-width:var(--maxw);margin:56px auto 0;padding-top:24px;border-top:1px solid var(--paper-14);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--paper-55)}
 .footer__legal{flex:none;white-space:nowrap}
 .footer__legal a{display:inline;margin:0;color:inherit;transition:color .25s}.footer__legal a:hover{color:var(--parchment)}
+.footer__bottom .rd-credit{display:inline-flex;align-items:center;gap:8px;color:var(--paper-55);transition:color .25s;white-space:nowrap}
+.footer__bottom .rd-credit:hover{color:var(--parchment)}
+.rd-credit__logo{width:21px;height:21px;flex:none;fill:currentColor;animation:rdSpin 10s linear infinite}
+@keyframes rdSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.rd-credit__logo{animation:none}}
+@media(max-width:680px){.footer__bottom{justify-content:center;text-align:center}}
 
 /* ===================== MODAL (Anfrage) ===================== */
 .modal{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(20,19,18,.55);backdrop-filter:blur(7px)}
@@ -727,7 +733,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
     <div><h4 data-en="Request">Anfrage</h4><a href="#" data-open-modal data-en="Order swim caps">Badekappen bestellen</a><a href="#" data-open-modal data-en="Request a quote">Angebot anfordern</a><a href="mailto:hallo@my-swimcap.de">hallo@my-swimcap.de</a></div>
     <div><h4>Teamfreaks</h4><a href="https://teamfreaks.de" target="_blank" rel="noopener">teamfreaks.de</a><a href="https://teamfreaks.de" target="_blank" rel="noopener" data-en="Club shops">Vereinsshops</a><a href="https://sockfab.de" target="_blank" rel="noopener">Sockfab</a></div>
   </div>
-  <div class="footer__bottom"><span data-en="© 2026 MySwimcap · a service by Teamfreaks · Elsterstraße 65 · 04109 Leipzig">© 2026 MySwimcap · ein Service von Teamfreaks · Elsterstraße 65 · 04109 Leipzig</span><span class="footer__legal"><a href="#" data-en="Imprint">Impressum</a> · <a href="#" data-en="Privacy">Datenschutz</a> · <a href="#" data-en="Terms">AGB</a></span></div>
+  <div class="footer__bottom"><span data-en="© 2026 MySwimcap · a service by Teamfreaks · Elsterstraße 65 · 04109 Leipzig">© 2026 MySwimcap · ein Service von Teamfreaks · Elsterstraße 65 · 04109 Leipzig</span><span class="footer__legal"><a href="#" data-en="Imprint">Impressum</a> · <a href="#" data-en="Privacy">Datenschutz</a> · <a href="#" data-en="Terms">AGB</a></span><a class="rd-credit" href="https://www.rohmberger.com" target="_blank" rel="noopener" aria-label="Designed by Rohmberger Design"><svg class="rd-credit__logo" viewBox="0 0 583.72 583.72" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M291.86,574.72c-155.97,0-282.86-126.89-282.86-282.86S135.89,9,291.86,9s282.86,126.89,282.86,282.86-126.89,282.86-282.86,282.86ZM291.86,42.4c-137.55,0-249.46,111.91-249.46,249.46s111.91,249.46,249.46,249.46,249.46-111.91,249.46-249.46S429.41,42.4,291.86,42.4Z"/><path d="M393.07,449.79c5.12,9.5-.73,19.73-12.06,19.73h-41.66c-3.65,0-6.94-1.83-8.4-5.12l-38-73.45c-.73-1.1-1.83-1.83-2.92-1.83h-14.62c-6.58,0-11.33,4.75-11.33,11.33v57.74c0,6.58-4.75,11.33-11.33,11.33h-40.93c-6.58,0-11.33-4.75-11.33-11.33v-233.14c0-6.58,4.75-11.33,11.33-11.33h80.03c65.05,0,91.36,27.77,91.36,87.7,0,33.99-8.41,57.74-27.77,71.62-1.46,1.1-1.83,2.92-1.1,4.75l38.73,71.99ZM275.4,276.58c-6.58,0-11.33,4.75-11.33,11.33v27.04c0,6.58,4.75,11.33,11.33,11.33h18.64c17.54,0,26.31-2.19,26.31-24.85s-8.77-24.85-26.31-24.85h-18.64Z"/><path d="M396.38,126.09c0,3.63-2.46,6.8-5.98,7.69l-177.59,45.25c-6.07,2-12.31-2.51-12.31-8.9v-27.15c0-5.32,3.81-9.87,9.05-10.8l180.33-19.36c3.48-.37,6.51,2.35,6.51,5.85v7.41Z"/></svg><span>Designed by Rohmberger Design</span></a></div>
 </footer>
 
 <!-- ===================== MODAL (Anfrage) ===================== -->
