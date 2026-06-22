@@ -898,7 +898,7 @@ document.querySelectorAll('.q button').forEach(function(btn){
   document.addEventListener('langchange',function(){lab.textContent=WT().labels[cur];setNext();});
   prev.onclick=function(){if(cur>0){cur--;render();}};
   next.onclick=function(){if(next.disabled||!validStep(cur))return;if(cur<steps.length-1){cur++;render();}else submit();};
-  function submit(){var data=Object.fromEntries(new FormData(form).entries());form.querySelectorAll('[data-group]').forEach(function(g){var s=g.querySelector('.sel');data[g.dataset.group]=s?s.dataset.val:'';});data.logo=window.__logo?window.__logo.name:(window.__lang==='en'?'(none)':'(keins)');console.log('swimcap Anfrage:',data);steps.forEach(function(s){s.classList.remove('active');});fnav.style.display='none';meta.style.display='none';fill.style.width='100%';thanks.classList.add('show');}
+  function submit(){var data=Object.fromEntries(new FormData(form).entries());form.querySelectorAll('[data-group]').forEach(function(g){var s=g.querySelector('.sel');data[g.dataset.group]=s?s.dataset.val:'';});data.logo=window.__logo?window.__logo.name:(window.__lang==='en'?'(none)':'(keins)');data.sprache=window.__lang||'de';try{fetch('https://hook.eu2.make.com/4bwqb1defy559ktpwosj9u11kx3x7x6m',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}steps.forEach(function(s){s.classList.remove('active');});fnav.style.display='none';meta.style.display='none';fill.style.width='100%';thanks.classList.add('show');}
   render();
   form.addEventListener('input',updateNext);
   form.addEventListener('change',updateNext);
