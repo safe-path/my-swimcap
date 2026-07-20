@@ -125,9 +125,11 @@
      Hero konzept-treu (dunkel, zentriert, Overlays) · Sticky-Ablauf
      Anfrage als Modal · Ein Service der Teamfreaks
      ============================================================ -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+<!-- IBM Plex lokal gehostet — keine Verbindung zu Google (DSGVO + Performance) -->
+<link rel="preload" href="/fonts/ibm-plex-serif-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/ibm-plex-serif-400-italic-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/ibm-plex-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="/fonts/fonts.css" />
 
 <style>
 /* ===================== TOKENS ===================== */
@@ -885,8 +887,8 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="/js/gsap.min.js"></script>
+<script src="/js/ScrollTrigger.min.js"></script>
 <script>
 /* ---------- Nav scroll state ---------- */
 var nav=document.getElementById('nav');
