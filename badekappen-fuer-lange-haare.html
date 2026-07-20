@@ -8,7 +8,6 @@
 <link rel="canonical" href="https://my-swimcap.de/badekappen-fuer-lange-haare" />
 <link rel="icon" href="/Bilder/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="/Bilder/favicon.svg" />
-
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="MySwimcap" />
 <meta property="og:locale" content="de_DE" />
@@ -19,13 +18,12 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Badekappe für lange Haare – welche passt wirklich?" />
 <meta name="twitter:image" content="https://my-swimcap.de/Bilder/og-image.jpg" />
-
 <!-- IBM Plex lokal gehostet — keine Verbindung zu Google (DSGVO + Performance) -->
 <link rel="preload" href="/fonts/ibm-plex-serif-400-latin.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="/fonts/ibm-plex-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="/fonts/fonts.css" />
-<link rel="stylesheet" href="/assets/page.css" />
-
+<!-- dasselbe Stylesheet wie die Startseite -> identische Komponenten -->
+<link rel="stylesheet" href="/assets/site.css" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -33,17 +31,31 @@
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://my-swimcap.de/" },
-        { "@type": "ListItem", "position": 2, "name": "Badekappen für lange Haare", "item": "https://my-swimcap.de/badekappen-fuer-lange-haare" }
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Startseite",
+          "item": "https://my-swimcap.de/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Badekappen für lange Haare",
+          "item": "https://my-swimcap.de/badekappen-fuer-lange-haare"
+        }
       ]
     },
     {
       "@type": "Product",
       "name": "Langhaar-Badekappe, bedruckt",
-      "description": "Badekappe mit extra Volumen für lange Haare, individuell mit Vereinslogo bedruckt. Siebdruck, bis zu 6 Farben pro Seite, Produktion in Europa.",
       "image": "https://my-swimcap.de/Bilder/hero-langhaar.webp",
       "material": "Silikon",
-      "brand": { "@type": "Organization", "name": "MySwimcap", "@id": "https://my-swimcap.de/#organisation" },
+      "brand": {
+        "@type": "Organization",
+        "name": "MySwimcap",
+        "@id": "https://my-swimcap.de/#organisation"
+      },
+      "description": "Badekappe mit extra Volumen für lange Haare, individuell mit Vereinslogo bedruckt. Siebdruck, bis zu 6 Farben pro Seite, Produktion in Europa.",
       "offers": {
         "@type": "AggregateOffer",
         "priceCurrency": "EUR",
@@ -51,8 +63,15 @@
         "highPrice": "12.00",
         "availability": "https://schema.org/InStock",
         "url": "https://my-swimcap.de/badekappen-fuer-lange-haare",
-        "eligibleQuantity": { "@type": "QuantitativeValue", "minValue": 50, "unitCode": "C62" },
-        "seller": { "@type": "Organization", "name": "ssM swimsportMedia GmbH" }
+        "eligibleQuantity": {
+          "@type": "QuantitativeValue",
+          "minValue": 50,
+          "unitCode": "C62"
+        },
+        "seller": {
+          "@type": "Organization",
+          "name": "ssM swimsportMedia GmbH"
+        }
       }
     },
     {
@@ -62,32 +81,50 @@
         {
           "@type": "Question",
           "name": "Welche Badekappe ist die beste für lange Haare?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Eine Langhaar-Kappe aus Silikon. Sie hat das Extra-Volumen schon eingebaut, statt es aus dem Material herauszudehnen – der Zopf bekommt Platz, der Haaransatz Ruhe. Normale Silikonkappen sind für viel Haar schlicht zu knapp geschnitten. Stoffkappen tragen sich angenehm, halten aber kaum Wasser ab." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Eine Langhaar-Kappe aus Silikon. Sie hat das Extra-Volumen schon eingebaut, statt es aus dem Material herauszudehnen – der Zopf bekommt Platz, der Haaransatz Ruhe. Normale Silikonkappen sind für viel Haar schlicht zu knapp geschnitten. Stoffkappen tragen sich angenehm, halten aber kaum Wasser ab."
+          }
         },
         {
           "@type": "Question",
           "name": "Bleiben die Haare unter der Badekappe trocken?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Ganz trocken nicht – dafür ist keine Badekappe gebaut. Eine gut sitzende Silikonkappe hält aber den Großteil des Wassers draußen und damit auch das meiste Chlor. Ein Trick aus dem Vereinsalltag: Haare vorher nass machen und etwas Conditioner einarbeiten. Gesättigtes Haar nimmt deutlich weniger Chlorwasser auf." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ganz trocken nicht – dafür ist keine Badekappe gebaut. Eine gut sitzende Silikonkappe hält aber den Großteil des Wassers draußen und damit auch das meiste Chlor. Ein Trick aus dem Vereinsalltag: Haare vorher nass machen und etwas Conditioner einarbeiten. Gesättigtes Haar nimmt deutlich weniger Chlorwasser auf."
+          }
         },
         {
           "@type": "Question",
           "name": "Wie setze ich eine Badekappe bei langen Haaren richtig auf?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Haare anfeuchten, flach zusammenbinden, tief im Nacken fixieren. Dann die Kappe mit beiden Händen aufspannen, an der Stirn ansetzen und nach hinten überziehen – nicht von oben aufstülpen, dabei verheddern sich Strähnen. Zum Schluss die Ränder an Ohren und Nacken glattstreichen." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Haare anfeuchten, flach zusammenbinden, tief im Nacken fixieren. Dann die Kappe mit beiden Händen aufspannen, an der Stirn ansetzen und nach hinten überziehen – nicht von oben aufstülpen, dabei verheddern sich Strähnen. Zum Schluss die Ränder an Ohren und Nacken glattstreichen."
+          }
         },
         {
           "@type": "Question",
           "name": "Warum rutscht meine Badekappe ständig ab?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Meistens sitzt der Dutt zu hoch. Er wirkt dann wie ein Hebel und schiebt die Kappe bei jedem Abstoßen ein Stück nach vorn. Der zweite Klassiker ist eine zu kleine Kappe: Material, das schon gedehnt ist, hat keine Reserve mehr. Beides erledigt sich mit einer Langhaar-Kappe." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Meistens sitzt der Dutt zu hoch. Er wirkt dann wie ein Hebel und schiebt die Kappe bei jedem Abstoßen ein Stück nach vorn. Der zweite Klassiker ist eine zu kleine Kappe: Material, das schon gedehnt ist, hat keine Reserve mehr. Beides erledigt sich mit einer Langhaar-Kappe."
+          }
         },
         {
           "@type": "Question",
           "name": "Zieht eine Badekappe an den Haaren?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Silikon deutlich weniger als Latex, die Oberfläche ist glatter. Gezogen wird ohnehin meist beim Ausziehen, nicht beim Schwimmen. Wer die Kappe von der Stirn nach hinten abrollt, statt sie ruckartig hochzureißen, verliert kaum Haare." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Silikon deutlich weniger als Latex, die Oberfläche ist glatter. Gezogen wird ohnehin meist beim Ausziehen, nicht beim Schwimmen. Wer die Kappe von der Stirn nach hinten abrollt, statt sie ruckartig hochzureißen, verliert kaum Haare."
+          }
         },
         {
           "@type": "Question",
           "name": "Gibt es Langhaar-Badekappen auch bedruckt für Vereine?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Ja, genau wie jedes andere Modell – mit Vereinslogo, Schriftzug, bis zu sechs Farben pro Seite, ab 50 Stück. Und ihr müsst euch nicht festlegen: In einer Bestellung könnt ihr Langhaar- und Standardkappen mischen, das Druckbild bleibt identisch." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ja, genau wie jedes andere Modell – mit Vereinslogo, Schriftzug, bis zu sechs Farben pro Seite, ab 50 Stück. Und ihr müsst euch nicht festlegen: In einer Bestellung könnt ihr Langhaar- und Standardkappen mischen, das Druckbild bleibt identisch."
+          }
         }
       ]
     }
@@ -95,269 +132,199 @@
 }
 </script>
 </head>
-<body>
-
-<header class="nav"><div class="wrap">
-  <a class="brand" href="/" aria-label="MySwimcap – Startseite">
-    <img src="/Bilder/logo-mark.svg" alt="" width="31" height="31" /><b>MySwimcap</b>
-  </a>
-  <nav class="nav__links" aria-label="Hauptnavigation">
-    <a href="/#modelle">Modelle</a>
-    <a href="/#ablauf">Ablauf</a>
-    <a href="/badekappen-mit-namen">Mit Namen</a>
-    <a href="/#faq">FAQ</a>
+<body id="top">
+<header class="nav" id="nav">
+  <a class="brand" href="/" aria-label="MySwimcap – Startseite"><svg class="brand__logo" role="img" aria-label="MySwimcap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 556.62 128.31"><g><polygon points="187.71 68.56 169.4 40.04 161 40.04 161 92.07 172.57 92.07 172.57 63.26 183.84 80.86 191.5 80.86 202.78 63.26 202.78 92.07 214.35 92.07 214.35 40.04 205.95 40.04 187.71 68.56"/><polygon points="243.68 56.25 236.44 77.97 229.31 56.25 217.08 56.25 230.72 89.61 222.61 107.17 234.25 107.17 240.59 92.29 255.91 56.25 243.68 56.25"/><path d="M289.77,65.54c-1.43-1.23-3.01-2.22-4.75-2.98-1.75-.76-3.49-1.44-5.23-2.03-1.74-.59-3.34-1.18-4.79-1.77-1.45-.59-2.62-1.29-3.5-2.1-.88-.81-1.33-1.85-1.33-3.13,0-1.42.59-2.52,1.77-3.28,1.18-.76,2.77-1.14,4.79-1.14s3.75.39,5.34,1.18c1.6.79,3.18,1.99,4.75,3.61l7.59-7.59c-1.97-2.16-4.45-3.88-7.44-5.16-3-1.28-6.34-1.92-10.02-1.92s-6.71.6-9.51,1.81c-2.8,1.2-4.97,2.96-6.52,5.27-1.55,2.31-2.32,5.08-2.32,8.33,0,2.6.44,4.79,1.33,6.56.88,1.77,2.05,3.22,3.5,4.35,1.45,1.13,3.04,2.09,4.79,2.87,1.74.79,3.48,1.46,5.2,2.03,1.72.57,3.32,1.17,4.79,1.81,1.47.64,2.64,1.4,3.5,2.28.86.88,1.29,2.02,1.29,3.39,0,1.57-.68,2.81-2.03,3.72-1.35.91-3.23,1.36-5.64,1.36-2.7,0-5.07-.53-7.11-1.58-2.04-1.06-3.89-2.54-5.56-4.46l-7.52,7.52c2.5,2.85,5.29,4.96,8.36,6.34,3.07,1.38,6.77,2.06,11.09,2.06,6.29,0,11.2-1.41,14.74-4.24,3.54-2.82,5.31-6.72,5.31-11.68,0-2.75-.46-5.03-1.36-6.85-.91-1.82-2.08-3.34-3.5-4.57Z"/><polygon points="334.21 76.88 327.5 56.25 318.22 56.25 311.55 76.95 305.4 56.25 294.27 56.25 306.65 92.07 315.93 92.07 322.92 71.47 329.79 92.07 339.07 92.07 351.53 56.25 340.4 56.25 334.21 76.88"/><rect x="353.57" y="56.25" width="11.35" height="35.81"/><path d="M359.24,38.94c-1.72,0-3.17.59-4.35,1.77-1.18,1.18-1.77,2.65-1.77,4.42s.59,3.19,1.77,4.42c1.18,1.23,2.63,1.84,4.35,1.84,1.82,0,3.28-.61,4.38-1.84,1.11-1.23,1.66-2.7,1.66-4.42s-.55-3.24-1.66-4.42c-1.1-1.18-2.57-1.77-4.38-1.77Z"/><path d="M421.18,57.25c-2.16-1.15-4.59-1.73-7.29-1.73s-5.33.59-7.59,1.77c-1.52.79-2.81,1.84-3.91,3.1-1.03-1.29-2.27-2.35-3.71-3.18-1.99-1.13-4.21-1.69-6.67-1.69-2.7,0-5.1.55-7.18,1.66-.94.49-1.77,1.1-2.54,1.78v-2.7h-11.35v35.81h11.35v-20.93c0-1.18.26-2.19.77-3.02.52-.83,1.22-1.48,2.1-1.95.88-.47,1.89-.7,3.02-.7,1.62,0,2.98.5,4.09,1.51,1.11,1.01,1.66,2.4,1.66,4.16v20.93h11.35v-20.93c0-1.18.25-2.19.74-3.02.49-.83,1.19-1.48,2.1-1.95.91-.47,1.9-.7,2.98-.7,1.57,0,2.91.5,4.02,1.51,1.11,1.01,1.66,2.4,1.66,4.16v20.93h11.35v-22.25c0-3-.61-5.55-1.84-7.66-1.23-2.11-2.92-3.75-5.08-4.9Z"/><path d="M455.17,81.82c-1.16.49-2.47.74-3.94.74s-2.92-.36-4.2-1.07c-1.28-.71-2.27-1.71-2.98-2.98-.71-1.28-1.07-2.75-1.07-4.42s.36-3.06,1.07-4.31c.71-1.25,1.69-2.23,2.95-2.95,1.25-.71,2.66-1.07,4.24-1.07,1.42,0,2.69.22,3.79.66,1.11.44,2.07,1.13,2.91,2.06l7.3-7.37c-1.82-1.87-3.89-3.28-6.23-4.24-2.33-.96-4.93-1.44-7.77-1.44-3.73,0-7.1.81-10.1,2.43-3,1.62-5.36,3.84-7.07,6.67-1.72,2.83-2.58,6.03-2.58,9.62s.85,6.73,2.54,9.58c1.7,2.85,4.04,5.08,7.04,6.71,3,1.62,6.36,2.43,10.09,2.43,2.95,0,5.59-.5,7.92-1.51,2.33-1.01,4.46-2.49,6.37-4.46l-7.29-7.22c-.84.93-1.83,1.65-2.98,2.14Z"/><path d="M492.25,59.24c-.97-.92-2.08-1.71-3.35-2.32-1.94-.93-4.12-1.4-6.52-1.4-3.29,0-6.23.8-8.81,2.4-2.58,1.6-4.62,3.81-6.12,6.63-1.5,2.83-2.25,6.03-2.25,9.62s.75,6.77,2.25,9.54c1.5,2.78,3.55,4.99,6.15,6.63,2.6,1.65,5.53,2.47,8.77,2.47,2.46,0,4.65-.47,6.6-1.4,1.25-.6,2.33-1.37,3.28-2.27v2.93h11.13v-35.81h-11.13v2.99ZM484.73,82.56c-1.52,0-2.89-.36-4.09-1.07-1.2-.71-2.16-1.71-2.87-2.98-.71-1.28-1.07-2.73-1.07-4.35s.36-3.07,1.07-4.35c.71-1.28,1.67-2.27,2.87-2.98,1.2-.71,2.57-1.07,4.09-1.07s2.97.36,4.2,1.07c1.23.71,2.16,1.7,2.8,2.95.64,1.25.96,2.69.96,4.31,0,2.51-.73,4.54-2.17,6.12-1.45,1.57-3.38,2.36-5.78,2.36Z"/><path d="M545.34,64.58c-1.52-2.8-3.6-5.01-6.23-6.63s-5.61-2.43-8.95-2.43c-2.41,0-4.62.49-6.63,1.47-1.03.5-1.96,1.1-2.8,1.79v-2.53h-11.35v50.92h11.2v-17.56c.85.69,1.81,1.3,2.87,1.79,2.01.93,4.25,1.4,6.71,1.4,3.34,0,6.34-.82,8.99-2.47,2.65-1.65,4.73-3.86,6.23-6.63,1.5-2.77,2.25-5.96,2.25-9.54s-.76-6.78-2.28-9.58ZM535.06,78.51c-.71,1.28-1.67,2.27-2.87,2.98-1.2.71-2.59,1.07-4.16,1.07s-2.89-.36-4.09-1.07c-1.2-.71-2.15-1.71-2.84-2.98-.69-1.28-1.03-2.73-1.03-4.35s.34-3.07,1.03-4.35c.69-1.28,1.63-2.27,2.84-2.98,1.2-.71,2.59-1.07,4.16-1.07s2.95.36,4.13,1.07c1.18.71,2.12,1.71,2.84,2.98.71,1.28,1.07,2.73,1.07,4.35s-.36,3.07-1.07,4.35Z"/></g><g><g id="Ebene_1-2" data-name="Ebene 1-2"><path d="M72.36,20.67c14.23,0,27.23,5.17,36.6,14.56,9.06,9.07,14.03,21.61,14,35.3-.02,7.76-2.61,16.05-7.94,25.35-.76,1.18-2,3.55-2.54,8.42-3.24-.38-6.32-.57-9.29-.57-6.98,0-12.38,1.01-17.61,1.99-4.55.85-8.85,1.66-14.6,1.89-.58.02-1.16.04-1.72.04-4.44,0-7.61-.71-11.61-1.61-4.65-1.04-9.92-2.23-17.26-2.23-3.02,0-6.18.2-9.56.61-.5-5.86-1.83-7.89-2.58-9.04-5.6-8.58-7.59-15.07-7.59-24.82,0-13.45,5.36-26,15.09-35.36,9.75-9.37,22.75-14.53,36.6-14.53M72.36,9c-34.69,0-63.36,26.91-63.36,61.55,0,12.63,3.06,21.36,9.49,31.2.98,1.5.91,8.77.8,11.42-.1,2.35,1.79,4.25,4.04,4.25.27,0,.54-.03.82-.08,6.7-1.37,11.91-1.87,16.25-1.87,11.99,0,17.3,3.84,28.87,3.84.71,0,1.44-.01,2.19-.04,13.48-.54,20.19-3.87,31.74-3.87,4.39,0,9.48.48,15.91,1.78.28.06.55.08.83.08,2.28,0,4.21-1.91,4.07-4.29-.15-2.4-.18-9.33.92-10.9,7.51-12.98,9.7-23.27,9.71-31.51.07-35.92-27.58-61.55-62.27-61.55h0Z"/></g><path class="logo-smile" d="M71.82,95.55c-14.55,0-27.1-9.86-30.53-23.98l11.34-2.75c2.15,8.87,10.04,15.07,19.19,15.07s17.04-6.2,19.19-15.07l11.34,2.76c-3.43,14.12-15.99,23.98-30.53,23.98Z"/></g></svg><span class="by">by Teamfreaks</span></a>
+  <nav class="nav__links">
+    <a href="/#modelle" data-en="Models">Modelle</a><a href="/#ablauf" data-en="Process">Ablauf</a><a href="/#vereine" data-en="Clubs">Vereine</a><a href="/#faq" data-en="FAQ">FAQ</a>
   </nav>
-  <a class="btn btn--dark" href="/#anfrage">Angebot anfragen</a>
-</div></header>
-
-<main>
-
-<section class="hero hero--low">
-  <div class="hero__bg">
-    <img src="/Bilder/hero-langhaar.webp" alt="Schwimmerin von hinten mit bedruckter Vereins-Badekappe, lange Haare im Nacken" width="1800" height="1005" fetchpriority="high" decoding="async" />
+  <div class="nav__right">
+    <button class="btn btn--navcta" data-open-modal data-en="Order swim caps"><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span></button>
+    <button class="nav__burger" id="burger" aria-label="Menü" data-en-aria="Menu"><span></span><span></span></button>
   </div>
+</header>
+<div class="mmenu" id="mmenu">
+  <a href="/#modelle" data-en="Models">Modelle</a><a href="/#ablauf" data-en="Process">Ablauf</a><a href="/#vereine" data-en="Clubs">Vereine</a><a href="/#faq" data-en="FAQ">FAQ</a>
+  <button class="btn btn--primary btn--lg" data-open-modal data-en="Order swim caps"><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span></button>
+</div>
+<main>
+<section class="phero phero--low">
+  <div class="phero__bg"><img src="/Bilder/hero-langhaar.webp" alt="Schwimmerin von hinten mit bedruckter Vereins-Badekappe, lange Haare im Nacken" width="1800" height="1005" fetchpriority="high" decoding="async" /></div>
   <div class="wrap">
-    <span class="eyebrow">Ratgeber</span>
-    <h1>Badekappe für lange Haare – welche passt <em>wirklich</em>?</h1>
-    <p class="lead">Zu eng, rutscht weg, zieht beim Ausziehen. Bei langen Haaren scheitern die meisten Kappen nicht am Material, sondern am Schnitt. Was wirklich hilft – und woran du eine passende Kappe erkennst.</p>
-    <div class="hero__meta">
-      <span class="tag">Vier Modelle im Vergleich</span>
-      <span class="tag">Richtig aufsetzen</span>
-      <span class="tag">Für Vereine ab 50 Stück</span>
-    </div>
-    <div class="cta-row">
-      <a class="btn btn--light" href="#vergleich">Zum Vergleich</a>
-      <a class="btn btn--ghost" href="#vereine">Für Teams &amp; Vereine</a>
+    <span class="eyebrow reveal">Ratgeber</span>
+    <h1 class="reveal">Badekappe für lange Haare – welche passt <em>wirklich</em>?</h1>
+    <p class="lead reveal">Zu eng, rutscht weg, zieht beim Ausziehen. Bei langen Haaren scheitern die meisten Kappen nicht am Material, sondern am Schnitt. Was wirklich hilft – und woran du eine passende Kappe erkennst.</p>
+    <div class="phero__tags reveal"><span>Vier Modelle im Vergleich</span><span>Richtig aufsetzen</span><span>Für Vereine ab 50 Stück</span></div>
+    <div class="phero__cta reveal">
+      <button class="btn btn--light btn--lg" data-open-modal><span class="btn__t"><span>Angebot anfragen</span><span>Angebot anfragen</span></span></button>
+      <a class="btn btn--lightghost btn--lg" href="#vergleich"><span class="btn__t"><span>So läuft&rsquo;s ab</span><span>So läuft&rsquo;s ab</span></span></a>
     </div>
   </div>
 </section>
 
 <section class="sec">
-  <div class="wrap wrap--narrow">
-    <div class="sec__head">
+  <div class="wrap">
+    <div class="sec-head reveal">
       <span class="eyebrow">Das Problem</span>
-      <h2>Warum die meisten Kappen bei langen Haaren <em>aufgeben</em>.</h2>
+      <h2 style="margin-top:16px">Warum die meisten Kappen bei langen Haaren <em>aufgeben</em>.</h2>
     </div>
-    <p>Standardkappen sind für einen Kopf gerechnet – nicht für einen Kopf plus Zopf. Genau da liegt das Problem: Das zusätzliche Volumen muss irgendwo hin. Findet es keinen Platz, macht sich das auf drei Arten bemerkbar.</p>
-    <p><strong>Sie sitzt zu stramm.</strong> Das Silikon ist schon am Anschlag gedehnt, bevor der Zopf überhaupt drin ist. Nach zweitausend Metern spürt man jeden Millimeter davon am Haaransatz.</p>
-    <p><strong>Sie rutscht.</strong> Ein Dutt weit oben am Hinterkopf wirkt wie ein Hebel: Beim Abstoßen von der Wand schiebt er die Kappe Richtung Stirn. Spätestens nach der zweiten Wende sitzt sie schief.</p>
-    <p><strong>Sie zieht.</strong> Gedehntes Material greift beim Abziehen mit. Wer nach jedem Training Haare in der Kappe findet, hat meist keine schlechte Kappe, sondern die falsche Größe.</p>
-    <p>Eine Nummer größer löst das übrigens nicht – die sitzt am Kopf dann zu locker und läuft voll. Was hilft, ist Volumen an der richtigen Stelle: hinten, wo das Haar auch tatsächlich liegt.</p>
+    <div class="ptext reveal">
+      <p>Standardkappen sind für einen Kopf gerechnet – nicht für einen Kopf plus Zopf. Genau da liegt das Problem: Das zusätzliche Volumen muss irgendwo hin. Findet es keinen Platz, macht sich das auf drei Arten bemerkbar.</p>
+      <p><strong>Sie sitzt zu stramm.</strong> Das Silikon ist schon am Anschlag gedehnt, bevor der Zopf überhaupt drin ist. Nach zweitausend Metern spürt man jeden Millimeter davon am Haaransatz.</p>
+      <p><strong>Sie rutscht.</strong> Ein Dutt weit oben am Hinterkopf wirkt wie ein Hebel: Beim Abstoßen von der Wand schiebt er die Kappe Richtung Stirn. Spätestens nach der zweiten Wende sitzt sie schief.</p>
+      <p><strong>Sie zieht.</strong> Gedehntes Material greift beim Abziehen mit. Wer nach jedem Training Haare in der Kappe findet, hat meist keine schlechte Kappe, sondern die falsche Größe.</p>
+      <p>Eine Nummer größer löst das übrigens nicht – die sitzt am Kopf dann zu locker und läuft voll. Was hilft, ist Volumen an der richtigen Stelle: hinten, wo das Haar auch tatsächlich liegt.</p>
+    </div>
   </div>
 </section>
 
 <section class="sec sec--linen" id="vergleich">
   <div class="wrap">
-    <div class="sec__head">
+    <div class="sec-head reveal">
       <span class="eyebrow">Vergleich</span>
-      <h2>Vier Modelle, ehrlich <em>eingeordnet</em>.</h2>
-      <p class="lead">Wir verkaufen alle vier. Deshalb steht hier auch, wo sie jeweils an ihre Grenze kommen.</p>
+      <h2 style="margin-top:16px">Vier Modelle, ehrlich <em>eingeordnet</em>.</h2>
+      <p class="lead" style="margin-top:14px">Wir verkaufen alle vier. Deshalb steht hier auch, wo sie jeweils an ihre Grenze kommen.</p>
     </div>
-    <div class="tablewrap">
-      <table>
-        <thead>
-          <tr><th scope="col">Modell</th><th scope="col">Für lange Haare</th><th scope="col">Spricht dafür</th><th scope="col">Spricht dagegen</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Langhaar-Badekappe</strong></td>
-            <td>Erste Wahl</td>
-            <td>Volumen sitzt schon im Schnitt, nicht in der Dehnung. Platz für Zopf und Dutt, Ruhe am Haaransatz</td>
-            <td>Bei kurzem Haar bleibt Luft in der Kappe</td>
-          </tr>
-          <tr>
-            <td><strong>3D-Badekappe</strong></td>
-            <td>Funktioniert gut</td>
-            <td>Vorgeformt, legt sich faltenfrei an, überzeugende Passform bei mittellangem Haar</td>
-            <td>Bei sehr viel Haar reicht das Volumen nicht mehr</td>
-          </tr>
-          <tr>
-            <td><strong>Silikon Premium</strong></td>
-            <td>Kommt an Grenzen</td>
-            <td>Hält Wasser zuverlässig ab, langlebig, kräftige Druckfarben</td>
-            <td>Der Standardschnitt wird bei viel Haar schnell zu knapp</td>
-          </tr>
-          <tr>
-            <td><strong>Stoff (Lycra)</strong></td>
-            <td>Nur als Komfortlösung</td>
-            <td>Dünn, leicht, zieht praktisch nicht – angenehm bei empfindlicher Kopfhaut</td>
-            <td>Hält kaum Wasser ab und schützt die Haare entsprechend wenig</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="margin-top:16px;font-size:14.5px;color:var(--ink-55)">
-      Ein Trick, den man in Vereinen oft sieht: Stoffkappe direkt aufs Haar, Silikonkappe darüber. Das verbindet Tragekomfort und Wasserschutz – kostet allerdings zwei Kappen pro Person.
-    </p>
+    <div class="ptable reveal"><table>
+      <thead><tr><th scope="col">Modell</th><th scope="col">Für lange Haare</th><th scope="col">Spricht dafür</th><th scope="col">Spricht dagegen</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Langhaar-Badekappe</strong></td><td>Erste Wahl</td><td>Volumen sitzt schon im Schnitt, nicht in der Dehnung. Platz für Zopf und Dutt, Ruhe am Haaransatz</td><td>Bei kurzem Haar bleibt Luft in der Kappe</td></tr>
+        <tr><td><strong>3D-Badekappe</strong></td><td>Funktioniert gut</td><td>Vorgeformt, legt sich faltenfrei an, überzeugende Passform bei mittellangem Haar</td><td>Bei sehr viel Haar reicht das Volumen nicht mehr</td></tr>
+        <tr><td><strong>Silikon Premium</strong></td><td>Kommt an Grenzen</td><td>Hält Wasser zuverlässig ab, langlebig, kräftige Druckfarben</td><td>Der Standardschnitt wird bei viel Haar schnell zu knapp</td></tr>
+        <tr><td><strong>Stoff (Lycra)</strong></td><td>Nur als Komfortlösung</td><td>Dünn, leicht, zieht praktisch nicht – angenehm bei empfindlicher Kopfhaut</td><td>Hält kaum Wasser ab und schützt die Haare entsprechend wenig</td></tr>
+      </tbody></table></div>
+    <p class="pnote reveal">Ein Trick, den man in Vereinen oft sieht: Stoffkappe direkt aufs Haar, Silikonkappe darüber. Das verbindet Tragekomfort und Wasserschutz – kostet allerdings zwei Kappen pro Person.</p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <div class="sec__head">
+    <div class="sec-head reveal">
       <span class="eyebrow">Richtig aufsetzen</span>
-      <h2>Der Sitz entscheidet mehr als das <em>Modell</em>.</h2>
-      <p class="lead">Auch die richtige Kappe rutscht, wenn die Haare falsch liegen. Vier Handgriffe, die den Unterschied machen.</p>
+      <h2 style="margin-top:16px">Der Sitz entscheidet mehr als das <em>Modell</em>.</h2>
+      <p class="lead" style="margin-top:14px">Auch die richtige Kappe rutscht, wenn die Haare falsch liegen. Vier Handgriffe, die den Unterschied machen.</p>
     </div>
-    <div class="band">
+    <div class="bigband reveal" style="margin-top:34px">
       <img src="/Bilder/hero-aufsetzen.webp" alt="Schwimmerin zieht ihre bedruckte Vereins-Badekappe von vorn nach hinten über den Kopf" width="1800" height="1005" loading="lazy" decoding="async" />
     </div>
-    <div class="grid grid--2">
-      <div class="card">
-        <span class="card__n">01</span>
-        <h3>Haare anfeuchten</h3>
-        <p>Nasses Haar liegt flach und gleitet unter das Material, statt sich davor zu stauen. Ein Klecks Conditioner dazu – dann nimmt es später auch weniger Chlorwasser auf.</p>
-      </div>
-      <div class="card">
-        <span class="card__n">02</span>
-        <h3>Tief binden, nicht hoch</h3>
-        <p>Flacher Zopf oder Dutt, aber tief im Nacken. Weiter oben wird jede Frisur zum Hebel, der die Kappe nach vorn drückt. Das ist mit Abstand der häufigste Grund fürs Rutschen.</p>
-      </div>
-      <div class="card">
-        <span class="card__n">03</span>
-        <h3>Von der Stirn nach hinten</h3>
-        <p>Kappe mit beiden Händen aufspannen, an der Stirn ansetzen, nach hinten überziehen. Wer sie von oben aufstülpt, zieht sich Strähnen mit hinein.</p>
-      </div>
-      <div class="card">
-        <span class="card__n">04</span>
-        <h3>Ränder nachziehen</h3>
-        <p>Zum Schluss an Ohren und Nacken glattstreichen. Jede Falte ist eine Stelle, an der Wasser hineinläuft und die Kappe sich zu lösen beginnt.</p>
-      </div>
+    <div class="scards scards--2 reveal">
+      <div class="scard"><b>01</b><h3>Haare anfeuchten</h3><p>Nasses Haar liegt flach und gleitet unter das Material, statt sich davor zu stauen. Ein Klecks Conditioner dazu – dann nimmt es später auch weniger Chlorwasser auf.</p></div>
+      <div class="scard"><b>02</b><h3>Tief binden, nicht hoch</h3><p>Flacher Zopf oder Dutt, aber tief im Nacken. Weiter oben wird jede Frisur zum Hebel, der die Kappe nach vorn drückt. Das ist mit Abstand der häufigste Grund fürs Rutschen.</p></div>
+      <div class="scard"><b>03</b><h3>Von der Stirn nach hinten</h3><p>Kappe mit beiden Händen aufspannen, an der Stirn ansetzen, nach hinten überziehen. Wer sie von oben aufstülpt, zieht sich Strähnen mit hinein.</p></div>
+      <div class="scard"><b>04</b><h3>Ränder nachziehen</h3><p>Zum Schluss an Ohren und Nacken glattstreichen. Jede Falte ist eine Stelle, an der Wasser hineinläuft und die Kappe sich zu lösen beginnt.</p></div>
     </div>
   </div>
 </section>
 
-<section class="sec sec--linen" id="vereine">
+<section class="sec sec--dark" id="ablauf">
+  <div class="wrap proc">
+    <div class="rail">
+      <span class="eyebrow reveal" data-en="Process">Ablauf</span>
+      <h2 class="reveal" style="margin-top:16px" data-en="Into the <em>In vier Schritten ins <em>Becken</em>.</h2>
+      <div class="rail__track">
+        <div class="rail__bar"><div class="rail__fill" id="railFill"></div></div>
+        <ul class="rail__steps" id="railSteps">
+          <li>01 — Anfrage</li><li>02 — Kostenloses Design</li><li>03 — Freigabe &amp; Druck</li><li>04 — Lieferung</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pblocks" id="pblocks">
+      <div class="pb reveal"><div class="pic"><img src="/Bilder/step-1-anfrage.webp" alt="Online-Anfrage über Konfigurator" width="1800" height="1167" loading="lazy" decoding="async"></div><div class="pb__body"><div class="pb__n">01</div>
+<h3>Anfrage</h3>
+<p>Modell, ungefähre Stückzahl und euer Logo schicken – dauert keine drei Minuten. Langhaar- und Standardkappen könnt ihr mischen.</p>
+<div class="meta">~ heute</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="/Bilder/step-2-design.webp" alt="Designer setzt euer Logo auf die Kappe" width="1800" height="2235" loading="lazy" decoding="async"></div><div class="pb__body"><div class="pb__n">02</div>
+<h3>Kostenloses Design</h3>
+<p>Wir legen euer Logo auf die Kappe, bereiten den Druck auf und schicken euch einen Entwurf samt Angebot.</p>
+<div class="meta">1–2 Tage</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="/Bilder/step-3-druck.webp" alt="Siebdruck auf der Kappe in Europa" width="1800" height="2235" loading="lazy" decoding="async"></div><div class="pb__body"><div class="pb__n">03</div>
+<h3>Freigabe &amp; Druck</h3>
+<p>Ihr gebt frei, wir produzieren im Siebdruck in Europa. Erst nach eurem Go.</p>
+<div class="meta">Produktion</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="/Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton" width="1800" height="1450" loading="lazy" decoding="async"></div><div class="pb__body"><div class="pb__n">04</div>
+<h3>Lieferung</h3>
+<p>Fertig verpackt bei euch, inklusive Sendungsverfolgung. Express ist gegen Aufpreis möglich.</p>
+<div class="meta">4–5 Wochen</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--stone" id="faq">
   <div class="wrap">
-    <div class="sec__head">
-      <span class="eyebrow">Für Teams &amp; Vereine</span>
-      <h2>Langhaar-Kappen – mit eurem <em>Logo</em> drauf.</h2>
-      <p class="lead">In jeder Trainingsgruppe gibt es beides, kurze und lange Haare. Gut, dass ihr euch nicht für eine Passform entscheiden müsst.</p>
-    </div>
-    <div class="grid grid--3">
-      <div class="card">
-        <div class="pic"><img src="/Bilder/model-frauen.webp" alt="Langhaar-Badekappe mit extra Volumen" width="1800" height="2235" loading="lazy" decoding="async" /></div>
-        <h3>Modelle mischen</h3>
-        <p>Langhaar-Kappen für die, die sie brauchen, Silikon für alle anderen – in einer Bestellung, mit identischem Druckbild. Die Mindestmenge gilt für den Auftrag, nicht pro Modell.</p>
-      </div>
-      <div class="card">
-        <div class="pic"><img src="/Bilder/caps-rainbow.webp" alt="Bedruckte Badekappen in vielen Farben" width="1800" height="1450" loading="lazy" decoding="async" /></div>
-        <h3>Ab 50 Stück</h3>
-        <p>Bis zu sechs Farben pro Seite im Siebdruck, Vorder- und Rückseite bedruckbar. Produziert wird in Europa, geliefert in vier bis fünf Wochen.</p>
-      </div>
-      <div class="card">
-        <div class="pic"><img src="/Bilder/step-2-design.webp" alt="Designer setzt das Vereinslogo auf die Badekappe" width="1800" height="2235" loading="lazy" decoding="async" /></div>
-        <h3>Entwurf vorab, kostenlos</h3>
-        <p>Ihr schickt euer Logo, wir setzen es auf die Kappe und schicken das Ergebnis zurück – meist in ein, zwei Tagen. Gedruckt wird erst, wenn ihr Ja sagt.</p>
-      </div>
-    </div>
-    <div class="cta-row">
-      <a class="btn btn--dark" href="/#anfrage">Angebot anfragen →</a>
-      <a class="btn btn--outline" href="/badekappen-mit-namen">Auch mit Namen möglich</a>
-    </div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap wrap--narrow">
-    <div class="sec__head">
+    <div class="sec-head reveal">
       <span class="eyebrow">FAQ</span>
-      <h2>Häufige Fragen zu langen Haaren <em>unter</em> der Kappe.</h2>
+      <h2 style="margin-top:16px">Häufige Fragen zu langen Haaren <em>unter</em> der Kappe.</h2>
     </div>
-    <div class="faq">
-      <div class="q">
-        <button aria-expanded="false"><span>Welche Badekappe ist die beste für lange Haare?</span><span class="pm"></span></button>
-        <div class="a"><p>Eine Langhaar-Kappe aus Silikon. Sie hat das Extra-Volumen schon eingebaut, statt es aus dem Material herauszudehnen – der Zopf bekommt Platz, der Haaransatz Ruhe. Normale Silikonkappen sind für viel Haar schlicht zu knapp geschnitten. Stoffkappen tragen sich angenehm, halten aber kaum Wasser ab.</p></div>
-      </div>
-      <div class="q">
-        <button aria-expanded="false"><span>Bleiben die Haare unter der Badekappe trocken?</span><span class="pm"></span></button>
-        <div class="a"><p>Ganz trocken nicht – dafür ist keine Badekappe gebaut. Eine gut sitzende Silikonkappe hält aber den Großteil des Wassers draußen und damit auch das meiste Chlor. Ein Trick aus dem Vereinsalltag: Haare vorher nass machen und etwas Conditioner einarbeiten. Gesättigtes Haar nimmt deutlich weniger Chlorwasser auf.</p></div>
-      </div>
-      <div class="q">
-        <button aria-expanded="false"><span>Wie setze ich eine Badekappe bei langen Haaren richtig auf?</span><span class="pm"></span></button>
-        <div class="a"><p>Haare anfeuchten, flach zusammenbinden, tief im Nacken fixieren. Dann die Kappe mit beiden Händen aufspannen, an der Stirn ansetzen und nach hinten überziehen – nicht von oben aufstülpen, dabei verheddern sich Strähnen. Zum Schluss die Ränder an Ohren und Nacken glattstreichen.</p></div>
-      </div>
-      <div class="q">
-        <button aria-expanded="false"><span>Warum rutscht meine Badekappe ständig ab?</span><span class="pm"></span></button>
-        <div class="a"><p>Meistens sitzt der Dutt zu hoch. Er wirkt dann wie ein Hebel und schiebt die Kappe bei jedem Abstoßen ein Stück nach vorn. Der zweite Klassiker ist eine zu kleine Kappe: Material, das schon gedehnt ist, hat keine Reserve mehr. Beides erledigt sich mit einer Langhaar-Kappe.</p></div>
-      </div>
-      <div class="q">
-        <button aria-expanded="false"><span>Zieht eine Badekappe an den Haaren?</span><span class="pm"></span></button>
-        <div class="a"><p>Silikon deutlich weniger als Latex, die Oberfläche ist glatter. Gezogen wird ohnehin meist beim Ausziehen, nicht beim Schwimmen. Wer die Kappe von der Stirn nach hinten abrollt, statt sie ruckartig hochzureißen, verliert kaum Haare.</p></div>
-      </div>
-      <div class="q">
-        <button aria-expanded="false"><span>Gibt es Langhaar-Badekappen auch bedruckt für Vereine?</span><span class="pm"></span></button>
-        <div class="a"><p>Ja, genau wie jedes andere Modell – mit Vereinslogo, Schriftzug, bis zu sechs Farben pro Seite, ab 50 Stück. Und ihr müsst euch nicht festlegen: In einer Bestellung könnt ihr Langhaar- und Standardkappen mischen, das Druckbild bleibt identisch.</p></div>
-      </div>
+    <div class="faq reveal">
+        <div class="q">
+          <button aria-expanded="false"><span>Welche Badekappe ist die beste für lange Haare?</span><span class="pm"></span></button>
+          <div class="a"><p>Eine Langhaar-Kappe aus Silikon. Sie hat das Extra-Volumen schon eingebaut, statt es aus dem Material herauszudehnen – der Zopf bekommt Platz, der Haaransatz Ruhe. Normale Silikonkappen sind für viel Haar schlicht zu knapp geschnitten. Stoffkappen tragen sich angenehm, halten aber kaum Wasser ab.</p></div>
+        </div>
+        <div class="q">
+          <button aria-expanded="false"><span>Bleiben die Haare unter der Badekappe trocken?</span><span class="pm"></span></button>
+          <div class="a"><p>Ganz trocken nicht – dafür ist keine Badekappe gebaut. Eine gut sitzende Silikonkappe hält aber den Großteil des Wassers draußen und damit auch das meiste Chlor. Ein Trick aus dem Vereinsalltag: Haare vorher nass machen und etwas Conditioner einarbeiten. Gesättigtes Haar nimmt deutlich weniger Chlorwasser auf.</p></div>
+        </div>
+        <div class="q">
+          <button aria-expanded="false"><span>Wie setze ich eine Badekappe bei langen Haaren richtig auf?</span><span class="pm"></span></button>
+          <div class="a"><p>Haare anfeuchten, flach zusammenbinden, tief im Nacken fixieren. Dann die Kappe mit beiden Händen aufspannen, an der Stirn ansetzen und nach hinten überziehen – nicht von oben aufstülpen, dabei verheddern sich Strähnen. Zum Schluss die Ränder an Ohren und Nacken glattstreichen.</p></div>
+        </div>
+        <div class="q">
+          <button aria-expanded="false"><span>Warum rutscht meine Badekappe ständig ab?</span><span class="pm"></span></button>
+          <div class="a"><p>Meistens sitzt der Dutt zu hoch. Er wirkt dann wie ein Hebel und schiebt die Kappe bei jedem Abstoßen ein Stück nach vorn. Der zweite Klassiker ist eine zu kleine Kappe: Material, das schon gedehnt ist, hat keine Reserve mehr. Beides erledigt sich mit einer Langhaar-Kappe.</p></div>
+        </div>
+        <div class="q">
+          <button aria-expanded="false"><span>Zieht eine Badekappe an den Haaren?</span><span class="pm"></span></button>
+          <div class="a"><p>Silikon deutlich weniger als Latex, die Oberfläche ist glatter. Gezogen wird ohnehin meist beim Ausziehen, nicht beim Schwimmen. Wer die Kappe von der Stirn nach hinten abrollt, statt sie ruckartig hochzureißen, verliert kaum Haare.</p></div>
+        </div>
+        <div class="q">
+          <button aria-expanded="false"><span>Gibt es Langhaar-Badekappen auch bedruckt für Vereine?</span><span class="pm"></span></button>
+          <div class="a"><p>Ja, genau wie jedes andere Modell – mit Vereinslogo, Schriftzug, bis zu sechs Farben pro Seite, ab 50 Stück. Und ihr müsst euch nicht festlegen: In einer Bestellung könnt ihr Langhaar- und Standardkappen mischen, das Druckbild bleibt identisch.</p></div>
+        </div>
     </div>
+    <div class="faq-caps" aria-hidden="true">
+    <svg class="faq-cap faq-cap--3" viewBox="336 145 768 676"><path d="M1039.48 711.615C1032.84 721.066 1033.05 762.757 1033.92 777.23C1034.89 793.27 1020.25 805.745 1004.49 802.558C864.133 774.206 829.733 810.605 717.785 815.142C611.778 819.408 591.581 771.182 433.137 803.585C417.584 806.771 403.219 794.404 403.921 778.526C404.623 762.649 405.001 718.798 399.115 709.779C360.449 650.59 342.034 597.99 342.034 522.005C341.98 313.548 514.465 151.589 723.24 151.589C932.014 151.589 1098.34 305.825 1097.97 521.951C1097.86 571.581 1084.73 633.471 1039.53 711.561L1039.48 711.615Z"/></svg>
+    <svg class="faq-cap faq-cap--2" viewBox="336 145 768 676"><path d="M1039.48 711.615C1032.84 721.066 1033.05 762.757 1033.92 777.23C1034.89 793.27 1020.25 805.745 1004.49 802.558C864.133 774.206 829.733 810.605 717.785 815.142C611.778 819.408 591.581 771.182 433.137 803.585C417.584 806.771 403.219 794.404 403.921 778.526C404.623 762.649 405.001 718.798 399.115 709.779C360.449 650.59 342.034 597.99 342.034 522.005C341.98 313.548 514.465 151.589 723.24 151.589C932.014 151.589 1098.34 305.825 1097.97 521.951C1097.86 571.581 1084.73 633.471 1039.53 711.561L1039.48 711.615Z"/></svg>
+    <svg class="faq-cap faq-cap--1" viewBox="336 145 768 676"><path d="M1039.48 711.615C1032.84 721.066 1033.05 762.757 1033.92 777.23C1034.89 793.27 1020.25 805.745 1004.49 802.558C864.133 774.206 829.733 810.605 717.785 815.142C611.778 819.408 591.581 771.182 433.137 803.585C417.584 806.771 403.219 794.404 403.921 778.526C404.623 762.649 405.001 718.798 399.115 709.779C360.449 650.59 342.034 597.99 342.034 522.005C341.98 313.548 514.465 151.589 723.24 151.589C932.014 151.589 1098.34 305.825 1097.97 521.951C1097.86 571.581 1084.73 633.471 1039.53 711.561L1039.48 711.615Z"/></svg>
+  </div>
   </div>
 </section>
 
-<section class="ctaband">
-  <div class="wrap wrap--narrow">
-    <h2>Eine Bestellung, jede Kopfform.</h2>
-    <p>Schickt uns euer Logo – den Rest machen wir. Entwurf kostenlos, ab 50 Stück, produziert in Europa. Antwort kommt in der Regel innerhalb von 48 Stunden.</p>
-    <div class="cta-row">
-      <a class="btn btn--light" href="/#anfrage">Angebot anfragen →</a>
-      <a class="btn btn--ghost" href="mailto:info@my-swimcap.de">info@my-swimcap.de</a>
+<section class="cta-final">
+  <div class="wrap cta-final__inner">
+    <div class="cta-final__copy reveal">
+      <div class="cta-final__person"><span class="av"><img src="/Bilder/thomas.webp" alt="Thomas" width="500" height="500" loading="lazy" decoding="async" /></span><span class="t" data-en="<b>Thomas</b> replies within 48 h."><b>Thomas</b> antwortet innerhalb von 48 h.</span></div>
+      <h2>Eine Bestellung, <em>jede</em> Kopfform.</h2>
+      <p>Schickt uns euer Logo – den Rest machen wir. Entwurf kostenlos, ab 50 Stück, produziert in Europa.</p>
+      <div class="cta-final__row">
+        <button class="btn btn--primary btn--lg" data-open-modal data-en="Order swim caps"><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
+        <a class="btn btn--ghost btn--lg" href="mailto:info@my-swimcap.de"><span class="btn__t"><span>info@my-swimcap.de</span><span>info@my-swimcap.de</span></span></a>
+      </div>
+      <p class="cta-final__price">Schon ab <b>4,50 €</b> pro Stück · ab 50 Stück</p>
     </div>
-    <p class="note">Schon ab 4,50 € pro Stück · ab 50 Stück</p>
   </div>
+  <img class="cta-final__bg" src="/Bilder/hero-langhaar.webp" alt="Bedruckte Vereins-Badekappen von über 100 Vereinen" data-en-alt="Schwimmerin mit bedruckter Langhaar-Badekappe" width="1800" height="1005" loading="lazy" decoding="async" />
 </section>
 
 <section class="sec sec--stone">
   <div class="wrap">
-    <div class="sec__head"><span class="eyebrow">Weiterlesen</span><h2>Passt vielleicht auch.</h2></div>
-    <div class="morelinks">
-      <a href="/badekappen-mit-namen">
-        <span>Personalisierung</span>
-        <b>Badekappen mit Namen bedrucken</b>
-        <p style="margin-top:8px">Jede Kappe mit eigenem Namen – ab 50 Stück, ab 12,00 € pro Kappe.</p>
-      </a>
-      <a href="/">
-        <span>Übersicht</span>
-        <b>Badekappen bedrucken lassen</b>
-        <p style="margin-top:8px">Alle Modelle, Preise und der komplette Ablauf für Vereine und Teams.</p>
-      </a>
+    <div class="sec-head reveal"><span class="eyebrow">Weiterlesen</span><h2 style="margin-top:16px">Passt vielleicht auch.</h2></div>
+    <div class="plinks reveal">
+      <a href="/badekappen-mit-namen"><span>Personalisierung</span><b>Badekappen mit Namen bedrucken</b><p>Jede Kappe mit eigenem Namen – ab 50 Stück, ab 12,00 € pro Kappe.</p></a>
+      <a href="/"><span>Übersicht</span><b>Badekappen bedrucken lassen</b><p>Alle Modelle, Preise und der komplette Ablauf für Vereine und Teams.</p></a>
     </div>
   </div>
 </section>
-
 </main>
-
 <footer class="footer">
-  <div class="wrap">
-    <div class="footer__cols">
-      <div class="footer__col">
-        <b>Seiten</b>
-        <ul>
-          <li><a href="/">Startseite</a></li>
-          <li><a href="/badekappen-mit-namen">Badekappen mit Namen</a></li>
-          <li><a href="/badekappen-fuer-lange-haare">Badekappen für lange Haare</a></li>
-        </ul>
-      </div>
-      <div class="footer__col">
-        <b>Anfrage</b>
-        <ul>
-          <li><a href="/#anfrage">Angebot anfragen</a></li>
-          <li><a href="mailto:info@my-swimcap.de">info@my-swimcap.de</a></li>
-        </ul>
-      </div>
-      <div class="footer__col">
-        <b>Rechtliches</b>
-        <ul>
-          <li><a href="/impressum">Impressum</a></li>
-          <li><a href="/datenschutz">Datenschutz</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer__bottom">
-      <span>© 2026 MySwimcap · ein Service der ssM swimsportMedia GmbH</span>
-      <span><a href="https://www.rohmberger.com" target="_blank" rel="noopener">Designed by Rohmberger Design</a></span>
-    </div>
+  <img class="footer__watermark" src="/Bilder/logo-mark.svg" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+  <div class="footer__grid">
+    <div><a class="brand" href="/" aria-label="MySwimcap"><svg class="brand__logo" role="img" aria-label="MySwimcap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 556.62 128.31"><g><polygon points="187.71 68.56 169.4 40.04 161 40.04 161 92.07 172.57 92.07 172.57 63.26 183.84 80.86 191.5 80.86 202.78 63.26 202.78 92.07 214.35 92.07 214.35 40.04 205.95 40.04 187.71 68.56"/><polygon points="243.68 56.25 236.44 77.97 229.31 56.25 217.08 56.25 230.72 89.61 222.61 107.17 234.25 107.17 240.59 92.29 255.91 56.25 243.68 56.25"/><path d="M289.77,65.54c-1.43-1.23-3.01-2.22-4.75-2.98-1.75-.76-3.49-1.44-5.23-2.03-1.74-.59-3.34-1.18-4.79-1.77-1.45-.59-2.62-1.29-3.5-2.1-.88-.81-1.33-1.85-1.33-3.13,0-1.42.59-2.52,1.77-3.28,1.18-.76,2.77-1.14,4.79-1.14s3.75.39,5.34,1.18c1.6.79,3.18,1.99,4.75,3.61l7.59-7.59c-1.97-2.16-4.45-3.88-7.44-5.16-3-1.28-6.34-1.92-10.02-1.92s-6.71.6-9.51,1.81c-2.8,1.2-4.97,2.96-6.52,5.27-1.55,2.31-2.32,5.08-2.32,8.33,0,2.6.44,4.79,1.33,6.56.88,1.77,2.05,3.22,3.5,4.35,1.45,1.13,3.04,2.09,4.79,2.87,1.74.79,3.48,1.46,5.2,2.03,1.72.57,3.32,1.17,4.79,1.81,1.47.64,2.64,1.4,3.5,2.28.86.88,1.29,2.02,1.29,3.39,0,1.57-.68,2.81-2.03,3.72-1.35.91-3.23,1.36-5.64,1.36-2.7,0-5.07-.53-7.11-1.58-2.04-1.06-3.89-2.54-5.56-4.46l-7.52,7.52c2.5,2.85,5.29,4.96,8.36,6.34,3.07,1.38,6.77,2.06,11.09,2.06,6.29,0,11.2-1.41,14.74-4.24,3.54-2.82,5.31-6.72,5.31-11.68,0-2.75-.46-5.03-1.36-6.85-.91-1.82-2.08-3.34-3.5-4.57Z"/><polygon points="334.21 76.88 327.5 56.25 318.22 56.25 311.55 76.95 305.4 56.25 294.27 56.25 306.65 92.07 315.93 92.07 322.92 71.47 329.79 92.07 339.07 92.07 351.53 56.25 340.4 56.25 334.21 76.88"/><rect x="353.57" y="56.25" width="11.35" height="35.81"/><path d="M359.24,38.94c-1.72,0-3.17.59-4.35,1.77-1.18,1.18-1.77,2.65-1.77,4.42s.59,3.19,1.77,4.42c1.18,1.23,2.63,1.84,4.35,1.84,1.82,0,3.28-.61,4.38-1.84,1.11-1.23,1.66-2.7,1.66-4.42s-.55-3.24-1.66-4.42c-1.1-1.18-2.57-1.77-4.38-1.77Z"/><path d="M421.18,57.25c-2.16-1.15-4.59-1.73-7.29-1.73s-5.33.59-7.59,1.77c-1.52.79-2.81,1.84-3.91,3.1-1.03-1.29-2.27-2.35-3.71-3.18-1.99-1.13-4.21-1.69-6.67-1.69-2.7,0-5.1.55-7.18,1.66-.94.49-1.77,1.1-2.54,1.78v-2.7h-11.35v35.81h11.35v-20.93c0-1.18.26-2.19.77-3.02.52-.83,1.22-1.48,2.1-1.95.88-.47,1.89-.7,3.02-.7,1.62,0,2.98.5,4.09,1.51,1.11,1.01,1.66,2.4,1.66,4.16v20.93h11.35v-20.93c0-1.18.25-2.19.74-3.02.49-.83,1.19-1.48,2.1-1.95.91-.47,1.9-.7,2.98-.7,1.57,0,2.91.5,4.02,1.51,1.11,1.01,1.66,2.4,1.66,4.16v20.93h11.35v-22.25c0-3-.61-5.55-1.84-7.66-1.23-2.11-2.92-3.75-5.08-4.9Z"/><path d="M455.17,81.82c-1.16.49-2.47.74-3.94.74s-2.92-.36-4.2-1.07c-1.28-.71-2.27-1.71-2.98-2.98-.71-1.28-1.07-2.75-1.07-4.42s.36-3.06,1.07-4.31c.71-1.25,1.69-2.23,2.95-2.95,1.25-.71,2.66-1.07,4.24-1.07,1.42,0,2.69.22,3.79.66,1.11.44,2.07,1.13,2.91,2.06l7.3-7.37c-1.82-1.87-3.89-3.28-6.23-4.24-2.33-.96-4.93-1.44-7.77-1.44-3.73,0-7.1.81-10.1,2.43-3,1.62-5.36,3.84-7.07,6.67-1.72,2.83-2.58,6.03-2.58,9.62s.85,6.73,2.54,9.58c1.7,2.85,4.04,5.08,7.04,6.71,3,1.62,6.36,2.43,10.09,2.43,2.95,0,5.59-.5,7.92-1.51,2.33-1.01,4.46-2.49,6.37-4.46l-7.29-7.22c-.84.93-1.83,1.65-2.98,2.14Z"/><path d="M492.25,59.24c-.97-.92-2.08-1.71-3.35-2.32-1.94-.93-4.12-1.4-6.52-1.4-3.29,0-6.23.8-8.81,2.4-2.58,1.6-4.62,3.81-6.12,6.63-1.5,2.83-2.25,6.03-2.25,9.62s.75,6.77,2.25,9.54c1.5,2.78,3.55,4.99,6.15,6.63,2.6,1.65,5.53,2.47,8.77,2.47,2.46,0,4.65-.47,6.6-1.4,1.25-.6,2.33-1.37,3.28-2.27v2.93h11.13v-35.81h-11.13v2.99ZM484.73,82.56c-1.52,0-2.89-.36-4.09-1.07-1.2-.71-2.16-1.71-2.87-2.98-.71-1.28-1.07-2.73-1.07-4.35s.36-3.07,1.07-4.35c.71-1.28,1.67-2.27,2.87-2.98,1.2-.71,2.57-1.07,4.09-1.07s2.97.36,4.2,1.07c1.23.71,2.16,1.7,2.8,2.95.64,1.25.96,2.69.96,4.31,0,2.51-.73,4.54-2.17,6.12-1.45,1.57-3.38,2.36-5.78,2.36Z"/><path d="M545.34,64.58c-1.52-2.8-3.6-5.01-6.23-6.63s-5.61-2.43-8.95-2.43c-2.41,0-4.62.49-6.63,1.47-1.03.5-1.96,1.1-2.8,1.79v-2.53h-11.35v50.92h11.2v-17.56c.85.69,1.81,1.3,2.87,1.79,2.01.93,4.25,1.4,6.71,1.4,3.34,0,6.34-.82,8.99-2.47,2.65-1.65,4.73-3.86,6.23-6.63,1.5-2.77,2.25-5.96,2.25-9.54s-.76-6.78-2.28-9.58ZM535.06,78.51c-.71,1.28-1.67,2.27-2.87,2.98-1.2.71-2.59,1.07-4.16,1.07s-2.89-.36-4.09-1.07c-1.2-.71-2.15-1.71-2.84-2.98-.69-1.28-1.03-2.73-1.03-4.35s.34-3.07,1.03-4.35c.69-1.28,1.63-2.27,2.84-2.98,1.2-.71,2.59-1.07,4.16-1.07s2.95.36,4.13,1.07c1.18.71,2.12,1.71,2.84,2.98.71,1.28,1.07,2.73,1.07,4.35s-.36,3.07-1.07,4.35Z"/></g><g><g id="Ebene_1-2" data-name="Ebene 1-2"><path d="M72.36,20.67c14.23,0,27.23,5.17,36.6,14.56,9.06,9.07,14.03,21.61,14,35.3-.02,7.76-2.61,16.05-7.94,25.35-.76,1.18-2,3.55-2.54,8.42-3.24-.38-6.32-.57-9.29-.57-6.98,0-12.38,1.01-17.61,1.99-4.55.85-8.85,1.66-14.6,1.89-.58.02-1.16.04-1.72.04-4.44,0-7.61-.71-11.61-1.61-4.65-1.04-9.92-2.23-17.26-2.23-3.02,0-6.18.2-9.56.61-.5-5.86-1.83-7.89-2.58-9.04-5.6-8.58-7.59-15.07-7.59-24.82,0-13.45,5.36-26,15.09-35.36,9.75-9.37,22.75-14.53,36.6-14.53M72.36,9c-34.69,0-63.36,26.91-63.36,61.55,0,12.63,3.06,21.36,9.49,31.2.98,1.5.91,8.77.8,11.42-.1,2.35,1.79,4.25,4.04,4.25.27,0,.54-.03.82-.08,6.7-1.37,11.91-1.87,16.25-1.87,11.99,0,17.3,3.84,28.87,3.84.71,0,1.44-.01,2.19-.04,13.48-.54,20.19-3.87,31.74-3.87,4.39,0,9.48.48,15.91,1.78.28.06.55.08.83.08,2.28,0,4.21-1.91,4.07-4.29-.15-2.4-.18-9.33.92-10.9,7.51-12.98,9.7-23.27,9.71-31.51.07-35.92-27.58-61.55-62.27-61.55h0Z"/></g><path class="logo-smile" d="M71.82,95.55c-14.55,0-27.1-9.86-30.53-23.98l11.34-2.75c2.15,8.87,10.04,15.07,19.19,15.07s17.04-6.2,19.19-15.07l11.34,2.76c-3.43,14.12-15.99,23.98-30.53,23.98Z"/></g></svg></a><p data-en="Printed swim caps for clubs, relay teams &amp; swim schools. A service by Teamfreaks.">Bedruckte Badekappen für Vereine, Staffeln &amp; Schwimmschulen. Ein Service der Teamfreaks.</p></div>
+    <div><h4 data-en="Product">Produkt</h4><a href="/#modelle" data-en="Models">Modelle</a><a href="/#ablauf" data-en="Process">Ablauf</a><a href="/#vereine" data-en="Clubs">Vereine</a><a href="/#faq">FAQ</a><a href="/badekappen-mit-namen" data-en="Swim caps with names">Badekappen mit Namen</a><a href="/badekappen-fuer-lange-haare" data-en="Swim caps for long hair">Badekappen für lange Haare</a></div>
+    <div><h4 data-en="Request">Anfrage</h4><a href="/#anfrage" data-open-modal data-en="Order swim caps">Badekappen bestellen</a><a href="/#anfrage" data-open-modal data-en="Request a quote">Angebot anfordern</a><a href="mailto:info@my-swimcap.de">info@my-swimcap.de</a></div>
+    <div><h4>Teamfreaks</h4><a href="https://teamfreaks.de" target="_blank" rel="noopener">teamfreaks.de</a><a href="https://teamfreaks.de" target="_blank" rel="noopener" data-en="Club shops">Vereinsshops</a><a href="https://sockfab.de" target="_blank" rel="noopener">Sockfab</a></div>
   </div>
+  <div class="footer__bottom"><span data-en="© 2026 MySwimcap · a service by Teamfreaks · Elsterstraße 65 · 04109 Leipzig">© 2026 MySwimcap · ein Service von Teamfreaks · Elsterstraße 65 · 04109 Leipzig</span><span class="footer__legal"><a href="/impressum" data-en="Imprint">Impressum</a> · <a href="/datenschutz" data-en="Privacy">Datenschutz</a></span><a class="rd-credit" href="https://www.rohmberger.com" target="_blank" rel="noopener" aria-label="Designed by Rohmberger Design"><svg class="rd-credit__logo" viewBox="0 0 583.72 583.72" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M291.86,574.72c-155.97,0-282.86-126.89-282.86-282.86S135.89,9,291.86,9s282.86,126.89,282.86,282.86-126.89,282.86-282.86,282.86ZM291.86,42.4c-137.55,0-249.46,111.91-249.46,249.46s111.91,249.46,249.46,249.46,249.46-111.91,249.46-249.46S429.41,42.4,291.86,42.4Z"/><path d="M393.07,449.79c5.12,9.5-.73,19.73-12.06,19.73h-41.66c-3.65,0-6.94-1.83-8.4-5.12l-38-73.45c-.73-1.1-1.83-1.83-2.92-1.83h-14.62c-6.58,0-11.33,4.75-11.33,11.33v57.74c0,6.58-4.75,11.33-11.33,11.33h-40.93c-6.58,0-11.33-4.75-11.33-11.33v-233.14c0-6.58,4.75-11.33,11.33-11.33h80.03c65.05,0,91.36,27.77,91.36,87.7,0,33.99-8.41,57.74-27.77,71.62-1.46,1.1-1.83,2.92-1.1,4.75l38.73,71.99ZM275.4,276.58c-6.58,0-11.33,4.75-11.33,11.33v27.04c0,6.58,4.75,11.33,11.33,11.33h18.64c17.54,0,26.31-2.19,26.31-24.85s-8.77-24.85-26.31-24.85h-18.64Z"/><path d="M396.38,126.09c0,3.63-2.46,6.8-5.98,7.69l-177.59,45.25c-6.07,2-12.31-2.51-12.31-8.9v-27.15c0-5.32,3.81-9.87,9.05-10.8l180.33-19.36c3.48-.37,6.51,2.35,6.51,5.85v7.41Z"/></svg><span>Designed by Rohmberger Design</span></a></div>
 </footer>
-
 <script src="/assets/page.js"></script>
 </body>
 </html>
