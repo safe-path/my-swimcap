@@ -27,6 +27,97 @@
 <meta name="twitter:description" content="Hochwertige Silikon-Badekappen aus Europa, mit eurem Logo. Ab 50 Stück, kostenloser Design-Entwurf, fertig in 4–5 Wochen (Express optional)." />
 <meta name="twitter:image" content="https://my-swimcap.de/Bilder/og-image.jpg" />
 
+<!-- ===== Strukturierte Daten (JSON-LD) · Texte müssen dem sichtbaren Inhalt entsprechen ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://my-swimcap.de/#organisation",
+      "name": "MySwimcap",
+      "legalName": "ssM swimsportMedia GmbH",
+      "url": "https://my-swimcap.de/",
+      "logo": { "@type": "ImageObject", "url": "https://my-swimcap.de/Bilder/logo-mark.svg" },
+      "image": "https://my-swimcap.de/Bilder/og-image.jpg",
+      "email": "info@my-swimcap.de",
+      "vatID": "DE294075404",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Elsterstraße 65",
+        "postalCode": "04109",
+        "addressLocality": "Leipzig",
+        "addressCountry": "DE"
+      },
+      "sameAs": ["https://teamfreaks.de", "https://sockfab.de"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://my-swimcap.de/#website",
+      "url": "https://my-swimcap.de/",
+      "name": "MySwimcap",
+      "inLanguage": "de-DE",
+      "publisher": { "@id": "https://my-swimcap.de/#organisation" }
+    },
+    {
+      "@type": "Product",
+      "@id": "https://my-swimcap.de/#produkt",
+      "name": "Bedruckte Badekappen für Verein und Team",
+      "description": "Hochwertige Silikon-Badekappen aus Europa, individuell mit eurem Vereinslogo bedruckt. Bis zu 6 Farben pro Seite im Siebdruck, kostenloser Design-Entwurf, ab 50 Stück.",
+      "image": "https://my-swimcap.de/Bilder/og-image.jpg",
+      "brand": { "@id": "https://my-swimcap.de/#organisation" },
+      "material": "Silikon",
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "EUR",
+        "lowPrice": "4.50",
+        "highPrice": "12.00",
+        "availability": "https://schema.org/InStock",
+        "seller": { "@id": "https://my-swimcap.de/#organisation" },
+        "eligibleQuantity": { "@type": "QuantitativeValue", "minValue": 50, "unitCode": "C62" }
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://my-swimcap.de/#faq",
+      "inLanguage": "de-DE",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Ab wie vielen Kappen kann ich bestellen?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ab 50 Stück – auch für einzelne Jahrgänge, Staffeln oder Gruppen. Je größer die Menge, desto günstiger die einzelne Kappe." }
+        },
+        {
+          "@type": "Question",
+          "name": "Was kostet eine bedruckte Badekappe?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Wir erstellen euch ein individuelles Angebot. Als Richtwerte: Teambadekappe ab 50 Stück ab 6,50 € pro Stück, Vereinsbadekappen ab 100 Stück ab 4,50 € pro Stück, Badekappen mit individuellen Namen ab 50 Stück ab 12,00 € pro Stück. Der genaue Preis hängt von Modell, Menge, Druckseiten und Farben ab. Nach eurer Anfrage bekommt ihr ein kostenloses, unverbindliches Angebot inklusive Design-Entwurf – meist in 1–2 Tagen." }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie lange dauert die Lieferung?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Nach Freigabe ca. 4–5 Wochen (Produktion in Europa). Mit individuellen Namen rund eine Woche mehr. Express ist gegen Aufpreis möglich." }
+        },
+        {
+          "@type": "Question",
+          "name": "Welche Modelle gibt es?",
+          "acceptedAnswer": { "@type": "Answer", "text": "3D-Badekappe (volumengeformt), Silikon Premium, Stoff (dünn und leicht) und die Langhaar-Badekappe mit extra Volumen – jeweils für Erwachsene und Kinder." }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie viele Farben kann mein Logo haben?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Bis zu 6 Farben pro Seite im Siebdruck, Vorder- und Rückseite. Ein- oder mehrfarbig – wir bereiten euer Logo passend auf." }
+        },
+        {
+          "@type": "Question",
+          "name": "Sehe ich die Kappe vor dem Druck?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ja, immer. Ihr bekommt einen kostenlosen Design-Entwurf zur Freigabe. Erst nach eurem Go drucken wir." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <!-- ============================================================
      swimcap — Homepage (Halden-Miller-Designsystem)
      Editorial light theme · IBM Plex Serif/Sans/Mono · Parchment/Charcoal
@@ -531,7 +622,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 
 <!-- ===================== HERO ===================== -->
 <section class="hero">
-  <div class="hero__bg"><img src="Bilder/hero-neu.webp" alt="Bedruckte Badekappe am Schwimmbecken" /></div>
+  <div class="hero__bg"><img src="Bilder/hero-neu.webp" alt="Bedruckte Badekappe am Schwimmbecken" width="1800" height="1005" fetchpriority="high" decoding="async" /></div>
 
   <div class="hero__pills">
   <span class="pill pill--dark pill--1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg><span data-en="Ready in 4–5 weeks">Fertig in 4–5 Wochen</span></span>
@@ -551,7 +642,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
   </div>
 
   <button type="button" class="contact-card" data-open-modal>
-    <div class="photo"><img src="Bilder/thomas.webp" alt="Thomas" onerror="this.style.display='none'" /></div>
+    <div class="photo"><img src="Bilder/thomas.webp" alt="Thomas" onerror="this.style.display='none'" width="500" height="500" loading="lazy" decoding="async" /></div>
     <div class="body">
       <div class="t" data-en="Your <b>personal</b> contact<span>Thomas builds your first design mockup within 48 h.</span>">Dein <b>persönlicher</b> Ansprechpartner<span>Thomas, baut dir in 48 h den ersten Design-Entwurf.</span></div>
       <div class="cc-cta"><span data-en="Request now">Jetzt anfragen</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
@@ -571,17 +662,17 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
       <article class="ucard reveal">
         <div class="lbl"><b data-en="Plenty of colors">Zahlreiche Farben</b><span>01</span></div>
         <p data-en="16 cap colors to choose from – and up to 6 print colors for your logo.">16 Badekappenfarben zur Auswahl – und bis zu 6 Druckfarben für euer Logo.</p>
-        <div class="pic"><img src="Bilder/caps-rainbow.webp" alt="Badekappen in vielen Farben" data-en-alt="Swim caps in many colors" /></div>
+        <div class="pic"><img src="Bilder/caps-rainbow.webp" alt="Badekappen in vielen Farben" data-en-alt="Swim caps in many colors" width="1800" height="1450" loading="lazy" decoding="async" /></div>
       </article>
       <article class="ucard reveal">
         <div class="lbl"><b data-en="Custom design">Individuelles Design</b><span>02</span></div>
         <p data-en="On request we'll create a design for you – completely free.">Wir erstellen euch auf Anfrage gern ein Design – komplett kostenlos.</p>
-        <div class="pic"><img src="Bilder/action-swimmer.webp" alt="Schwimmer mit bedruckter Vereinskappe" data-en-alt="Swimmer wearing a printed club cap" /></div>
+        <div class="pic"><img src="Bilder/action-swimmer.webp" alt="Schwimmer mit bedruckter Vereinskappe" data-en-alt="Swimmer wearing a printed club cap" width="1100" height="1375" loading="lazy" decoding="async" /></div>
       </article>
       <article class="ucard reveal">
         <div class="lbl"><b data-en="Free delivery">Kostenlose Lieferung</b><span>03</span></div>
         <p data-en="At the poolside in 4–5 weeks – with tracking, straight to you.">In 4–5 Wochen am Beckenrand – mit Sendungsverfolgung direkt zu euch.</p>
-        <div class="pic"><img src="Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton" data-en-alt="Finished swim caps in a shipping box" /></div>
+        <div class="pic"><img src="Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton" data-en-alt="Finished swim caps in a shipping box" width="1800" height="1450" loading="lazy" decoding="async" /></div>
       </article>
     </div>
   </div>
@@ -597,22 +688,22 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
     </div>
     <div class="models">
       <article class="model">
-        <div class="pic"><img src="Bilder/model-3d.webp" alt="3D-Badekappe" data-en-alt="3D swim cap" /></div>
+        <div class="pic"><img src="Bilder/model-3d.webp" alt="3D-Badekappe" data-en-alt="3D swim cap" width="1800" height="2235" loading="lazy" decoding="async" /></div>
         <span class="tag" data-en="Premium">Premium</span><h3 data-en="3D swim cap">3D-Badekappe</h3><p data-en="Volume-molded and wrinkle-free. The premium look for the whole team.">Volumengeformt und faltenfrei. Die hochwertige Optik fürs ganze Team.</p>
         <button class="order" data-open-modal data-en="Order now →">Jetzt bestellen →</button>
       </article>
       <article class="model">
-        <div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon-Badekappe" data-en-alt="Silicone swim cap" /><span class="popular"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.83 6.12 6.67.72-4.98 4.5 1.36 6.56L12 17.5 6.12 20.1l1.36-6.56-4.98-4.5 6.67-.72z"/></svg><span data-en="Most popular">Am beliebtesten</span></span></div>
+        <div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon-Badekappe" data-en-alt="Silicone swim cap" width="1800" height="2235" loading="lazy" decoding="async" /><span class="popular"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.83 6.12 6.67.72-4.98 4.5 1.36 6.56L12 17.5 6.12 20.1l1.36-6.56-4.98-4.5 6.67-.72z"/></svg><span data-en="Most popular">Am beliebtesten</span></span></div>
         <span class="tag" data-en="Bestseller">Bestseller</span><h3 data-en="Silicone Premium">Silikon Premium</h3><p data-en="The classic. 100% silicone, non-slip inside, durable.">Der Klassiker. 100 % Silikon, rutschfeste Innenseite, robust.</p>
         <button class="order" data-open-modal data-en="Order now →">Jetzt bestellen →</button>
       </article>
       <article class="model">
-        <div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff-Badekappe" data-en-alt="Fabric swim cap" /></div>
+        <div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff-Badekappe" data-en-alt="Fabric swim cap" width="1800" height="2235" loading="lazy" decoding="async" /></div>
         <span class="tag" data-en="Light">Leicht</span><h3 data-en="Fabric">Stoff</h3><p data-en="Thin and soft. Ideal for open water, beginners and school.">Dünn und anschmiegsam. Ideal für Freiwasser, Einsteiger und Schule.</p>
         <button class="order" data-open-modal data-en="Order now →">Jetzt bestellen →</button>
       </article>
       <article class="model">
-        <div class="pic"><img src="Bilder/model-frauen.webp" alt="Langhaar-Badekappe" data-en-alt="Long-hair swim cap" /></div>
+        <div class="pic"><img src="Bilder/model-frauen.webp" alt="Langhaar-Badekappe" data-en-alt="Long-hair swim cap" width="1800" height="2235" loading="lazy" decoding="async" /></div>
         <span class="tag" data-en="Comfort">Komfort</span><h3 data-en="Long-hair cap">Langhaar-Badekappe</h3><p data-en="Extra volume for long hair. Comfortable, clean fit.">Extra Volumen für lange Haare. Sitzt bequem und sauber.</p>
         <button class="order" data-open-modal data-en="Order now →">Jetzt bestellen →</button>
       </article>
@@ -634,10 +725,10 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
       </div>
     </div>
     <div class="pblocks" id="pblocks">
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-1-anfrage.webp" alt="Online-Anfrage über Konfigurator"></div><div class="pb__body"><div class="pb__n">01</div><h3 data-en="Request">Anfrage</h3><p data-en="Send us the model, rough quantity and your logo – takes less than three minutes.">Modell, ungefähre Stückzahl und euer Logo schicken – dauert keine drei Minuten.</p><div class="meta" data-en="~ today">~ heute</div></div></div>
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-2-design.webp" alt="Designer setzt euer Logo auf die Kappe"></div><div class="pb__body"><div class="pb__n">02</div><h3 data-en="Free design">Kostenloses Design</h3><p data-en="We place your logo on the cap, prepare the print and send you a mockup with a quote.">Wir legen euer Logo auf die Kappe, bereiten den Druck auf und schicken euch einen Entwurf samt Angebot.</p><div class="meta" data-en="1–2 days">1–2 Tage</div></div></div>
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-3-druck.webp" alt="Siebdruck auf der Kappe in Europa"></div><div class="pb__body"><div class="pb__n">03</div><h3 data-en="Approval &amp; print">Freigabe &amp; Druck</h3><p data-en="You approve, we produce via screen printing in Europe. Only after your go-ahead.">Ihr gebt frei, wir produzieren im Siebdruck in Europa. Erst nach eurem Go.</p><div class="meta" data-en="Production">Produktion</div></div></div>
-      <div class="pb reveal"><div class="pic"><img src="Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton"></div><div class="pb__body"><div class="pb__n">04</div><h3 data-en="Delivery">Lieferung</h3><p data-en="With tracking, straight to you. About a week more with individual names.">Mit Sendungsverfolgung direkt zu euch. Mit individuellen Namen rund eine Woche mehr.</p><div class="meta" data-en="4–5 weeks">4–5 Wochen</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-1-anfrage.webp" alt="Online-Anfrage über Konfigurator" width="1800" height="1167" loading="lazy" decoding="async"></div><div class="pb__body"><div class="pb__n">01</div><h3 data-en="Request">Anfrage</h3><p data-en="Send us the model, rough quantity and your logo – takes less than three minutes.">Modell, ungefähre Stückzahl und euer Logo schicken – dauert keine drei Minuten.</p><div class="meta" data-en="~ today">~ heute</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-2-design.webp" alt="Designer setzt euer Logo auf die Kappe" width="1800" height="2235" loading="lazy" decoding="async"></div><div class="pb__body"><div class="pb__n">02</div><h3 data-en="Free design">Kostenloses Design</h3><p data-en="We place your logo on the cap, prepare the print and send you a mockup with a quote.">Wir legen euer Logo auf die Kappe, bereiten den Druck auf und schicken euch einen Entwurf samt Angebot.</p><div class="meta" data-en="1–2 days">1–2 Tage</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-3-druck.webp" alt="Siebdruck auf der Kappe in Europa" width="1800" height="2235" loading="lazy" decoding="async"></div><div class="pb__body"><div class="pb__n">03</div><h3 data-en="Approval &amp; print">Freigabe &amp; Druck</h3><p data-en="You approve, we produce via screen printing in Europe. Only after your go-ahead.">Ihr gebt frei, wir produzieren im Siebdruck in Europa. Erst nach eurem Go.</p><div class="meta" data-en="Production">Produktion</div></div></div>
+      <div class="pb reveal"><div class="pic"><img src="Bilder/step-4-lieferung.webp" alt="Fertige Badekappen im Versandkarton" width="1800" height="1450" loading="lazy" decoding="async"></div><div class="pb__body"><div class="pb__n">04</div><h3 data-en="Delivery">Lieferung</h3><p data-en="With tracking, straight to you. About a week more with individual names.">Mit Sendungsverfolgung direkt zu euch. Mit individuellen Namen rund eine Woche mehr.</p><div class="meta" data-en="4–5 weeks">4–5 Wochen</div></div></div>
     </div>
   </div>
 </section>
@@ -660,8 +751,8 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 
     <!-- CTA-Band (vorher Bigband) -->
     <div class="ctaband reveal">
-      <img src="Bilder/hero-swimmer.webp" alt="Schwimmer mit bedruckter TSC-Berlin-Vereinskappe" />
-      <div class="madeby madeby--lg"><span>Made by</span><img src="Bilder/teamfreaks-logo.svg" alt="Teamfreaks" /></div>
+      <img src="Bilder/hero-swimmer.webp" alt="Schwimmer mit bedruckter TSC-Berlin-Vereinskappe" width="1800" height="1005" loading="lazy" decoding="async" />
+      <div class="madeby madeby--lg"><span>Made by</span><img src="Bilder/teamfreaks-logo.svg" alt="Teamfreaks" loading="lazy" decoding="async" /></div>
       <div class="ctaband__in">
         <h3 data-en="Get <em>your club</em> on<br>the cap.">Holt <em>euren Verein</em> auf<br>die Kappe.</h3>
         <button class="btn btn--light btn--lg" data-open-modal data-en="Order swim caps"><span class="btn__t"><span>Badekappen bestellen</span><span>Badekappen bestellen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg></button>
@@ -694,7 +785,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 <section class="cta-final">
   <div class="wrap cta-final__inner">
     <div class="cta-final__copy reveal">
-      <div class="cta-final__person"><span class="av"><img src="Bilder/thomas.webp" alt="Thomas" /></span><span class="t" data-en="<b>Thomas</b> replies within 48 h."><b>Thomas</b> antwortet innerhalb von 48 h.</span></div>
+      <div class="cta-final__person"><span class="av"><img src="Bilder/thomas.webp" alt="Thomas" width="500" height="500" loading="lazy" decoding="async" /></span><span class="t" data-en="<b>Thomas</b> replies within 48 h."><b>Thomas</b> antwortet innerhalb von 48 h.</span></div>
       <h2 data-en="Get your <em>free</em><br>quote now">Jetzt <em>kostenloses</em><br>Angebot sichern</h2>
       <p data-en="Send us your logo – we'll do the rest. Free design, from 50 pieces, ready in 4–5 weeks.">Schickt uns euer Logo – wir machen den Rest. Kostenloses Design, ab 50 Stück, fertig in 4–5 Wochen.</p>
       <div class="cta-final__row">
@@ -704,7 +795,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
       <p class="cta-final__price" data-en="From <b>€4.50</b> per cap · from 50 pieces">Schon ab <b>4,50 €</b> pro Stück · ab 50 Stück</p>
     </div>
   </div>
-  <img class="cta-final__bg" src="Bilder/vereine-cluster.webp" alt="Bedruckte Vereins-Badekappen von über 100 Vereinen" data-en-alt="Printed club swim caps from over 100 clubs" />
+  <img class="cta-final__bg" src="Bilder/vereine-cluster.webp" alt="Bedruckte Vereins-Badekappen von über 100 Vereinen" data-en-alt="Printed club swim caps from over 100 clubs" width="1800" height="1005" loading="lazy" decoding="async" />
 </section>
 
 <!-- ===================== SEO ===================== -->
@@ -726,7 +817,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 
 <!-- ===================== FOOTER ===================== -->
 <footer class="footer">
-  <img class="footer__watermark" src="Bilder/logo-mark.svg" alt="" aria-hidden="true" />
+  <img class="footer__watermark" src="Bilder/logo-mark.svg" alt="" aria-hidden="true" loading="lazy" decoding="async" />
   <div class="footer__grid">
     <div><a class="brand" href="#top" aria-label="MySwimcap"><svg class="brand__logo" role="img" aria-label="MySwimcap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 556.62 128.31"><g><polygon points="187.71 68.56 169.4 40.04 161 40.04 161 92.07 172.57 92.07 172.57 63.26 183.84 80.86 191.5 80.86 202.78 63.26 202.78 92.07 214.35 92.07 214.35 40.04 205.95 40.04 187.71 68.56"/><polygon points="243.68 56.25 236.44 77.97 229.31 56.25 217.08 56.25 230.72 89.61 222.61 107.17 234.25 107.17 240.59 92.29 255.91 56.25 243.68 56.25"/><path d="M289.77,65.54c-1.43-1.23-3.01-2.22-4.75-2.98-1.75-.76-3.49-1.44-5.23-2.03-1.74-.59-3.34-1.18-4.79-1.77-1.45-.59-2.62-1.29-3.5-2.1-.88-.81-1.33-1.85-1.33-3.13,0-1.42.59-2.52,1.77-3.28,1.18-.76,2.77-1.14,4.79-1.14s3.75.39,5.34,1.18c1.6.79,3.18,1.99,4.75,3.61l7.59-7.59c-1.97-2.16-4.45-3.88-7.44-5.16-3-1.28-6.34-1.92-10.02-1.92s-6.71.6-9.51,1.81c-2.8,1.2-4.97,2.96-6.52,5.27-1.55,2.31-2.32,5.08-2.32,8.33,0,2.6.44,4.79,1.33,6.56.88,1.77,2.05,3.22,3.5,4.35,1.45,1.13,3.04,2.09,4.79,2.87,1.74.79,3.48,1.46,5.2,2.03,1.72.57,3.32,1.17,4.79,1.81,1.47.64,2.64,1.4,3.5,2.28.86.88,1.29,2.02,1.29,3.39,0,1.57-.68,2.81-2.03,3.72-1.35.91-3.23,1.36-5.64,1.36-2.7,0-5.07-.53-7.11-1.58-2.04-1.06-3.89-2.54-5.56-4.46l-7.52,7.52c2.5,2.85,5.29,4.96,8.36,6.34,3.07,1.38,6.77,2.06,11.09,2.06,6.29,0,11.2-1.41,14.74-4.24,3.54-2.82,5.31-6.72,5.31-11.68,0-2.75-.46-5.03-1.36-6.85-.91-1.82-2.08-3.34-3.5-4.57Z"/><polygon points="334.21 76.88 327.5 56.25 318.22 56.25 311.55 76.95 305.4 56.25 294.27 56.25 306.65 92.07 315.93 92.07 322.92 71.47 329.79 92.07 339.07 92.07 351.53 56.25 340.4 56.25 334.21 76.88"/><rect x="353.57" y="56.25" width="11.35" height="35.81"/><path d="M359.24,38.94c-1.72,0-3.17.59-4.35,1.77-1.18,1.18-1.77,2.65-1.77,4.42s.59,3.19,1.77,4.42c1.18,1.23,2.63,1.84,4.35,1.84,1.82,0,3.28-.61,4.38-1.84,1.11-1.23,1.66-2.7,1.66-4.42s-.55-3.24-1.66-4.42c-1.1-1.18-2.57-1.77-4.38-1.77Z"/><path d="M421.18,57.25c-2.16-1.15-4.59-1.73-7.29-1.73s-5.33.59-7.59,1.77c-1.52.79-2.81,1.84-3.91,3.1-1.03-1.29-2.27-2.35-3.71-3.18-1.99-1.13-4.21-1.69-6.67-1.69-2.7,0-5.1.55-7.18,1.66-.94.49-1.77,1.1-2.54,1.78v-2.7h-11.35v35.81h11.35v-20.93c0-1.18.26-2.19.77-3.02.52-.83,1.22-1.48,2.1-1.95.88-.47,1.89-.7,3.02-.7,1.62,0,2.98.5,4.09,1.51,1.11,1.01,1.66,2.4,1.66,4.16v20.93h11.35v-20.93c0-1.18.25-2.19.74-3.02.49-.83,1.19-1.48,2.1-1.95.91-.47,1.9-.7,2.98-.7,1.57,0,2.91.5,4.02,1.51,1.11,1.01,1.66,2.4,1.66,4.16v20.93h11.35v-22.25c0-3-.61-5.55-1.84-7.66-1.23-2.11-2.92-3.75-5.08-4.9Z"/><path d="M455.17,81.82c-1.16.49-2.47.74-3.94.74s-2.92-.36-4.2-1.07c-1.28-.71-2.27-1.71-2.98-2.98-.71-1.28-1.07-2.75-1.07-4.42s.36-3.06,1.07-4.31c.71-1.25,1.69-2.23,2.95-2.95,1.25-.71,2.66-1.07,4.24-1.07,1.42,0,2.69.22,3.79.66,1.11.44,2.07,1.13,2.91,2.06l7.3-7.37c-1.82-1.87-3.89-3.28-6.23-4.24-2.33-.96-4.93-1.44-7.77-1.44-3.73,0-7.1.81-10.1,2.43-3,1.62-5.36,3.84-7.07,6.67-1.72,2.83-2.58,6.03-2.58,9.62s.85,6.73,2.54,9.58c1.7,2.85,4.04,5.08,7.04,6.71,3,1.62,6.36,2.43,10.09,2.43,2.95,0,5.59-.5,7.92-1.51,2.33-1.01,4.46-2.49,6.37-4.46l-7.29-7.22c-.84.93-1.83,1.65-2.98,2.14Z"/><path d="M492.25,59.24c-.97-.92-2.08-1.71-3.35-2.32-1.94-.93-4.12-1.4-6.52-1.4-3.29,0-6.23.8-8.81,2.4-2.58,1.6-4.62,3.81-6.12,6.63-1.5,2.83-2.25,6.03-2.25,9.62s.75,6.77,2.25,9.54c1.5,2.78,3.55,4.99,6.15,6.63,2.6,1.65,5.53,2.47,8.77,2.47,2.46,0,4.65-.47,6.6-1.4,1.25-.6,2.33-1.37,3.28-2.27v2.93h11.13v-35.81h-11.13v2.99ZM484.73,82.56c-1.52,0-2.89-.36-4.09-1.07-1.2-.71-2.16-1.71-2.87-2.98-.71-1.28-1.07-2.73-1.07-4.35s.36-3.07,1.07-4.35c.71-1.28,1.67-2.27,2.87-2.98,1.2-.71,2.57-1.07,4.09-1.07s2.97.36,4.2,1.07c1.23.71,2.16,1.7,2.8,2.95.64,1.25.96,2.69.96,4.31,0,2.51-.73,4.54-2.17,6.12-1.45,1.57-3.38,2.36-5.78,2.36Z"/><path d="M545.34,64.58c-1.52-2.8-3.6-5.01-6.23-6.63s-5.61-2.43-8.95-2.43c-2.41,0-4.62.49-6.63,1.47-1.03.5-1.96,1.1-2.8,1.79v-2.53h-11.35v50.92h11.2v-17.56c.85.69,1.81,1.3,2.87,1.79,2.01.93,4.25,1.4,6.71,1.4,3.34,0,6.34-.82,8.99-2.47,2.65-1.65,4.73-3.86,6.23-6.63,1.5-2.77,2.25-5.96,2.25-9.54s-.76-6.78-2.28-9.58ZM535.06,78.51c-.71,1.28-1.67,2.27-2.87,2.98-1.2.71-2.59,1.07-4.16,1.07s-2.89-.36-4.09-1.07c-1.2-.71-2.15-1.71-2.84-2.98-.69-1.28-1.03-2.73-1.03-4.35s.34-3.07,1.03-4.35c.69-1.28,1.63-2.27,2.84-2.98,1.2-.71,2.59-1.07,4.16-1.07s2.95.36,4.13,1.07c1.18.71,2.12,1.71,2.84,2.98.71,1.28,1.07,2.73,1.07,4.35s-.36,3.07-1.07,4.35Z"/></g><g><g id="Ebene_1-2" data-name="Ebene 1-2"><path d="M72.36,20.67c14.23,0,27.23,5.17,36.6,14.56,9.06,9.07,14.03,21.61,14,35.3-.02,7.76-2.61,16.05-7.94,25.35-.76,1.18-2,3.55-2.54,8.42-3.24-.38-6.32-.57-9.29-.57-6.98,0-12.38,1.01-17.61,1.99-4.55.85-8.85,1.66-14.6,1.89-.58.02-1.16.04-1.72.04-4.44,0-7.61-.71-11.61-1.61-4.65-1.04-9.92-2.23-17.26-2.23-3.02,0-6.18.2-9.56.61-.5-5.86-1.83-7.89-2.58-9.04-5.6-8.58-7.59-15.07-7.59-24.82,0-13.45,5.36-26,15.09-35.36,9.75-9.37,22.75-14.53,36.6-14.53M72.36,9c-34.69,0-63.36,26.91-63.36,61.55,0,12.63,3.06,21.36,9.49,31.2.98,1.5.91,8.77.8,11.42-.1,2.35,1.79,4.25,4.04,4.25.27,0,.54-.03.82-.08,6.7-1.37,11.91-1.87,16.25-1.87,11.99,0,17.3,3.84,28.87,3.84.71,0,1.44-.01,2.19-.04,13.48-.54,20.19-3.87,31.74-3.87,4.39,0,9.48.48,15.91,1.78.28.06.55.08.83.08,2.28,0,4.21-1.91,4.07-4.29-.15-2.4-.18-9.33.92-10.9,7.51-12.98,9.7-23.27,9.71-31.51.07-35.92-27.58-61.55-62.27-61.55h0Z"/></g><path class="logo-smile" d="M71.82,95.55c-14.55,0-27.1-9.86-30.53-23.98l11.34-2.75c2.15,8.87,10.04,15.07,19.19,15.07s17.04-6.2,19.19-15.07l11.34,2.76c-3.43,14.12-15.99,23.98-30.53,23.98Z"/></g></svg></a><p data-en="Printed swim caps for clubs, relay teams &amp; swim schools. A service by Teamfreaks.">Bedruckte Badekappen für Vereine, Staffeln &amp; Schwimmschulen. Ein Service der Teamfreaks.</p></div>
     <div><h4 data-en="Product">Produkt</h4><a href="#modelle" data-en="Models">Modelle</a><a href="#ablauf" data-en="Process">Ablauf</a><a href="#vereine" data-en="Clubs">Vereine</a><a href="#faq">FAQ</a></div>
@@ -747,10 +838,10 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
       <div class="fstep active" data-step="1">
         <h3 data-en="Choose your model.">Wähl dein Modell.</h3><p class="hint" data-en="Not sure? Pick the closest – we'll advise.">Unsicher? Wähl das, was am ehesten passt – wir beraten.</p>
         <div class="mcards" data-group="modell">
-          <div class="mc" data-val="3D-Badekappe"><div class="pic"><img src="Bilder/model-3d.webp" alt="3D"></div><b>3D</b></div>
-          <div class="mc" data-val="Silikon Premium"><span class="mc-pop"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.83 6.12 6.67.72-4.98 4.5 1.36 6.56L12 17.5 6.12 20.1l1.36-6.56-4.98-4.5 6.67-.72z"/></svg><span data-en="Most popular">Am beliebtesten</span></span><div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon"></div><b data-en="Silicone Premium">Silikon Premium</b></div>
-          <div class="mc" data-val="Stoff"><div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff"></div><b data-en="Fabric">Stoff</b></div>
-          <div class="mc" data-val="Langhaar-Badekappe"><div class="pic"><img src="Bilder/model-frauen.webp" alt="Langhaar"></div><b data-en="Long hair">Langhaar</b></div>
+          <div class="mc" data-val="3D-Badekappe"><div class="pic"><img src="Bilder/model-3d.webp" alt="3D" width="1800" height="2235" loading="lazy" decoding="async"></div><b>3D</b></div>
+          <div class="mc" data-val="Silikon Premium"><span class="mc-pop"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.83 6.12 6.67.72-4.98 4.5 1.36 6.56L12 17.5 6.12 20.1l1.36-6.56-4.98-4.5 6.67-.72z"/></svg><span data-en="Most popular">Am beliebtesten</span></span><div class="pic"><img src="Bilder/model-silikon.webp" alt="Silikon" width="1800" height="2235" loading="lazy" decoding="async"></div><b data-en="Silicone Premium">Silikon Premium</b></div>
+          <div class="mc" data-val="Stoff"><div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff" width="1800" height="2235" loading="lazy" decoding="async"></div><b data-en="Fabric">Stoff</b></div>
+          <div class="mc" data-val="Langhaar-Badekappe"><div class="pic"><img src="Bilder/model-frauen.webp" alt="Langhaar" width="1800" height="2235" loading="lazy" decoding="async"></div><b data-en="Long hair">Langhaar</b></div>
         </div>
         <div class="flbl" data-en="Approx. quantity">Ungefähre Stückzahl</div>
         <div class="chips" data-group="menge"><span class="chip" data-val="50–100">50–100</span><span class="chip" data-val="100–250">100–250</span><span class="chip" data-val="250–500">250–500</span><span class="chip" data-val="500+">500+</span></div>
@@ -789,7 +880,7 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
       </div>
     </form>
     <div class="modal__media">
-      <img src="Bilder/vereine-cluster.webp" alt="Bedruckte Vereins-Badekappen" data-en-alt="Printed club swim caps" />
+      <img src="Bilder/vereine-cluster.webp" alt="Bedruckte Vereins-Badekappen" data-en-alt="Printed club swim caps" width="1800" height="1005" loading="lazy" decoding="async" />
     </div>
   </div>
 </div>
@@ -831,7 +922,7 @@ if(window.gsap && window.ScrollTrigger){
   var html='';
   order.forEach(function(n){
     var nn=(n<10?'0':'')+n;
-    html+='<img src="Bilder/grid/cap-'+nn+'.webp" alt="Vereins-Badekappe" loading="lazy">';
+    html+='<img src="Bilder/grid/cap-'+nn+'.webp" alt="Vereins-Badekappe" width="600" height="600" loading="lazy" decoding="async">';
   });
   g.innerHTML=html;
 })();
