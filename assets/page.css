@@ -72,9 +72,14 @@ li{margin-bottom:8px;color:var(--ink-82)}
 .hero{position:relative;background:var(--obsidian);color:var(--parchment);overflow:hidden;
   padding:clamp(74px,11vw,124px) 0 clamp(64px,9vw,100px)}
 .hero__bg{position:absolute;inset:0;z-index:0}
-.hero__bg img{width:100%;height:100%;object-fit:cover;opacity:.34}
+.hero__bg img{width:100%;height:100%;object-fit:cover;object-position:70% 45%;opacity:.62}
+/* Links dunkel genug fuer den Text, rechts hell genug, dass man das Motiv erkennt. */
 .hero__bg::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(100deg,rgba(17,16,15,.94) 30%,rgba(17,16,15,.55))}
+  background:linear-gradient(100deg,rgba(17,16,15,.96) 30%,rgba(17,16,15,.74) 56%,rgba(17,16,15,.30) 100%)}
+@media(max-width:900px){
+  .hero__bg img{object-position:74% 40%;opacity:.42}
+  .hero__bg::after{background:linear-gradient(175deg,rgba(17,16,15,.80),rgba(17,16,15,.93) 62%)}
+}
 .hero .wrap{position:relative;z-index:1}
 .hero h1{max-width:17ch}
 .hero .lead{color:var(--paper-55);margin-top:20px;max-width:56ch}
@@ -126,17 +131,23 @@ td strong{display:block;margin-bottom:2px}
   font-family:var(--mono);font-size:13px;color:var(--amber)}
 .step__n::before{content:counter(s,decimal-leading-zero)}
 
-/* ---------- FAQ (ohne JS) ---------- */
-.faq{border-top:1px solid var(--line)}
-.faq details{border-bottom:1px solid var(--line)}
-.faq summary{cursor:pointer;list-style:none;padding:20px 44px 20px 0;position:relative;
-  font-family:var(--serif);font-size:18.5px;letter-spacing:-.012em}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"";position:absolute;right:8px;top:50%;width:11px;height:11px;
-  border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);
-  transform:translateY(-70%) rotate(45deg);transition:transform .3s var(--e)}
-.faq details[open] summary::after{transform:translateY(-30%) rotate(225deg)}
-.faq .a{padding:0 0 22px;max-width:74ch}
+/* ---------- FAQ — identisch zur Startseite (.q-Akkordeon mit Plus/Minus) ---------- */
+.faq{max-width:880px}
+.q{border-top:1px solid var(--line)}
+.q:last-child{border-bottom:1px solid var(--line)}
+.q button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:24px;
+  padding:26px 0;text-align:left;background:none;border:0;cursor:pointer;color:var(--ink);
+  font-family:var(--serif);font-size:clamp(19px,2.3vw,25px);letter-spacing:-.02em}
+.q .pm{flex:none;width:20px;height:20px;position:relative}
+.q .pm::before,.q .pm::after{content:"";position:absolute;inset:0;margin:auto;
+  background:var(--ink);transition:transform .35s var(--e)}
+.q .pm::before{width:100%;height:1.5px}
+.q .pm::after{width:1.5px;height:100%}
+.q [aria-expanded="true"] .pm::after,
+.q button[aria-expanded="true"] .pm::after{transform:scaleY(0)}
+.q .a{max-height:0;overflow:hidden;transition:max-height .45s var(--e)}
+.q .a p{padding:0 0 14px;color:var(--ink-55);font-size:16px;line-height:1.6;max-width:70ch}
+.q .a p:last-child{padding-bottom:26px}
 
 /* ---------- CTA-Band ---------- */
 .ctaband{background:var(--obsidian);color:var(--parchment);

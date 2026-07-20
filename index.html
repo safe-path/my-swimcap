@@ -432,7 +432,7 @@ section{position:relative}
 .q .pm{flex:none;width:20px;height:20px;position:relative}
 .q .pm::before,.q .pm::after{content:"";position:absolute;inset:0;margin:auto;background:var(--ink);transition:transform .35s var(--e)}
 .q .pm::before{width:100%;height:1.5px}.q .pm::after{width:1.5px;height:100%}
-.q[aria-expanded="true"] .pm::after{transform:scaleY(0)}
+.q [aria-expanded="true"] .pm::after{transform:scaleY(0)}
 .q .a{max-height:0;overflow:hidden;transition:max-height .45s var(--e)}
 .q .a p{padding:0 0 14px;color:var(--ink-60);font-size:16px;line-height:1.6;max-width:70ch}
 .q .a p:last-child{padding-bottom:26px}
@@ -924,10 +924,13 @@ if(window.gsap && window.ScrollTrigger){
   var g=document.getElementById('pgrid'); if(!g)return;
   // 30 kuratierte Vereinskappen-Bilder, gemischt für visuelles Interesse
   var order=[17,9,24,12,28,6,21,15,2,19,10,27,5,22,14,8,29,4,18,11,25,7,20,13,26,16,23,30,1,3];
+  // Die Kappen haben NICHT alle dasselbe Format — falsche Masse verzerren sie.
+  // Regelfall 600x750, hier die drei Abweichler:
+  var CAPH={'01':600,'05':485,'15':600};
   var html='';
   order.forEach(function(n){
     var nn=(n<10?'0':'')+n;
-    html+='<img src="Bilder/grid/cap-'+nn+'.webp" alt="Vereins-Badekappe" width="600" height="600" loading="lazy" decoding="async">';
+    html+='<img src="Bilder/grid/cap-'+nn+'.webp" alt="Vereins-Badekappe" width="600" height="'+(CAPH[nn]||750)+'" loading="lazy" decoding="async">';
   });
   g.innerHTML=html;
 })();
