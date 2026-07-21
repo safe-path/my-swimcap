@@ -519,3 +519,67 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 .plinks b{font-family:var(--serif);font-size:19px;font-weight:400;letter-spacing:-.015em;display:block}
 .plinks p{margin-top:8px;color:var(--ink-60);font-size:15px}
 @media(max-width:640px){.plinks{grid-template-columns:1fr}}
+
+/* ============================================================
+   DATUMSWAHL — eigener Kalender statt <input type="date">
+   Klappt inline auf (kein Overlay), damit im scrollenden Modal
+   nichts abgeschnitten wird. Gesperrte Tage sind nicht waehlbar.
+   ============================================================ */
+.dp{position:relative}
+.dp__in{width:100%;background:#fff;box-shadow:inset 0 0 0 1px var(--ink-12);border:0;
+  border-radius:var(--r-input);padding:12px 14px;font-family:var(--sans);font-size:15px;
+  color:var(--ink);text-align:left;cursor:pointer;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;transition:box-shadow .2s var(--e)}
+.dp__in:hover{box-shadow:inset 0 0 0 1px var(--ink-45)}
+.dp__in[aria-expanded="true"],.dp__in:focus-visible{outline:none;box-shadow:inset 0 0 0 1.5px var(--ink)}
+.dp__in .ph{color:var(--ink-45)}
+.dp__in svg{flex:none;width:17px;height:17px;stroke:var(--ink-45);fill:none;stroke-width:1.6}
+
+.dp__pop{display:none;margin-top:8px;background:#fff;border-radius:var(--r-card);
+  box-shadow:inset 0 0 0 1px var(--ink-12),0 14px 40px -18px rgba(25,24,24,.35);padding:14px}
+.dp.open .dp__pop{display:block}
+
+.dp__quick{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:13px}
+.dp__quick button{font-size:12.5px;padding:7px 12px;border-radius:var(--r-pill);border:0;
+  background:transparent;box-shadow:inset 0 0 0 1px var(--ink-12);cursor:pointer;
+  font-family:var(--sans);color:var(--ink);transition:.2s var(--e)}
+.dp__quick button:hover{box-shadow:inset 0 0 0 1px var(--ink-45)}
+
+.dp__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dp__mon{font-family:var(--serif);font-size:16.5px;letter-spacing:-.01em}
+.dp__nav{display:flex;gap:4px}
+.dp__nav button{width:32px;height:32px;border:0;background:transparent;border-radius:8px;
+  cursor:pointer;display:grid;place-items:center;transition:background .2s}
+.dp__nav button:hover:not(:disabled){background:var(--linen)}
+.dp__nav button:disabled{opacity:.25;cursor:default}
+.dp__nav svg{width:15px;height:15px;stroke:var(--ink);fill:none;stroke-width:1.7}
+
+.dp__wd,.dp__grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.dp__wd{margin-bottom:4px}
+.dp__wd span{text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-45);padding:4px 0}
+.dp__grid button{aspect-ratio:1/1;min-height:38px;border:0;background:transparent;
+  border-radius:9px;cursor:pointer;font-family:var(--sans);font-size:14px;color:var(--ink);
+  transition:background .15s,color .15s}
+.dp__grid button:hover:not(:disabled){background:var(--linen)}
+.dp__grid button:disabled{color:rgba(25,24,24,.22);cursor:not-allowed;
+  text-decoration:line-through;text-decoration-thickness:1px}
+.dp__grid button.pad{visibility:hidden}
+.dp__grid button.first:not(:disabled){box-shadow:inset 0 0 0 1px var(--amber);color:var(--amber)}
+.dp__grid button.sel{background:var(--ink);color:var(--parchment)}
+.dp__grid button.sel:hover{background:var(--ink)}
+.dp__grid button:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+
+.dp__note{margin-top:12px;padding-top:11px;border-top:1px solid var(--ink-12);
+  font-size:12.5px;line-height:1.5;color:var(--ink-60)}
+.dp__note b{font-weight:500;color:var(--ink)}
+
+@media(max-width:520px){
+  .dp__grid button{min-height:42px;font-size:15px}
+  .dp__pop{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){.dp *{transition:none!important}}
+.dp__warn{margin-top:8px;font-size:12.5px;line-height:1.45;color:var(--amber)}
+.dp__lead{margin-top:7px;font-size:12.5px;color:var(--ink-45);line-height:1.45}
+.dp__lead b{font-weight:500;color:var(--ink-60)}
+.dp.open .dp__lead{display:none}   /* im Kalender steht der ausfuehrliche Hinweis */

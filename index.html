@@ -411,7 +411,7 @@
 
       <div class="fstep" data-step="2">
         <h3 data-en="Date &amp; logo.">Termin &amp; Logo.</h3><p class="hint" data-en="Sending your logo now saves a round – but it's optional.">Logo direkt mitschicken spart eine Runde – ist aber optional.</p>
-        <div class="field"><label data-en="Preferred date">Wunschtermin</label><input type="date" name="termin" required></div>
+        <div class="field"><label data-en="Preferred date">Wunschtermin</label><div class="dp" id="dp"><input type="hidden" name="termin" id="dpVal"><button type="button" class="dp__in" id="dpBtn" aria-expanded="false" aria-haspopup="dialog"><span class="ph" id="dpTxt" data-en="Choose a date">Datum wählen</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke-linecap="round"/></svg></button><div class="dp__pop" id="dpPop" role="dialog" aria-label="Kalender" data-en-aria="Calendar"></div></div></div>
         <div class="flbl" data-en="Custom names / numbers?">Individuelle Namen / Nummern?</div>
         <div class="chips" data-group="namen"><span class="chip" data-val="Nein" data-en="No">Nein</span><span class="chip" data-val="Ja, mit Namen" data-en="Yes, with names">Ja, mit Namen</span><span class="chip" data-val="Beraten lassen" data-en="Get advice">Beraten lassen</span></div>
         <div class="flbl" data-en="Club logo">Vereinslogo</div>
@@ -544,7 +544,7 @@ document.querySelectorAll('.q button').forEach(function(btn){
   var WL={de:{labels:['Modell','Termin & Logo','Verein','Kontakt'],next:'Weiter →',send:'Anfrage senden →'},en:{labels:['Model','Date & logo','Club','Contact'],next:'Next →',send:'Send request →'}};
   function WT(){return WL[window.__lang==='en'?'en':'de'];}
   var cur=0;
-  form.querySelectorAll('[data-group]').forEach(function(g){g.addEventListener('click',function(e){var it=e.target.closest('.mc,.chip');if(!it||!g.contains(it))return;g.querySelectorAll('.mc,.chip').forEach(function(x){x.classList.remove('sel');});it.classList.add('sel');updateNext();});});
+  form.querySelectorAll('[data-group]').forEach(function(g){g.addEventListener('click',function(e){var it=e.target.closest('.mc,.chip');if(!it||!g.contains(it))return;g.querySelectorAll('.mc,.chip').forEach(function(x){x.classList.remove('sel');});it.classList.add('sel');updateNext();if(typeof DP!=='undefined'&&DP&&g.dataset.group==='namen')DP.pruefe();});});
   function gsel(n){var g=form.querySelector('[data-group="'+n+'"]');return !!(g&&g.querySelector('.sel'));}
   function fval(n){var el=form.querySelector('[name="'+n+'"]');return el?(el.value||'').trim():'';}
   function validStep(i){
@@ -555,6 +555,131 @@ document.querySelectorAll('.q button').forEach(function(btn){
     return true;
   }
   function updateNext(){next.disabled=!validStep(cur);}
+
+  /* ---------- Wunschtermin: eigener Kalender ----------
+     Vorlaufzeit laut Seite: 4–5 Wochen, mit individuellen Namen eine Woche
+     mehr. Alles darunter ist nicht lieferbar und wird gesperrt. Die Grenze
+     wandert mit, sobald "Ja, mit Namen" gewaehlt wird. */
+  var DP=(function(){
+    var VORLAUF=28, VORLAUF_NAMEN=35;           /* Tage */
+    var root=form.querySelector('#dp'); if(!root) return null;
+    var btn=root.querySelector('#dpBtn'), pop=root.querySelector('#dpPop'),
+        val=root.querySelector('#dpVal'), txt=root.querySelector('#dpTxt');
+    var T={de:{mon:['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+               wd:['Mo','Di','Mi','Do','Fr','Sa','So'],ph:'Datum wählen',
+               q:['Frühestmöglich','In 2 Monaten','In 3 Monaten'],
+               note:'Frühester Termin: <b>%D</b> — %W Wochen Vorlauf für Design, Freigabe und Produktion. Ihr braucht die Kappen früher? Schreibt uns, Express ist gegen Aufpreis möglich.',
+               prev:'Vorheriger Monat',nextm:'Nächster Monat'},
+          en:{mon:['January','February','March','April','May','June','July','August','September','October','November','December'],
+               wd:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],ph:'Choose a date',
+               q:['Earliest possible','In 2 months','In 3 months'],
+               note:'Earliest date: <b>%D</b> — %W weeks lead time for design, approval and production. Need them sooner? Get in touch, express is available at extra cost.',
+               prev:'Previous month',nextm:'Next month'}};
+    function L(){return T[window.__lang==='en'?'en':'de'];}
+    function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+    function tage(){ var g=form.querySelector('[data-group="namen"] .sel');
+      return (g&&/Namen/i.test(g.dataset.val||'')) ? VORLAUF_NAMEN : VORLAUF; }
+    function minDatum(){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+tage()); return d; }
+    var sel=null, view=null;
+
+    function lang(d){ return d.toLocaleDateString(window.__lang==='en'?'en-GB':'de-DE',
+      {weekday:'short',day:'numeric',month:'long',year:'numeric'}); }
+
+    function zeichne(){
+      var t=L(), min=minDatum();
+      if(!view) view=new Date(min.getFullYear(),min.getMonth(),1);
+      var jahr=view.getFullYear(), mon=view.getMonth();
+      var erster=new Date(jahr,mon,1), tage_im=new Date(jahr,mon+1,0).getDate();
+      var vor=(erster.getDay()+6)%7;                      /* Montag zuerst */
+      var zurueck = new Date(jahr,mon,1) <= new Date(min.getFullYear(),min.getMonth(),1);
+      var h='<div class="dp__quick">'+t.q.map(function(l,i){return '<button type="button" data-q="'+i+'">'+l+'</button>';}).join('')+'</div>'
+        +'<div class="dp__head"><span class="dp__mon">'+t.mon[mon]+' '+jahr+'</span><span class="dp__nav">'
+        +'<button type="button" data-m="-1" aria-label="'+t.prev+'"'+(zurueck?' disabled':'')+'><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+        +'<button type="button" data-m="1" aria-label="'+t.nextm+'"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+        +'</span></div><div class="dp__wd">'+t.wd.map(function(w){return '<span>'+w+'</span>';}).join('')+'</div><div class="dp__grid">';
+      for(var i=0;i<vor;i++) h+='<button type="button" class="pad" tabindex="-1" aria-hidden="true"></button>';
+      for(var d=1;d<=tage_im;d++){
+        var akt=new Date(jahr,mon,d), gesperrt=akt<min;
+        var cls=[]; if(gesperrt) cls.push('locked');
+        if(!gesperrt && akt.getTime()===min.getTime()) cls.push('first');
+        if(sel && iso(akt)===iso(sel)) cls.push('sel');
+        h+='<button type="button" data-d="'+iso(akt)+'"'+(gesperrt?' disabled':'')
+          +(cls.length?' class="'+cls.join(' ')+'"':'')+' aria-label="'+lang(akt)+'">'+d+'</button>';
+      }
+      h+='</div><p class="dp__note">'+t.note.replace('%D',lang(min)).replace('%W',Math.round(tage()/7))+'</p>';
+      pop.innerHTML=h;
+      leadZeile();
+    }
+    /* Kurzhinweis unter dem Feld, damit die Vorlaufzeit auch bei
+       geschlossenem Kalender sichtbar ist. */
+    function leadZeile(){
+      var e=root.querySelector('.dp__lead');
+      if(!e){ e=document.createElement('p'); e.className='dp__lead'; btn.after(e); }
+      e.innerHTML=(window.__lang==='en'?'Earliest date: <b>':'Frühester Termin: <b>')
+        +lang(minDatum())+'</b> ('+Math.round(tage()/7)+(window.__lang==='en'?' weeks lead time)':' Wochen Vorlauf)');
+    }
+
+    function auf(){ zeichne(); root.classList.add('open'); btn.setAttribute('aria-expanded','true');
+      var f=pop.querySelector('.dp__grid button:not(:disabled).sel')||pop.querySelector('.dp__grid button:not(:disabled)');
+      if(f) f.focus(); }
+    function zu(){ root.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+    function waehle(d){ sel=d; val.value=iso(d); txt.textContent=lang(d); txt.classList.remove('ph');
+      txt.removeAttribute('data-en');
+      var w=root.querySelector('.dp__warn'); if(w) w.remove();   /* Hinweis erledigt */
+      zu(); btn.focus(); updateNext(); }
+
+    btn.addEventListener('click',function(){ root.classList.contains('open')?zu():auf(); });
+    pop.addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      if(b.dataset.m){ view=new Date(view.getFullYear(),view.getMonth()+ +b.dataset.m,1); zeichne(); return; }
+      if(b.dataset.q!==undefined){ var m=minDatum();
+        if(b.dataset.q==='1') m.setMonth(m.getMonth()+1);
+        if(b.dataset.q==='2') m.setMonth(m.getMonth()+2);
+        view=new Date(m.getFullYear(),m.getMonth(),1); waehle(m); return; }
+      if(b.dataset.d){ var p=b.dataset.d.split('-'); waehle(new Date(+p[0],+p[1]-1,+p[2])); }
+    });
+    /* Tastatur: Pfeile bewegen, Esc schliesst */
+    pop.addEventListener('keydown',function(e){
+      var b=document.activeElement; if(!b||!b.dataset.d) return;
+      var step={ArrowLeft:-1,ArrowRight:1,ArrowUp:-7,ArrowDown:7}[e.key];
+      if(e.key==='Escape'){ zu(); btn.focus(); return; }
+      if(!step) return;
+      e.preventDefault();
+      var p=b.dataset.d.split('-'), d=new Date(+p[0],+p[1]-1,+p[2]); d.setDate(d.getDate()+step);
+      if(d<minDatum()) return;
+      if(d.getMonth()!==view.getMonth()||d.getFullYear()!==view.getFullYear()){
+        view=new Date(d.getFullYear(),d.getMonth(),1); zeichne(); }
+      var z=pop.querySelector('[data-d="'+iso(d)+'"]'); if(z) z.focus();
+    });
+    document.addEventListener('click',function(e){ if(!root.contains(e.target)) zu(); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&root.classList.contains('open')){zu();btn.focus();} });
+
+    /* Wechselt der Namen-Status, kann ein bereits gewaehltes Datum ungueltig werden. */
+    function pruefe(){
+      if(sel && sel<minDatum()){ sel=null; val.value=''; view=null;
+        txt.textContent=L().ph; txt.classList.add('ph'); txt.setAttribute('data-en','Choose a date');
+        /* Nicht kommentarlos loeschen — sonst ist unklar, warum das Datum weg ist. */
+        var w=root.querySelector('.dp__warn');
+        if(!w){ w=document.createElement('p'); w.className='dp__warn'; root.appendChild(w); }
+        w.textContent=(window.__lang==='en')
+          ? 'Individual names add about a week — please pick a new date.'
+          : 'Individuelle Namen brauchen rund eine Woche länger – bitte wählt einen neuen Termin.';
+        /* Erst nach dem Chip-Klick oeffnen — sonst schliesst ihn der
+           "Klick ausserhalb"-Handler sofort wieder. */
+        updateNext(); setTimeout(auf,0); return;
+      }
+      var w2=root.querySelector('.dp__warn'); if(w2) w2.remove();
+      leadZeile();
+      if(root.classList.contains('open')) zeichne();
+    }
+    leadZeile();   /* beim Laden: Vorlaufzeit sofort sichtbar */
+    document.addEventListener('langchange',function(){
+      if(sel) txt.textContent=lang(sel); else txt.textContent=L().ph;
+      if(root.classList.contains('open')) zeichne();
+    });
+    return {pruefe:pruefe,reset:function(){sel=null;val.value='';view=null;
+      txt.textContent=L().ph;txt.classList.add('ph');txt.setAttribute('data-en','Choose a date');zu();}};
+  })();
   function setNext(){var t=WT();next.querySelectorAll('.btn__t span').forEach(function(s){s.textContent=cur===steps.length-1?t.send:t.next;});}
   function render(){steps.forEach(function(s,i){s.classList.toggle('active',i===cur);});fill.style.width=((cur+1)/steps.length*100)+'%';now.textContent=cur+1;lab.textContent=WT().labels[cur];prev.disabled=cur===0;setNext();updateNext();}
   document.addEventListener('langchange',function(){lab.textContent=WT().labels[cur];setNext();});
