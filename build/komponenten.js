@@ -27,7 +27,12 @@ const NAVS = noLang(fix(NAV)), MMENUS = fix(MMENU), FOOTERS = fix(FOOTER);
 
 function ablauf(h2, rails, steps, imgs) {
   let a = fix(ABLAUF);
-  a = a.replace(/(<h2 class="reveal"[^>]*>)[\s\S]*?(<\/h2>)/, '$1' + h2 + '$2');
+  /* Das ganze <h2> ersetzen, nicht nur den Inhalt: der oeffnende Tag der
+     Startseite enthaelt data-en="Into the <em>pool</em>..." — ein [^>]*>
+     wuerde am > innerhalb des Attributs stoppen und einen kaputten Tag
+     mit offenem Anfuehrungszeichen zurueckbauen. */
+  a = a.replace(/<h2 class="reveal"[\s\S]*?<\/h2>/,
+                '<h2 class="reveal" style="margin-top:16px">' + h2 + '</h2>');
   let i = 0; a = a.replace(/<li[^>]*>[\s\S]*?<\/li>/g, () => '<li>' + rails[i++] + '</li>');
   let j = 0; a = a.replace(/<div class="pb__n">[\s\S]*?<div class="meta"[^>]*>[\s\S]*?<\/div>/g, () => {
     const st = steps[j]; const n = String(++j).padStart(2, '0');
