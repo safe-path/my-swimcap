@@ -562,9 +562,11 @@ document.querySelectorAll('.q button').forEach(function(btn){
   function gsel(n){var g=form.querySelector('[data-group="'+n+'"]');return !!(g&&g.querySelector('.sel'));}
   function fval(n){var el=form.querySelector('[name="'+n+'"]');return el?(el.value||'').trim():'';}
   /* ---------- Kappenfarben (Lieferantenkatalog) ----------
-     Jedes Modell hat eine eigene Farbpalette. Die Nummern sind die
-     Referenzen aus dem Katalog und gehen so auch in Mail und Datenbank —
-     damit bei der Bestellung nichts verwechselt wird.
+     Jedes Modell hat eine eigene Farbpalette. Die Schluessel in FARBTON
+     sind die Katalognummern — sie dienen nur der Zuordnung hier im Code.
+     Versendet wird bewusst NUR der Farbname (Kunde braucht die Nummer
+     nicht, Lieferant laut Kunde auch nicht). Die Namen sind eindeutig,
+     es gibt also keine Verwechslungsgefahr.
      Quelle: G2002 Silicone Suede · G2046 Long Hair · G2014 FVC8
      Competition · G3001SR Elastane Adult. */
   var FARBTON={
@@ -594,7 +596,7 @@ document.querySelectorAll('.q button').forEach(function(btn){
       var en=(window.__lang==='en');
       var h=liste.map(function(nr){
         var f=FARBTON[nr]; if(!f) return '';
-        return '<button type="button" class="sw" data-val="'+f[0]+' ('+nr+')" '+
+        return '<button type="button" class="sw" data-val="'+f[0]+'" '+
                'aria-label="'+(en?f[1]:f[0])+'" title="'+(en?f[1]:f[0])+'">'+
                '<span class="sw__c" style="background:'+f[2]+(f[3]?';--sw-check:#191818':'')+'"></span>'+
                '<span class="sw__n">'+(en?f[1]:f[0])+'</span></button>';
