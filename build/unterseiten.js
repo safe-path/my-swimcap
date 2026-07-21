@@ -17,7 +17,7 @@ const FAQ_NAMEN = [
 ];
 const FAQ_HAAR = [
   { q: 'Welche Badekappe ist die beste für lange Haare?', a: 'Eine Langhaar-Kappe aus Silikon. Sie hat das Extra-Volumen schon eingebaut, statt es aus dem Material herauszudehnen – der Zopf bekommt Platz, der Haaransatz Ruhe. Normale Silikonkappen sind für viel Haar schlicht zu knapp geschnitten. Stoffkappen tragen sich angenehm, halten aber kaum Wasser ab.' },
-  { q: 'Bleiben die Haare unter der Badekappe trocken?', a: 'Ganz trocken nicht – dafür ist keine Badekappe gebaut. Eine gut sitzende Silikonkappe hält aber den Großteil des Wassers draußen und damit auch das meiste Chlor. Ein Trick aus dem Vereinsalltag: Haare vorher nass machen und etwas Conditioner einarbeiten. Gesättigtes Haar nimmt deutlich weniger Chlorwasser auf.' },
+  { q: 'Bleiben die Haare unter der Badekappe trocken?', a: 'Ganz trocken nicht – dafür ist keine Badekappe gebaut. Eine gut sitzende Silikonkappe hält aber den Großteil des Wassers draußen und damit auch das meiste Chlor. Was zusätzlich hilft: die Haare vorher an der Dusche komplett durchnässen. Vollgesogenes Haar nimmt kaum noch Chlorwasser auf – der Effekt ist größer, als die meisten denken.' },
   { q: 'Wie setze ich eine Badekappe bei langen Haaren richtig auf?', a: 'Haare anfeuchten, flach zusammenbinden, tief im Nacken fixieren. Dann die Kappe mit beiden Händen aufspannen, an der Stirn ansetzen und nach hinten überziehen – nicht von oben aufstülpen, dabei verheddern sich Strähnen. Zum Schluss die Ränder an Ohren und Nacken glattstreichen.' },
   { q: 'Warum rutscht meine Badekappe ständig ab?', a: 'Meistens sitzt der Dutt zu hoch. Er wirkt dann wie ein Hebel und schiebt die Kappe bei jedem Abstoßen ein Stück nach vorn. Der zweite Klassiker ist eine zu kleine Kappe: Material, das schon gedehnt ist, hat keine Reserve mehr. Beides erledigt sich mit einer Langhaar-Kappe.' },
   { q: 'Zieht eine Badekappe an den Haaren?', a: 'Silikon deutlich weniger als Latex, die Oberfläche ist glatter. Gezogen wird ohnehin meist beim Ausziehen, nicht beim Schwimmen. Wer die Kappe von der Stirn nach hinten abrollt, statt sie ruckartig hochzureißen, verliert kaum Haare.' },
@@ -63,12 +63,12 @@ let p1 = B.head({ slug: 'badekappen-mit-namen',
     <div class="sec-head reveal">
       <span class="eyebrow">Warum Namen</span>
       <h2 style="margin-top:16px">Aus 50 gleichen Kappen werden 50 <em>persönliche</em>.</h2>
-      <p class="lead" style="margin-top:14px">Ein paar Euro mehr pro Kappe. Dafür verschwinden drei Dinge, die im Vereinsalltag jede Woche nerven.</p>
+      <p class="lead" style="margin-top:14px">Ein paar Euro mehr pro Kappe – und aus Vereinsausrüstung wird etwas, das jemandem gehört.</p>
     </div>
     <div class="scards reveal">
-      <div class="scard"><b>01</b><h3>Schluss mit Verwechslungen</h3><p>Fünfzig gleiche schwarze Kappen auf einer Bank – da ist Streit programmiert. Steht ein Name drauf, ist die Sache in einer Sekunde geklärt.</p></div>
-      <div class="scard"><b>02</b><h3>Trainer erkennen ihre Leute</h3><p>Vom Beckenrand aus sieht man vor allem Kappen. Wer auf Bahn drei gerade zu früh atmet, lässt sich mit Namen deutlich schneller ansprechen als mit „du da hinten".</p></div>
-      <div class="scard"><b>03</b><h3>Bindung ans Team</h3><p>Eine Kappe mit dem eigenen Namen ist kein Ausrüstungsteil mehr, sondern etwas Eigenes. Wer schon mal gesehen hat, wie Zehnjährige ihre erste Vereinskappe auspacken, weiß, was gemeint ist.</p></div>
+      <div class="scard"><b>01</b><h3>Wie bei den Profis</h3><p>Name auf der Kappe, Verein an der Seite – das Bild kennt jeder, der schon mal einen großen Wettkampf gesehen hat. Genau dieses Gefühl bekommt euer Team damit auch.</p></div>
+      <div class="scard"><b>02</b><h3>Eine Kappe, die dir gehört</h3><p>Fünfzig identische Kappen sind Ausrüstung. Steht der eigene Name drauf, wird daraus etwas Persönliches – und persönliche Sachen behandelt man anders.</p></div>
+      <div class="scard"><b>03</b><h3>Der erste eigene Startplatz</h3><p>Für Zehnjährige ist die erste Kappe mit dem eigenen Namen ein kleiner Ritterschlag. Man sieht beim Auspacken ziemlich genau, was das mit ihnen macht.</p></div>
     </div>
   </div>
 </section>
@@ -185,7 +185,7 @@ let p2 = B.head({ slug: 'badekappen-fuer-lange-haare',
       <img src="/Bilder/hero-aufsetzen.webp" alt="Schwimmerin zieht ihre bedruckte Vereins-Badekappe von vorn nach hinten über den Kopf" width="1800" height="1005" loading="lazy" decoding="async" />
     </div>
     <div class="scards scards--2 reveal">
-      <div class="scard"><b>01</b><h3>Haare anfeuchten</h3><p>Nasses Haar liegt flach und gleitet unter das Material, statt sich davor zu stauen. Ein Klecks Conditioner dazu – dann nimmt es später auch weniger Chlorwasser auf.</p></div>
+      <div class="scard"><b>01</b><h3>Haare nass, Kappe trocken</h3><p>Nasses Haar liegt flach und gleitet unter das Material, statt sich davor zu stauen. Die Kappe selbst und eure Hände sollten dabei trocken sein – nasses Silikon auf nassen Fingern rutscht beim Aufsetzen weg.</p></div>
       <div class="scard"><b>02</b><h3>Tief binden, nicht hoch</h3><p>Flacher Zopf oder Dutt, aber tief im Nacken. Weiter oben wird jede Frisur zum Hebel, der die Kappe nach vorn drückt. Das ist mit Abstand der häufigste Grund fürs Rutschen.</p></div>
       <div class="scard"><b>03</b><h3>Von der Stirn nach hinten</h3><p>Kappe mit beiden Händen aufspannen, an der Stirn ansetzen, nach hinten überziehen. Wer sie von oben aufstülpt, zieht sich Strähnen mit hinein.</p></div>
       <div class="scard"><b>04</b><h3>Ränder nachziehen</h3><p>Zum Schluss an Ohren und Nacken glattstreichen. Jede Falte ist eine Stelle, an der Wasser hineinläuft und die Kappe sich zu lösen beginnt.</p></div>
