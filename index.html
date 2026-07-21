@@ -403,6 +403,9 @@
           <div class="mc" data-val="Stoff"><div class="pic"><img src="Bilder/model-stoff.webp" alt="Stoff" width="1800" height="2235" loading="lazy" decoding="async"></div><b data-en="Fabric">Stoff</b></div>
           <div class="mc" data-val="Langhaar-Badekappe"><div class="pic"><img src="Bilder/model-frauen.webp" alt="Langhaar" width="1800" height="2235" loading="lazy" decoding="async"></div><b data-en="Long hair">Langhaar</b></div>
         </div>
+        <div class="flbl" data-en="Cap colour">Kappenfarbe</div>
+        <p class="hint hint--tight" id="farbHint" data-en="Pick a model first – the available colours depend on it.">Wähl zuerst ein Modell – die verfügbaren Farben hängen davon ab.</p>
+        <div class="swatches" data-group="kappenfarbe" id="swatches"></div>
         <div class="flbl" data-en="Approx. quantity">Ungefähre Stückzahl</div>
         <div class="chips" data-group="menge"><span class="chip" data-val="50–100">50–100</span><span class="chip" data-val="100–250">100–250</span><span class="chip" data-val="250–500">250–500</span><span class="chip" data-val="500+">500+</span></div>
         <div class="flbl" data-en="Logo colours">Logo-Farben</div>
@@ -555,11 +558,69 @@ document.querySelectorAll('.q button').forEach(function(btn){
   var WL={de:{labels:['Modell','Termin & Logo','Verein','Kontakt'],next:'Weiter →',send:'Anfrage senden →'},en:{labels:['Model','Date & logo','Club','Contact'],next:'Next →',send:'Send request →'}};
   function WT(){return WL[window.__lang==='en'?'en':'de'];}
   var cur=0;
-  form.querySelectorAll('[data-group]').forEach(function(g){g.addEventListener('click',function(e){var it=e.target.closest('.mc,.chip');if(!it||!g.contains(it))return;g.querySelectorAll('.mc,.chip').forEach(function(x){x.classList.remove('sel');});it.classList.add('sel');updateNext();if(typeof DP!=='undefined'&&DP&&g.dataset.group==='namen')DP.pruefe();});});
+  form.querySelectorAll('[data-group]').forEach(function(g){g.addEventListener('click',function(e){var it=e.target.closest('.mc,.chip,.sw');if(!it||!g.contains(it))return;g.querySelectorAll('.mc,.chip,.sw').forEach(function(x){x.classList.remove('sel');});it.classList.add('sel');updateNext();if(typeof DP!=='undefined'&&DP&&g.dataset.group==='namen')DP.pruefe();});});
   function gsel(n){var g=form.querySelector('[data-group="'+n+'"]');return !!(g&&g.querySelector('.sel'));}
   function fval(n){var el=form.querySelector('[name="'+n+'"]');return el?(el.value||'').trim():'';}
+  /* ---------- Kappenfarben (Lieferantenkatalog) ----------
+     Jedes Modell hat eine eigene Farbpalette. Die Nummern sind die
+     Referenzen aus dem Katalog und gehen so auch in Mail und Datenbank —
+     damit bei der Bestellung nichts verwechselt wird.
+     Quelle: G2002 Silicone Suede · G2046 Long Hair · G2014 FVC8
+     Competition · G3001SR Elastane Adult. */
+  var FARBTON={
+    '10':['Weiß','White','#ffffff',1],      '20':['Neongelb','Fluo yellow','#f2ec00',1],
+    '21':['Gelb','Yellow','#f7e11e',1],     '30':['Orange','Orange','#dd7239',0],
+    '32':['Neonorange','Fluo orange','#ef7f2e',0], '40':['Rot','Red','#bf2734',0],
+    '43':['Bordeaux','Bordeaux','#55152f',0],'50':['Pink','Pink','#cf5590',0],
+    '55':['Neonpink','Fluo pink','#e85b9c',0],'60':['Neongrün','Fluo green','#7cc24a',1],
+    '61':['Mittelgrün','Med green','#3f7d4e',0],'70':['Hellblau','Sky blue','#82c6dc',1],
+    '71':['Royalblau','Royal blue','#2c4f9b',0],'72':['Navy','Navy blue','#1d2b5c',0],
+    '81':['Violett','Violet','#6d4f9c',0],  '85':['Silber','Silver','#78797b',0],
+    '86':['Gold','Gold','#c3a05e',0],       '90':['Schwarz','Black','#131313',0]
+  };
+  var FARBEN={
+    'Silikon Premium'   :['10','20','21','30','40','43','50','60','61','70','71','72','81','85','86','90'],
+    'Langhaar-Badekappe':['10','20','32','55','60','90'],
+    '3D-Badekappe'      :['10','71','90','21','40','50'],
+    'Stoff'             :['10','21','40','50','61','70','71','72','90']
+  };
+  (function(){
+    var box=form.querySelector('#swatches'), hint=form.querySelector('#farbHint');
+    if(!box) return;
+    function zeichne(modell){
+      var liste=FARBEN[modell];
+      if(!liste){ box.innerHTML=''; hint.style.display=''; return; }
+      hint.style.display='none';
+      var en=(window.__lang==='en');
+      var h=liste.map(function(nr){
+        var f=FARBTON[nr]; if(!f) return '';
+        return '<button type="button" class="sw" data-val="'+f[0]+' ('+nr+')" '+
+               'aria-label="'+(en?f[1]:f[0])+'" title="'+(en?f[1]:f[0])+'">'+
+               '<span class="sw__c" style="background:'+f[2]+(f[3]?';--sw-check:#191818':'')+'"></span>'+
+               '<span class="sw__n">'+(en?f[1]:f[0])+'</span></button>';
+      }).join('');
+      /* Vereine wissen die Farbe oft noch nicht — sonst raten sie irgendwas. */
+      h+='<button type="button" class="sw sw--offen" data-val="Noch offen" '+
+         'aria-label="'+(en?'Undecided':'Noch offen')+'">'+
+         '<span class="sw__c"></span><span class="sw__n">'+(en?'Undecided':'Noch offen')+'</span></button>';
+      box.innerHTML=h;
+    }
+    /* Modellwechsel -> Palette neu aufbauen, alte Auswahl faellt weg */
+    form.querySelector('[data-group="modell"]').addEventListener('click',function(e){
+      var mc=e.target.closest('.mc'); if(!mc) return;
+      zeichne(mc.dataset.val); updateNext();
+    });
+    document.addEventListener('langchange',function(){
+      var m=form.querySelector('[data-group="modell"] .sel');
+      var alt=form.querySelector('#swatches .sel');
+      var wert=alt?alt.dataset.val:null;
+      if(m){ zeichne(m.dataset.val);
+        if(wert){ var neu=box.querySelector('[data-val="'+wert+'"]'); if(neu) neu.classList.add('sel'); } }
+    });
+  })();
+
   function validStep(i){
-    if(i===0)return gsel('modell')&&gsel('menge')&&gsel('farben');
+    if(i===0)return gsel('modell')&&gsel('kappenfarbe')&&gsel('menge')&&gsel('farben');
     if(i===1)return !!fval('termin')&&gsel('namen');
     if(i===2)return fval('name').length>1;
     if(i===3)return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fval('email'))&&!!form.querySelector('[name="dsgvo"]').checked;
@@ -705,7 +766,8 @@ document.querySelectorAll('.q button').forEach(function(btn){
     (function(){var vt=null;if(data.termin){var d=new Date(data.termin+'T00:00:00'),h=new Date();h.setHours(0,0,0,0);
       if(!isNaN(d))vt=Math.round((d-h)/864e5);}
       document.dispatchEvent(new CustomEvent('sc:request-submitted',{detail:{
-        model:data.modell||'',quantity_band:data.menge||'',colors:data.farben||'',
+        model:data.modell||'',cap_colour:data.kappenfarbe||'',
+        quantity_band:data.menge||'',colors:data.farben||'',
         names_option:data.namen||'',has_logo:!!window.__logo,lead_time_days:vt,
         language:data.sprache}}));})();
     window.__abgeschickt=true;try{fetch('https://hook.eu2.make.com/4bwqb1defy559ktpwosj9u11kx3x7x6m',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}steps.forEach(function(s){s.classList.remove('active');});fnav.style.display='none';meta.style.display='none';fill.style.width='100%';thanks.classList.add('show');}
@@ -770,5 +832,12 @@ document.querySelectorAll('.q button').forEach(function(btn){
 })();
 </script>
 <script src="/assets/analytics.js" defer></script>
+<!-- Vercel Web Analytics: cookiefrei, keine Kennung auf dem Geraet, nur
+     aggregierte Seitenaufrufe. Wird von unserer eigenen Domain geladen
+     (/_vercel/...), es geht also kein Request an einen Dritten — die Daten
+     bleiben bei Vercel, das die Seite ohnehin ausliefert. Deshalb ohne
+     Einwilligungs-Gate; dokumentiert in der Datenschutzerklaerung. -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
