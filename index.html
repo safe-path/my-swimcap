@@ -524,11 +524,22 @@ document.querySelectorAll('.q button').forEach(function(btn){
 /* ---------- Modal öffnen/schließen ---------- */
 (function(){
   var modal=document.getElementById('anfrageModal');
-  function open(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
-  function close(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
-  document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();mmenu.classList.remove('open');document.documentElement.classList.remove('menu-open');open();});});
+  function open(ausloeser){modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+    window.__abgeschickt=false;
+    document.dispatchEvent(new CustomEvent('sc:modal-opened',{detail:{source:ausloeser||'unbekannt'}}));}
+  function close(){var offen=modal.classList.contains('open');
+    modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';
+    /* Abbruch nur melden, wenn wirklich offen war und nicht abgeschickt wurde */
+    if(offen&&!window.__abgeschickt){var s=document.querySelector('.fstep.active');
+      document.dispatchEvent(new CustomEvent('sc:modal-abandoned',{detail:{step:s?+s.dataset.step:null}}));}}
+  document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();mmenu.classList.remove('open');document.documentElement.classList.remove('menu-open');
+    /* Herkunft fuer Analytics: wo wurde geklickt? */
+    var q=b.closest('.nav')?'nav':b.closest('.mmenu')?'mobilmenue':b.closest('.footer')?'footer':
+          b.closest('.cta-final')?'cta_final':b.closest('.hero')?'hero':
+          (b.closest('section')&&(b.closest('section').id||'sektion'))||'sonstige';
+    open(q);});});
   /* Die SEO-Unterseiten verlinken auf /#anfrage — Formular direkt oeffnen */
-  if(location.hash==='#anfrage'){open();}
+  if(location.hash==='#anfrage'){open('unterseite');}
   modal.querySelectorAll('[data-close-modal]').forEach(function(b){b.addEventListener('click',close);});
   modal.addEventListener('click',function(e){if(e.target===modal)close();});
   addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))close();});
@@ -684,8 +695,20 @@ document.querySelectorAll('.q button').forEach(function(btn){
   function render(){steps.forEach(function(s,i){s.classList.toggle('active',i===cur);});fill.style.width=((cur+1)/steps.length*100)+'%';now.textContent=cur+1;lab.textContent=WT().labels[cur];prev.disabled=cur===0;setNext();updateNext();}
   document.addEventListener('langchange',function(){lab.textContent=WT().labels[cur];setNext();});
   prev.onclick=function(){if(cur>0){cur--;render();}};
-  next.onclick=function(){if(next.disabled||!validStep(cur))return;if(cur<steps.length-1){cur++;render();}else submit();};
-  function submit(){var data=Object.fromEntries(new FormData(form).entries());form.querySelectorAll('[data-group]').forEach(function(g){var s=g.querySelector('.sel');data[g.dataset.group]=s?s.dataset.val:'';});data.logo=window.__logo?window.__logo.name:(window.__lang==='en'?'(none)':'(keins)');data.sprache=window.__lang||'de';try{fetch('https://hook.eu2.make.com/4bwqb1defy559ktpwosj9u11kx3x7x6m',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}steps.forEach(function(s){s.classList.remove('active');});fnav.style.display='none';meta.style.display='none';fill.style.width='100%';thanks.classList.add('show');}
+  next.onclick=function(){if(next.disabled||!validStep(cur))return;
+    /* Analytics: geschaffter Schritt (anonym, nur Nummer + Name) */
+    document.dispatchEvent(new CustomEvent('sc:step-completed',{detail:{step:cur+1,name:WL.de.labels[cur]}}));
+    if(cur<steps.length-1){cur++;render();}else submit();};
+  function submit(){var data=Object.fromEntries(new FormData(form).entries());form.querySelectorAll('[data-group]').forEach(function(g){var s=g.querySelector('.sel');data[g.dataset.group]=s?s.dataset.val:'';});data.logo=window.__logo?window.__logo.name:(window.__lang==='en'?'(none)':'(keins)');data.sprache=window.__lang||'de';
+    /* Analytics: Value Moment. BEWUSST ohne verein/name/email/notiz —
+       personenbezogene Daten gehoeren nicht in Mixpanel. Nur Auswahlwerte. */
+    (function(){var vt=null;if(data.termin){var d=new Date(data.termin+'T00:00:00'),h=new Date();h.setHours(0,0,0,0);
+      if(!isNaN(d))vt=Math.round((d-h)/864e5);}
+      document.dispatchEvent(new CustomEvent('sc:request-submitted',{detail:{
+        model:data.modell||'',quantity_band:data.menge||'',colors:data.farben||'',
+        names_option:data.namen||'',has_logo:!!window.__logo,lead_time_days:vt,
+        language:data.sprache}}));})();
+    window.__abgeschickt=true;try{fetch('https://hook.eu2.make.com/4bwqb1defy559ktpwosj9u11kx3x7x6m',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}steps.forEach(function(s){s.classList.remove('active');});fnav.style.display='none';meta.style.display='none';fill.style.width='100%';thanks.classList.add('show');}
   render();
   form.addEventListener('input',updateNext);
   form.addEventListener('change',updateNext);
@@ -746,5 +769,6 @@ document.querySelectorAll('.q button').forEach(function(btn){
   });
 })();
 </script>
+<script src="/assets/analytics.js" defer></script>
 </body>
 </html>

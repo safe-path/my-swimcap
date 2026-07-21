@@ -98,6 +98,7 @@ ${MMENUS}
 const tail = `</main>
 ${FOOTERS}
 <script src="/assets/page.js"></script>
+<script src="/assets/analytics.js" defer></script>
 </body>
 </html>
 `;

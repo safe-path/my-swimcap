@@ -583,3 +583,35 @@ html:not(.js) #loader{animation:loaderOut .6s var(--e) 3.2s forwards}
 .dp__lead{margin-top:7px;font-size:12.5px;color:var(--ink-45);line-height:1.45}
 .dp__lead b{font-weight:500;color:var(--ink-60)}
 .dp.open .dp__lead{display:none}   /* im Kalender steht der ausfuehrliche Hinweis */
+
+/* ============================================================
+   EINWILLIGUNGS-BANNER (Statistik)
+   Beide Schaltflaechen bewusst gleich gross und gleich sichtbar —
+   ein optisch benachteiligtes "Ablehnen" waere ein Dark Pattern
+   und macht die Einwilligung nach DSGVO angreifbar.
+   ============================================================ */
+.cc{position:fixed;left:0;right:0;bottom:0;z-index:3000;padding:14px;
+  transform:translateY(115%);transition:transform .45s var(--e);pointer-events:none}
+.cc.show{transform:none;pointer-events:auto}
+.cc__in{max-width:var(--maxw);margin:0 auto;background:var(--parchment);
+  border-radius:var(--r-card);padding:20px 22px;
+  box-shadow:inset 0 0 0 1px var(--ink-12),0 20px 50px -20px rgba(25,24,24,.45);
+  display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.cc__t{flex:1;min-width:260px;margin:0;font-size:14px;line-height:1.55;color:var(--ink-60)}
+.cc__t a{color:var(--amber);text-decoration:underline;text-underline-offset:2px}
+.cc__t a:hover{color:var(--ink)}
+.cc__btns{display:flex;gap:10px;flex:none}
+.cc__b{font-family:var(--sans);font-size:14.5px;padding:12px 22px;border:0;
+  border-radius:var(--r-pill);cursor:pointer;white-space:nowrap;
+  background:transparent;box-shadow:inset 0 0 0 1px var(--ink-45);color:var(--ink);
+  transition:.2s var(--e)}
+.cc__b:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+.cc__b--ja{background:var(--ink);color:var(--parchment);box-shadow:none}
+.cc__b--ja:hover{background:#000}
+.cc__b:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+@media(max-width:680px){
+  .cc__in{gap:16px;padding:18px}
+  .cc__btns{width:100%}
+  .cc__b{flex:1;padding:13px 10px}
+}
+@media(prefers-reduced-motion:reduce){.cc{transition:none}}
