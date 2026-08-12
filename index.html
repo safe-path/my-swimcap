@@ -772,7 +772,20 @@ document.querySelectorAll('.q button').forEach(function(btn){
         quantity_band:data.menge||'',colors:data.farben||'',
         names_option:data.namen||'',has_logo:!!window.__logo,lead_time_days:vt,
         language:data.sprache}}));})();
-    window.__abgeschickt=true;try{fetch('https://hook.eu2.make.com/4bwqb1defy559ktpwosj9u11kx3x7x6m',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}steps.forEach(function(s){s.classList.remove('active');});fnav.style.display='none';meta.style.display='none';fill.style.width='100%';thanks.classList.add('show');}
+    window.__abgeschickt=true;
+    /* Erst den Logo-Upload abwarten (meist laengst fertig, da schon bei der
+       Auswahl gestartet), dann senden. Faellt der Upload durch, geht die
+       Anfrage trotzdem raus — nur mit leerem logo_url. */
+    function scFinish(){
+      /* Ist der Upload durch, kommt der oeffentliche Link ins logo-Feld —
+         das ist in Make schon ueberall verdrahtet (DB-Spalte + alle Mails),
+         also braucht das Szenario keine Aenderung. Schlaegt der Upload fehl,
+         bleibt der Dateiname stehen, damit das Team weiss, was fehlt. */
+      data.logo_url=window.__logoUrl||'';
+      if(window.__logoUrl)data.logo=window.__logoUrl;
+      try{fetch('https://hook.eu2.make.com/4bwqb1defy559ktpwosj9u11kx3x7x6m',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}}
+    if(window.__logoUpload){window.__logoUpload.then(scFinish,scFinish);}else{scFinish();}
+    steps.forEach(function(s){s.classList.remove('active');});fnav.style.display='none';meta.style.display='none';fill.style.width='100%';thanks.classList.add('show');}
   render();
   form.addEventListener('input',updateNext);
   form.addEventListener('change',updateNext);
@@ -783,7 +796,45 @@ document.querySelectorAll('.q button').forEach(function(btn){
   dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)handle(e.dataTransfer.files[0]);});
   input.addEventListener('change',function(){if(input.files.length)handle(input.files[0]);});
   function fmt(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(0)+' KB':(b/1048576).toFixed(1)+' MB';}
-  function handle(f){window.__logo=f;var ext=(f.name.split('.').pop()||'').toUpperCase();pv.innerHTML=(f.type.indexOf('image/')===0?'<img alt="">':'<div class="pico">'+ext+'</div>')+'<div class="pm2"><b>'+f.name+'</b><span>'+fmt(f.size)+' · '+(window.__lang==='en'?'ready':'bereit')+'</span></div><span class="rm">×</span>';pv.classList.add('show');dz.style.display='none';if(f.type.indexOf('image/')===0)pv.querySelector('img').src=URL.createObjectURL(f);pv.querySelector('.rm').onclick=function(){window.__logo=null;input.value='';pv.classList.remove('show');pv.innerHTML='';dz.style.display='';};}
+  /* ---------- Logo-Upload zu Supabase Storage ----------
+     Der Browser laedt die Datei DIREKT in den Storage-Bucket; nur der
+     fertige oeffentliche Link geht dann per Webhook an Make (-> DB + Mail).
+     Schlaegt der Upload fehl, wird die Anfrage trotzdem gesendet
+     (Lead-sicher) — nur ohne Link, das Team fordert die Datei per Mail an.
+     Der anon-Key ist bewusst oeffentlich (fuer Frontend gedacht). */
+  var SB_URL='https://nkaznfwfkazfxjofpfcy.supabase.co';
+  var SB_ANON='sb_publishable_ciub5YQ7vI-BT5zOtXkezQ_0xjk4Llr';   /* oeffentlicher Key, fuer Frontend gedacht */
+  var SB_BUCKET='logos';
+  function sbReady(){return SB_URL.indexOf('XXXX')<0 && SB_ANON.indexOf('PASTE')<0;}
+  function uploadLogo(f){
+    if(!f||!sbReady())return Promise.resolve('');
+    var base=(f.name||'logo').replace(/[^A-Za-z0-9._-]/g,'_').slice(-48);
+    var path=Date.now()+'-'+Math.random().toString(36).slice(2,8)+'-'+base;
+    return fetch(SB_URL+'/storage/v1/object/'+SB_BUCKET+'/'+encodeURIComponent(path),{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+SB_ANON,'apikey':SB_ANON,
+               'Content-Type':f.type||'application/octet-stream','x-upsert':'false'},
+      body:f
+    }).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);
+      return SB_URL+'/storage/v1/object/public/'+SB_BUCKET+'/'+encodeURIComponent(path);});
+  }
+  function handle(f){
+    if(f&&f.size>8*1024*1024){alert(window.__lang==='en'
+      ?'The file is larger than 8 MB. Please compress it, or reply to the confirmation email with the logo.'
+      :'Die Datei ist größer als 8 MB. Bitte komprimiert sie oder schickt das Logo als Antwort auf die Bestätigungsmail.');
+      input.value='';return;}
+    window.__logo=f;window.__logoUrl='';
+    var ext=(f.name.split('.').pop()||'').toUpperCase();
+    pv.innerHTML=(f.type.indexOf('image/')===0?'<img alt="">':'<div class="pico">'+ext+'</div>')+'<div class="pm2"><b>'+f.name+'</b><span class="pst">'+fmt(f.size)+' · '+(sbReady()?(window.__lang==='en'?'uploading…':'wird hochgeladen…'):(window.__lang==='en'?'ready':'bereit'))+'</span></div><span class="rm">×</span>';
+    pv.classList.add('show');dz.style.display='none';
+    if(f.type.indexOf('image/')===0)pv.querySelector('img').src=URL.createObjectURL(f);
+    pv.querySelector('.rm').onclick=function(){window.__logo=null;window.__logoUrl='';window.__logoUpload=null;input.value='';pv.classList.remove('show');pv.innerHTML='';dz.style.display='';};
+    var st=pv.querySelector('.pst');
+    window.__logoUpload=uploadLogo(f).then(function(url){window.__logoUrl=url;
+      if(st&&url)st.textContent=fmt(f.size)+' · '+(window.__lang==='en'?'uploaded ✓':'hochgeladen ✓');
+    },function(){window.__logoUrl='';
+      if(st)st.textContent=fmt(f.size)+' · '+(window.__lang==='en'?'we\'ll request it by email':'reichen wir per Mail nach');});
+  }
 })();
 
 /* ---------- i18n (DE/EN) ---------- */
