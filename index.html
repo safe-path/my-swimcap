@@ -418,7 +418,7 @@
         <div class="flbl" data-en="Custom names / numbers?">Individuelle Namen / Nummern?</div>
         <div class="chips" data-group="namen"><span class="chip" data-val="Nein" data-en="No">Nein</span><span class="chip" data-val="Ja, mit Namen" data-en="Yes, with names">Ja, mit Namen</span><span class="chip" data-val="Beraten lassen" data-en="Get advice">Beraten lassen</span></div>
         <div class="flbl" data-en="Club logo">Vereinslogo</div>
-        <div class="upload" id="dropzone"><input type="file" id="logoInput" accept="image/*,.pdf,.ai,.eps,.svg" hidden><b data-en="Upload logo">Logo hochladen</b><span data-en="Drag &amp; drop or click · PNG, JPG, PDF, SVG, AI">Drag &amp; Drop oder klicken · PNG, JPG, PDF, SVG, AI</span><span class="o" data-en="Optional">Optional</span></div>
+        <div class="upload" id="dropzone"><input type="file" id="logoInput" accept="image/*,.pdf,.ai,.eps,.svg,.psd" hidden><b data-en="Upload logo">Logo hochladen</b><span data-en="Drag &amp; drop or click · PNG, JPG, PDF, SVG, AI, PSD">Drag &amp; Drop oder klicken · PNG, JPG, PDF, SVG, AI, PSD</span><span class="o" data-en="Optional">Optional</span></div>
         <div class="preview" id="preview"></div>
       </div>
 
@@ -819,9 +819,9 @@ document.querySelectorAll('.q button').forEach(function(btn){
       return SB_URL+'/storage/v1/object/public/'+SB_BUCKET+'/'+encodeURIComponent(path);});
   }
   function handle(f){
-    if(f&&f.size>8*1024*1024){alert(window.__lang==='en'
-      ?'The file is larger than 8 MB. Please compress it, or reply to the confirmation email with the logo.'
-      :'Die Datei ist größer als 8 MB. Bitte komprimiert sie oder schickt das Logo als Antwort auf die Bestätigungsmail.');
+    if(f&&f.size>25*1024*1024){alert(window.__lang==='en'
+      ?'The file is larger than 25 MB. Please compress it, or reply to the confirmation email with the logo.'
+      :'Die Datei ist größer als 25 MB. Bitte komprimiert sie oder schickt das Logo als Antwort auf die Bestätigungsmail.');
       input.value='';return;}
     window.__logo=f;window.__logoUrl='';
     var ext=(f.name.split('.').pop()||'').toUpperCase();
