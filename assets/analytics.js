@@ -23,6 +23,32 @@
   var KEY      = 'sc_consent';          /* 'granted' | 'denied' */
   var bereit = false, erlaubt = false;
 
+  /* ---------- Google Analytics 4 — erst NACH Einwilligung ----------
+     gtag.js kann nicht sinnvoll self-hosted werden (es holt seine Config
+     ohnehin von Google), also laden wir es von googletagmanager.com — aber
+     erst nach aktivem Klick, nie beim Seitenaufruf.
+     GA4 setzt nach der Einwilligung ein Statistik-Cookie (_ga_*); darueber
+     klaeren Banner und Datenschutzerklaerung auf. IP-Anonymisierung ist in
+     GA4 immer aktiv; Werbe-/Signals-Funktionen sind aus. */
+  var GA_ID = 'G-LNR78KHJJS';
+  var gaBereit = false;
+  function gaStarten() {
+    if (gaBereit || window['ga-disable-' + GA_ID]) return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', GA_ID, {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false
+    });
+    gaBereit = true;
+  }
+
   /* Offizielles Mixpanel-Snippet (Stand: Mixpanel-Doku "Connect your data").
      Wird NICHT beim Seitenaufruf ausgefuehrt, sondern erst nach Einwilligung.
      Es legt den Stub an (window.mixpanel, __SV) und laedt die Bibliothek aus
@@ -55,6 +81,7 @@
   /* ---------- SDK erst nach Einwilligung laden ---------- */
   function starten(cb) {
     if (bereit) { cb && cb(); return; }
+    gaStarten();                            /* GA laedt unabhaengig von Mixpanel */
     window.MIXPANEL_CUSTOM_LIB_URL = LIB;   /* muss VOR dem Snippet stehen */
     snippet();
     if (!window.mixpanel) return;
@@ -92,8 +119,8 @@
     el.innerHTML =
       '<div class="cc__in">' +
         '<p class="cc__t">' + (en
-          ? 'We would like to measure anonymously which pages are used and where requests break off. Nothing is loaded or transmitted until you agree. No cookies, no advertising, no data sale.'
-          : 'Wir würden gern anonym messen, welche Seiten genutzt werden und wo Anfragen abbrechen. Vor deiner Zustimmung wird nichts geladen und nichts übertragen. Keine Cookies, keine Werbung, kein Datenverkauf.') +
+          ? 'We would like to measure which pages are used and where requests break off. Nothing is loaded or transmitted until you agree. After you agree we set one statistics cookie (Google Analytics) — no advertising, no data sale.'
+          : 'Wir würden gern messen, welche Seiten genutzt werden und wo Anfragen abbrechen. Vor deiner Zustimmung wird nichts geladen und nichts übertragen. Nach deiner Zustimmung setzen wir ein Statistik-Cookie (Google Analytics) — keine Werbung, kein Datenverkauf.') +
           ' <a href="/datenschutz">' + (en ? 'Privacy policy' : 'Datenschutzerklärung') + '</a></p>' +
         '<div class="cc__btns">' +
           '<button type="button" class="cc__b" data-cc="denied">'  + (en ? 'Decline'  : 'Ablehnen') + '</button>' +
@@ -189,6 +216,7 @@
     try {
       localStorage.removeItem(KEY);
       if (window.mixpanel) window.mixpanel.opt_out_tracking();
+      window['ga-disable-' + GA_ID] = true;   /* GA fuer diese Session stoppen */
     } catch (e) {}
     location.reload();
   };
