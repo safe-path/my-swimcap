@@ -104,8 +104,13 @@
   function track(name, props) {
     /* Guard auf eigenem Flag statt has_opted_in_tracking(): solange nur der
        Stub da ist, liefert die SDK-Abfrage undefined und wuerde alles blocken. */
-    if (!erlaubt || !window.mixpanel) return;
-    try { window.mixpanel.track(name, props || {}); } catch (e) {}
+    if (!erlaubt) return;
+    props = props || {};
+    try { if (window.mixpanel) window.mixpanel.track(name, props); } catch (e) {}
+    /* Dieselben Events zusaetzlich an GA4 — ausser page_viewed, das GA schon
+       selbst als page_view sendet. So erscheint der Lead-Funnel auch in GA:
+       request_modal_opened (Klick aufs Formular) -> request_submitted (Lead). */
+    try { if (gaBereit && window.gtag && name !== 'page_viewed') window.gtag('event', name, props); } catch (e) {}
   }
   window.scTrack = track;
 
