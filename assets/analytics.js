@@ -31,6 +31,12 @@
      klaeren Banner und Datenschutzerklaerung auf. IP-Anonymisierung ist in
      GA4 immer aktiv; Werbe-/Signals-Funktionen sind aus. */
   var GA_ID = 'G-LNR78KHJJS';
+  /* Google Ads — Conversion-Messung fuer den Lead „Anfrage abgeschickt".
+     Laeuft ueber denselben gtag wie GA4, nur nach Einwilligung, und feuert
+     genau beim erfolgreichen Absenden (request_submitted). Wert/Waehrung
+     stehen in der Conversion-Aktion selbst (fester Wert), darum kein value. */
+  var ADS_ID   = 'AW-18419914635';
+  var ADS_SEND = 'AW-18419914635/_4xlCM3wuPAcEIuvps9E';
   var gaBereit = false;
   function gaStarten() {
     if (gaBereit || window['ga-disable-' + GA_ID]) return;
@@ -41,11 +47,21 @@
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () { window.dataLayer.push(arguments); };
     window.gtag('js', new Date());
+    /* Consent Mode: wir landen hier nur nach aktivem Klick. Statistik und
+       Conversion-Messung erlaubt, Werbe-Personalisierung bleibt aus — also
+       kein Remarketing-Profil, nur die Erfolgsmessung von Anzeigen. */
+    window.gtag('consent', 'default', {
+      analytics_storage:  'granted',
+      ad_storage:         'granted',
+      ad_user_data:       'granted',
+      ad_personalization: 'denied'
+    });
     window.gtag('config', GA_ID, {
       anonymize_ip: true,
       allow_google_signals: false,
       allow_ad_personalization_signals: false
     });
+    window.gtag('config', ADS_ID);   /* Google Ads Conversion-Tag, gleicher gtag */
     gaBereit = true;
   }
 
@@ -111,6 +127,9 @@
        selbst als page_view sendet. So erscheint der Lead-Funnel auch in GA:
        request_modal_opened (Klick aufs Formular) -> request_submitted (Lead). */
     try { if (gaBereit && window.gtag && name !== 'page_viewed') window.gtag('event', name, props); } catch (e) {}
+    /* Google Ads: der abgeschickte Lead ist der Value Moment. Sendet nur die
+       Tatsache der Conversion (send_to), keinen Inhalt des Formulars. */
+    try { if (gaBereit && window.gtag && name === 'request_submitted') window.gtag('event', 'conversion', { send_to: ADS_SEND }); } catch (e) {}
   }
   window.scTrack = track;
 
@@ -119,17 +138,17 @@
     var el = document.createElement('div');
     el.className = 'cc';
     el.setAttribute('role', 'dialog');
-    el.setAttribute('aria-label', 'Einwilligung Statistik');
+    el.setAttribute('aria-label', 'Einwilligung Statistik und Anzeigenmessung');
     var en = (window.__lang === 'en');
     el.innerHTML =
       '<div class="cc__in">' +
         '<p class="cc__t">' + (en
-          ? 'We would like to measure which pages are used and where requests break off. Nothing is loaded or transmitted until you agree. After you agree we set one statistics cookie (Google Analytics) — no advertising, no data sale.'
-          : 'Wir würden gern messen, welche Seiten genutzt werden und wo Anfragen abbrechen. Vor deiner Zustimmung wird nichts geladen und nichts übertragen. Nach deiner Zustimmung setzen wir ein Statistik-Cookie (Google Analytics) — keine Werbung, kein Datenverkauf.') +
+          ? 'We would like to measure which pages are used, where requests break off, and whether a request came from a Google ad. Nothing is loaded or transmitted until you agree. After you agree we set cookies for statistics (Google Analytics) and for measuring ad results (Google Ads). No personalised advertising, no data sale.'
+          : 'Wir würden gern messen, welche Seiten genutzt werden, wo Anfragen abbrechen und ob eine Anfrage aus einer Google-Anzeige kam. Vor deiner Zustimmung wird nichts geladen und nichts übertragen. Nach deiner Zustimmung setzen wir Cookies für Statistik (Google Analytics) und für die Erfolgsmessung von Anzeigen (Google Ads). Keine personalisierte Werbung, kein Datenverkauf.') +
           ' <a href="/datenschutz">' + (en ? 'Privacy policy' : 'Datenschutzerklärung') + '</a></p>' +
         '<div class="cc__btns">' +
           '<button type="button" class="cc__b" data-cc="denied">'  + (en ? 'Decline'  : 'Ablehnen') + '</button>' +
-          '<button type="button" class="cc__b cc__b--ja" data-cc="granted">' + (en ? 'Allow statistics' : 'Statistik erlauben') + '</button>' +
+          '<button type="button" class="cc__b cc__b--ja" data-cc="granted">' + (en ? 'Allow' : 'Erlauben') + '</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(el);
@@ -222,6 +241,10 @@
       localStorage.removeItem(KEY);
       if (window.mixpanel) window.mixpanel.opt_out_tracking();
       window['ga-disable-' + GA_ID] = true;   /* GA fuer diese Session stoppen */
+      if (window.gtag) window.gtag('consent', 'update', {
+        analytics_storage: 'denied', ad_storage: 'denied',
+        ad_user_data: 'denied', ad_personalization: 'denied'
+      });                                      /* Google Ads Consent zuruecknehmen */
     } catch (e) {}
     location.reload();
   };
