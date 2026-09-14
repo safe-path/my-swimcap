@@ -86,10 +86,23 @@
     if (p === '/impressum' || p === '/datenschutz') return 'rechtliches';
     return 'sonstige';
   }
+  /* Einstiegsseite der Sitzung: der page_type der ERSTEN Seite, die der
+     Besucher (nach Einwilligung) gesehen hat. In sessionStorage festgehalten,
+     damit die Zuordnung den Wechsel Spoke -> Startseite ueberlebt, wo das
+     Formular tatsaechlich abgeschickt wird. Nur lokal, kein Request. */
+  var ENTRY_KEY = 'sc_entry';
+  function entryPage() {
+    try {
+      var v = sessionStorage.getItem(ENTRY_KEY);
+      if (!v) { v = seitentyp(); sessionStorage.setItem(ENTRY_KEY, v); }
+      return v;
+    } catch (e) { return seitentyp(); }
+  }
   function superProps() {
     return {
       platform:  'web',
       page_type: seitentyp(),
+      entry_page_type: entryPage(),
       site_language: (window.__lang || document.documentElement.lang || 'de')
     };
   }
@@ -126,7 +139,14 @@
     /* Dieselben Events zusaetzlich an GA4 — ausser page_viewed, das GA schon
        selbst als page_view sendet. So erscheint der Lead-Funnel auch in GA:
        request_modal_opened (Klick aufs Formular) -> request_submitted (Lead). */
-    try { if (gaBereit && window.gtag && name !== 'page_viewed') window.gtag('event', name, props); } catch (e) {}
+    try {
+      if (gaBereit && window.gtag && name !== 'page_viewed') {
+        var gaProps = {}; for (var k in props) if (Object.prototype.hasOwnProperty.call(props, k)) gaProps[k] = props[k];
+        gaProps.entry_page_type = entryPage();   /* Einstiegsseite als GA4-Parameter */
+        gaProps.page_type = seitentyp();
+        window.gtag('event', name, gaProps);
+      }
+    } catch (e) {}
     /* Google Ads: der abgeschickte Lead ist der Value Moment. Sendet nur die
        Tatsache der Conversion (send_to), keinen Inhalt des Formulars. */
     try { if (gaBereit && window.gtag && name === 'request_submitted') window.gtag('event', 'conversion', { send_to: ADS_SEND }); } catch (e) {}
