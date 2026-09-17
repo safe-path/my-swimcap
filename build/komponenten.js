@@ -73,8 +73,11 @@ function head(o) {
 <title>${o.title}</title>
 <meta name="description" content="${o.desc}" />
 <link rel="canonical" href="https://my-swimcap.de/${o.slug}" />
-<link rel="icon" href="/Bilder/favicon.svg" type="image/svg+xml" />
-<link rel="apple-touch-icon" href="/Bilder/favicon.svg" />
+<link rel="icon" href="/Bilder/favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/Bilder/favicon.svg" />
+<link rel="icon" type="image/png" sizes="96x96" href="/Bilder/favicon-96.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/Bilder/favicon-192.png" />
+<link rel="apple-touch-icon" href="/Bilder/apple-touch-icon.png" />
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="MySwimcap" />
 <meta property="og:locale" content="de_DE" />
