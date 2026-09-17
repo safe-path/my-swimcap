@@ -43,3 +43,9 @@ Bilder/grid/*.png
 
 # Ausnahme: Social-/OG-Vorschaubild wird ausgeliefert (von index.html referenziert)
 !Bilder/og-image.jpg
+
+# Ausnahme: Favicons werden ausgeliefert (PNG/ICO, von allen Seiten referenziert)
+!Bilder/favicon-96.png
+!Bilder/favicon-192.png
+!Bilder/favicon-512.png
+!Bilder/apple-touch-icon.png
