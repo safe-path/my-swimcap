@@ -97,7 +97,8 @@ Datenbank-Eintrag, niemals mit der E-Mail-Adresse als ID.
 | Property | Werte |
 |---|---|
 | `platform` | `web` |
-| `page_type` | `startseite`, `spoke_namen`, `spoke_langhaar`, `rechtliches`, `sonstige` |
+| `page_type` | `startseite`, `spoke_namen`, `spoke_langhaar`, `konfigurator`, `rechtliches`, `sonstige` |
+| `entry_page_type` | wie `page_type`, aber die erste Seite der Sitzung (Einstiegsseite) |
 | `site_language` | `de`, `en` |
 
 ### Events

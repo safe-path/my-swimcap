@@ -83,6 +83,7 @@
     if (p === '' ) return 'startseite';
     if (p === '/badekappen-mit-namen') return 'spoke_namen';
     if (p === '/badekappen-fuer-lange-haare') return 'spoke_langhaar';
+    if (p === '/gestalten') return 'konfigurator';
     if (p === '/impressum' || p === '/datenschutz') return 'rechtliches';
     return 'sonstige';
   }

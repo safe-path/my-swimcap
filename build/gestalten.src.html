@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Badekappe selbst gestalten mit Live-Preis | MySwimcap</title>
+<meta name="description" content="Gestalte eure Vereinsbadekappe live: Logo hochladen, Text setzen, Farbe wählen und den Preis sofort sehen. Direkt online bestellen und 5 % sparen oder kostenlos einen Entwurf anfragen." />
+<!-- Staging-Prototyp: vor dem Livegang noindex entfernen und in die Sitemap aufnehmen -->
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#f7f7f2" />
+<link rel="icon" href="/Bilder/favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/Bilder/favicon.svg" />
+<link rel="icon" type="image/png" sizes="96x96" href="/Bilder/favicon-96.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/Bilder/favicon-192.png" />
+<link rel="apple-touch-icon" href="/Bilder/apple-touch-icon.png" />
+<link rel="preload" href="/fonts/ibm-plex-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/ibm-plex-serif-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/oswald-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="/fonts/fonts.css" />
+<link rel="stylesheet" href="/assets/site.css" />
+<link rel="stylesheet" href="/assets/gestalten.css" />
+</head>
+<body class="seite-gestalten">
+<!--@NAV-->
+<main class="cfg">
+
+  <!-- ===================== KOPF ===================== -->
+  <section class="cfg-kopf" id="cfgKopf">
+    <div class="cfg-kopf__in">
+      <div class="cfg-kopf__text">
+        <span class="cfg-kopf__marken"><span class="eyebrow">Neu · Online gestalten</span><span class="demo-pill" id="demoPill" hidden><i></i>Staging-Prototyp · Zahlung nur simuliert</span></span>
+        <h1>Badekappe <em>selbst gestalten.</em></h1>
+        <p>Logo hochladen, Text setzen, Farbe wählen. Du siehst sofort, wie eure Kappe aussieht und was sie kostet.</p>
+      </div>
+      <div class="cfg-modus" role="tablist" aria-label="Wie möchtet ihr gestalten?">
+        <button type="button" class="cfg-modus__btn is-on" role="tab" aria-selected="true" data-modus="selbst">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          <span><b>Ich gestalte selbst</b><em>Live-Vorschau und Sofort-Preis</em></span>
+        </button>
+        <button type="button" class="cfg-modus__btn" role="tab" aria-selected="false" data-modus="service">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 4.5-6 8-6s6.4 2 8 6"/></svg>
+          <span><b>Gestaltet ihr für uns</b><em>Kostenloser Entwurf in 48 h</em></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== APP ===================== -->
+  <section class="cfg-app" id="app">
+
+    <!-- Bühne -->
+    <div class="buehne" id="buehne">
+      <div class="buehne__top">
+        <div class="seiten" role="tablist" aria-label="Seite der Kappe">
+          <button type="button" class="seiten__btn is-on" data-seite="vorne" role="tab" aria-selected="true">Vorderseite<i class="seiten__dot" aria-hidden="true"></i></button>
+          <button type="button" class="seiten__btn" data-seite="hinten" role="tab" aria-selected="false">Rückseite<i class="seiten__dot" aria-hidden="true"></i></button>
+        </div>
+        <div class="buehne__tools">
+          <button type="button" class="ib" id="btnUndo" title="Rückgängig (⌘Z)" aria-label="Rückgängig"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+          <button type="button" class="ib" id="btnRedo" title="Wiederholen (⇧⌘Z)" aria-label="Wiederholen"><svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
+          <button type="button" class="ib ib--toggle" id="btnBereich" title="Druckbereich anzeigen" aria-label="Druckbereich anzeigen" aria-pressed="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" stroke-dasharray="3 2.4"/></svg></button>
+        </div>
+      </div>
+
+      <div class="buehne__flaeche" id="flaeche">
+        <svg id="kappe" viewBox="0 0 600 560" role="img" aria-label="Live-Vorschau der Badekappe"></svg>
+
+        <div class="buehne__leer" id="leer" hidden>
+          <p><b>Leg los.</b> Lad euer Logo hoch oder setz einen Text auf die Kappe.</p>
+          <div class="buehne__leer-btns">
+            <button type="button" class="btn btn--primary btn--sm" data-aktion="logo"><span class="btn__t"><span>Logo hochladen</span><span>Logo hochladen</span></span></button>
+            <button type="button" class="btn btn--ghost btn--sm" data-aktion="text"><span class="btn__t"><span>Text hinzufügen</span><span>Text hinzufügen</span></span></button>
+          </div>
+          <button type="button" class="linkbtn" data-aktion="beispiel">Oder erst ein Beispiel ansehen</button>
+        </div>
+
+        <div class="buehne__warn" id="warnBereich" hidden><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17v.5"/></svg>Teile liegen außerhalb des Druckbereichs</div>
+        <div class="buehne__service" id="serviceHinweis" hidden><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Wir setzen euer Motiv sauber um. Entwurf in 48 h.</div>
+        <div class="buehne__drop" aria-hidden="true">Logo hier ablegen</div>
+      </div>
+
+      <div class="buehne__fuss">
+        <span id="infoModell">Silikon Premium</span>
+        <span id="infoFarben">Druckfarben: vorne 0, hinten 0</span>
+      </div>
+    </div>
+
+    <!-- Panel -->
+    <div class="panel" id="panel">
+      <nav class="schritte" role="tablist" aria-label="Schritte">
+        <button type="button" class="schritt is-on" data-tab="modell" role="tab" aria-selected="true"><i>1</i>Modell</button>
+        <button type="button" class="schritt" data-tab="design" role="tab" aria-selected="false"><i>2</i><span id="tabDesignLabel">Gestalten</span></button>
+        <button type="button" class="schritt" data-tab="menge" role="tab" aria-selected="false"><i>3</i>Menge</button>
+      </nav>
+
+      <div class="panel__inhalt" id="panelInhalt">
+      <!-- 1 · Modell -->
+      <div class="tab is-on" data-pane="modell" role="tabpanel">
+        <h3 class="pt">Modell</h3>
+        <div class="modelle" id="modelle"></div>
+
+        <h3 class="pt">Kappenfarbe <span class="pt__wert" id="farbName"></span></h3>
+        <div class="swatches cfg-sw" id="farben"></div>
+        <p class="mini" id="farbZahl"></p>
+
+        <h3 class="pt">Größe</h3>
+        <div class="seg" id="groesse" role="group" aria-label="Größe">
+          <button type="button" data-g="erwachsene" class="is-on">Erwachsene</button>
+          <button type="button" data-g="kinder">Kinder</button>
+          <button type="button" data-g="gemischt">Gemischt</button>
+        </div>
+        <div class="field field--klein" id="kinderFeld" hidden>
+          <label for="kinderZahl">Davon Kinderkappen</label>
+          <input type="number" id="kinderZahl" min="0" inputmode="numeric" placeholder="z. B. 30">
+        </div>
+
+        <button type="button" class="weiter" data-tab-go="design">Weiter: Gestalten <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+
+      <!-- 2 · Gestalten -->
+      <div class="tab" data-pane="design" role="tabpanel">
+        <div id="designSelbst">
+          <div class="inspektor" id="inspektor" hidden></div>
+
+          <div class="add">
+            <button type="button" class="add__btn" data-aktion="logo">
+              <span class="add__ic"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/></svg></span>
+              <span><b>Logo hochladen</b><em>PNG, JPG oder SVG. Hintergrund wird erkannt.</em></span>
+            </button>
+            <button type="button" class="add__btn" data-aktion="text">
+              <span class="add__ic"><svg viewBox="0 0 24 24"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></svg></span>
+              <span><b>Text hinzufügen</b><em>Vereinsname, Slogan oder Nummer</em></span>
+            </button>
+          </div>
+          <div class="presets">
+            <span>Schnellstart</span>
+            <button type="button" data-preset="bogen">Vereinsname im Bogen</button>
+            <button type="button" data-preset="nummer">Nummer</button>
+            <button type="button" data-preset="slogan">Slogan</button>
+            <button type="button" data-aktion="beispiel">Beispiel-Design</button>
+          </div>
+          <div class="ebenen" id="ebenen"></div>
+        </div>
+
+        <div id="designService" hidden>
+          <div class="svc-intro">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            <div><b>Wir gestalten kostenlos für euch.</b>
+              <span>Lad euer Logo hoch und schreib kurz dazu, was auf die Kappe soll. Ihr könnt trotzdem schon bestellen: Gedruckt wird erst, wenn ihr unseren Entwurf freigebt.</span></div>
+          </div>
+          <button type="button" class="add__btn add__btn--breit" data-aktion="logo-service">
+            <span class="add__ic"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/></svg></span>
+            <span><b>Logo oder Datei hochladen</b><em>Alle Formate, auch AI, PSD oder PDF</em></span>
+          </button>
+          <div class="svc-datei" id="svcDatei" hidden></div>
+          <div class="field">
+            <label for="svcNotiz">Was soll auf die Kappe?</label>
+            <textarea id="svcNotiz" rows="4" placeholder="z. B. Logo vorne mittig, hinten unser Vereinsname. Farben wie auf unserer Website."></textarea>
+          </div>
+          <h3 class="pt">Bedruckte Seiten und Druckfarben</h3>
+          <p class="mini">Schätzung reicht, wir prüfen das beim Entwurf und melden uns, falls sich am Preis etwas ändert.</p>
+          <div class="svc-seiten">
+            <div class="svc-row" data-svc-row="vorne">
+              <label class="cb"><input type="checkbox" data-svc-seite="vorne" checked><span>Vorderseite</span></label>
+              <div class="stepper"><button type="button" data-svc-minus="vorne" aria-label="Weniger Farben vorne">−</button><span data-svc-zahl="vorne">2</span><button type="button" data-svc-plus="vorne" aria-label="Mehr Farben vorne">+</button></div>
+              <span class="mini">Farben</span>
+            </div>
+            <div class="svc-row aus" data-svc-row="hinten">
+              <label class="cb"><input type="checkbox" data-svc-seite="hinten"><span>Rückseite</span></label>
+              <div class="stepper"><button type="button" data-svc-minus="hinten" aria-label="Weniger Farben hinten">−</button><span data-svc-zahl="hinten">1</span><button type="button" data-svc-plus="hinten" aria-label="Mehr Farben hinten">+</button></div>
+              <span class="mini">Farben</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="namen" id="namenBox">
+          <label class="toggle">
+            <input type="checkbox" id="namenAn">
+            <span class="toggle__ui"></span>
+            <span class="toggle__t"><b>Individuelle Namen</b><em id="namenPreis">+5,00 € je Kappe</em></span>
+          </label>
+          <div class="namen__inhalt" id="namenInhalt" hidden>
+            <p class="mini">Jede Kappe bekommt einen eigenen Namen auf der Rückseite. Position und Schrift legst du am Platzhalter fest. Die Mindestmenge gilt für die ganze Bestellung, nicht pro Name.</p>
+            <div class="field">
+              <label for="namenListe">Namensliste, ein Name pro Zeile</label>
+              <textarea id="namenListe" rows="5" placeholder="Lena&#10;Jonas&#10;Mia"></textarea>
+            </div>
+            <div class="namen__fuss">
+              <span id="namenZahl">0 Namen</span>
+              <span class="namen__vor"><button type="button" id="nVor" aria-label="Vorheriger Name">‹</button><span id="nAkt">Vorschau</span><button type="button" id="nNach" aria-label="Nächster Name">›</button></span>
+            </div>
+          </div>
+        </div>
+
+        <input type="file" id="dateiInput" accept="image/png,image/jpeg,image/webp,image/svg+xml,.ai,.eps,.pdf,.psd" hidden>
+        <button type="button" class="weiter" data-tab-go="menge">Weiter: Menge <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+
+      <!-- 3 · Menge -->
+      <div class="tab" data-pane="menge" role="tabpanel">
+        <h3 class="pt">Stückzahl</h3>
+        <div class="menge">
+          <button type="button" id="mMinus" aria-label="Weniger">−</button>
+          <label class="menge__feld"><input type="number" id="menge" min="50" step="1" inputmode="numeric" aria-label="Stückzahl"><span>Stück</span></label>
+          <button type="button" id="mPlus" aria-label="Mehr">+</button>
+        </div>
+        <div class="chips menge__chips" id="mengeChips">
+          <button type="button" class="chip" data-m="50">50</button>
+          <button type="button" class="chip" data-m="100">100</button>
+          <button type="button" class="chip" data-m="250">250</button>
+          <button type="button" class="chip" data-m="500">500</button>
+          <button type="button" class="chip" data-m="1000">1.000</button>
+        </div>
+        <p class="mini">Mindestens 50 Stück pro Bestellung.</p>
+        <div class="staffel" id="staffel"></div>
+        <p class="hinweis" id="naechsteStufe" hidden></p>
+
+        <h3 class="pt">Lieferung</h3>
+        <label class="option">
+          <input type="checkbox" id="express">
+          <span class="option__ui"></span>
+          <span class="option__t"><b>Express-Produktion <em id="expressPreis">+25 %</em></b><span>Für Wettkämpfe mit festem Termin. Fertig in ca. 3 Wochen.</span></span>
+        </label>
+        <p class="liefer" id="lieferText"></p>
+      </div>
+      </div>
+
+      <!-- Preis -->
+      <div class="preis" id="preis" aria-label="Preisübersicht">
+        <button type="button" class="preis__griff" aria-label="Preisübersicht schließen"></button>
+        <div class="preis__kopf">
+          <span class="preis__titel">Dein Preis</span>
+          <div class="nb" role="group" aria-label="Preisanzeige"><button type="button" data-nb="netto" class="is-on">netto</button><button type="button" data-nb="brutto">brutto</button></div>
+        </div>
+        <div class="preis__haupt">
+          <div class="preis__betrag"><s id="pAlt"></s><b id="pGesamt">0,00 €</b></div>
+          <span class="preis__rabatt" id="pRabattBadge">−5 % Sofort-Rabatt</span>
+        </div>
+        <p class="preis__unter" id="pUnter"></p>
+        <details class="preis__details"><summary>Preisdetails</summary><div id="pZeilen"></div></details>
+        <p class="preis__liefer" id="pLiefer"></p>
+        <button type="button" class="btn btn--light btn--lg preis__cta" id="btnBestellen"><span class="btn__t"><span>Jetzt bestellen &amp; 5 % sparen</span><span>Jetzt bestellen &amp; 5 % sparen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11 11 3M5 3h6v6"/></svg></button>
+        <div class="preis__wege">
+          <button type="button" class="preis__weg" id="btnAngebot"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>Angebot als PDF</b><em>Für Vorstand und Kasse</em></span></button>
+          <button type="button" class="preis__weg" id="btnEntwurf"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span><b>Kostenloser Entwurf</b><em>Unverbindlich anfragen</em></span></button>
+        </div>
+        <p class="preis__trust"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Sicher bezahlen mit Stripe · Proof vor dem Druck · Produktion in Europa</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== INFO ===================== -->
+  <section class="cfg-info" id="cfgInfo">
+    <div class="cfg-info__in">
+      <div class="cfg-info__karten">
+        <article><svg viewBox="0 0 24 24"><path d="M12 3v18M7 7.5C7 5.6 9.2 4.5 12 4.5s5 1 5 3c0 4.5-10 3-10 8 0 2 2.2 3 5 3s5-1.1 5-3"/></svg><b>Preis sofort, ohne Überraschung</b><p>Jede Änderung rechnet live mit: Farben, zweite Seite, Namen, Staffeln. Was ihr seht, zahlt ihr.</p></article>
+        <article><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg><b>Druck-Check vor der Produktion</b><p>Wir prüfen jede Bestellung und schicken euch einen finalen Proof. Gedruckt wird erst nach eurer Freigabe.</p></article>
+        <article><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Der Verein muss erst zustimmen?</b><p>Lad euch das Angebot als PDF herunter. Euer Entwurf bleibt gespeichert, bis ihr bestellt.</p></article>
+        <article><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 4.5-6 8-6s6.4 2 8 6"/></svg><b>Lieber persönlich?</b><p>Thomas baut euch kostenlos einen Entwurf, meist innerhalb von 48 Stunden. <a href="/#anfrage" data-open-modal>Entwurf anfragen</a></p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== KASSE ===================== -->
+  <section class="kasse" id="kasse" hidden>
+    <div class="kasse__in">
+      <button type="button" class="zurueck" data-route="gestalten"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Zurück zum Design</button>
+      <h1 class="kasse__h">Bestellung abschließen</h1>
+      <ol class="kasse__schritte"><li class="ok">Gestaltet</li><li class="on">Daten und Zahlung</li><li>Bestätigung</li></ol>
+
+      <div class="kasse__grid">
+        <aside class="kasse__sum">
+          <button type="button" class="kasse__sumtoggle" id="kasseSumToggle" aria-expanded="false"><span>Bestellübersicht</span><b id="kasseSumMobil"></b><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="kasse__suminhalt">
+            <div class="kasse__mock" id="kasseMock"></div>
+            <dl class="kasse__konfig" id="kasseKonfig"></dl>
+            <p class="hinweis hinweis--warn" id="kasseWarn" hidden>Einzelne Elemente liegen am Rand des Druckbereichs. Wir prüfen das beim Druck-Check und melden uns.</p>
+            <div class="kasse__zeilen" id="kasseZeilen"></div>
+          </div>
+        </aside>
+
+        <form class="kasse__form" id="kasseForm" novalidate autocomplete="on">
+          <fieldset>
+            <legend><i>1</i>Kontakt</legend>
+            <div class="reihe">
+              <div class="field"><label for="kVerein">Verein / Team / Schule</label><input id="kVerein" name="organization" autocomplete="organization" required placeholder="z. B. SV Delphin Leipzig"></div>
+              <div class="field"><label for="kName">Ansprechpartner</label><input id="kName" name="name" autocomplete="name" required placeholder="Vor- und Nachname"></div>
+            </div>
+            <div class="reihe">
+              <div class="field"><label for="kEmail">E-Mail</label><input id="kEmail" type="email" name="email" autocomplete="email" required placeholder="name@verein.de"></div>
+              <div class="field"><label for="kTel">Telefon (optional)</label><input id="kTel" type="tel" name="tel" autocomplete="tel" placeholder="Für Rückfragen zum Druck"></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend><i>2</i>Rechnungsadresse</legend>
+            <div class="field"><label for="kStrasse">Straße und Hausnummer</label><input id="kStrasse" name="street" autocomplete="address-line1" required></div>
+            <div class="reihe reihe--plz">
+              <div class="field"><label for="kPlz">PLZ</label><input id="kPlz" name="plz" autocomplete="postal-code" inputmode="numeric" required></div>
+              <div class="field"><label for="kOrt">Ort</label><input id="kOrt" name="city" autocomplete="address-level2" required></div>
+              <div class="field"><label for="kLand">Land</label><select id="kLand" name="country" autocomplete="country"><option>Deutschland</option><option>Österreich</option><option>Schweiz</option></select></div>
+            </div>
+            <label class="cb cb--zeile"><input type="checkbox" id="kLieferAbw"><span>Lieferadresse weicht ab</span></label>
+            <div id="lieferFelder" hidden>
+              <div class="field"><label for="kLName">Empfänger</label><input id="kLName" autocomplete="shipping name"></div>
+              <div class="field"><label for="kLStrasse">Straße und Hausnummer</label><input id="kLStrasse" autocomplete="shipping address-line1"></div>
+              <div class="reihe"><div class="field"><label for="kLPlz">PLZ</label><input id="kLPlz" autocomplete="shipping postal-code" inputmode="numeric"></div><div class="field"><label for="kLOrt">Ort</label><input id="kLOrt" autocomplete="shipping address-level2"></div></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend><i>3</i>Termin und Hinweise</legend>
+            <div class="field"><label for="kTermin">Wunsch-Liefertermin (optional)</label><input type="date" id="kTermin" name="termin"></div>
+            <p class="mini" id="kTerminHinweis"></p>
+            <div class="field"><label for="kNotiz">Hinweise zur Bestellung (optional)</label><textarea id="kNotiz" rows="3" placeholder="z. B. Wettkampf am 14. März, Namensliste schicken wir nach"></textarea></div>
+          </fieldset>
+
+          <fieldset>
+            <legend><i>4</i>Zahlungsart</legend>
+            <div class="zahlarten">
+              <label class="za"><input type="radio" name="zahlung" value="karte" checked><span class="za__k"><b>Kreditkarte</b><em>Visa, Mastercard, American Express</em></span><span class="za__r">−5 %</span></label>
+              <label class="za"><input type="radio" name="zahlung" value="sepa"><span class="za__k"><b>SEPA-Lastschrift</b><em>Direkt vom Vereinskonto</em></span><span class="za__r">−5 %</span></label>
+              <label class="za"><input type="radio" name="zahlung" value="paypal"><span class="za__k"><b>PayPal</b><em>Schnell mit dem PayPal-Konto</em></span><span class="za__r">−5 %</span></label>
+              <label class="za"><input type="radio" name="zahlung" value="wallet"><span class="za__k"><b>Apple Pay / Google Pay</b><em>Ein Tipp auf dem Handy</em></span><span class="za__r">−5 %</span></label>
+              <label class="za za--rechnung"><input type="radio" name="zahlung" value="rechnung"><span class="za__k"><b>Rechnung</b><em>Überweisung innerhalb von 14 Tagen, ohne Sofort-Rabatt</em></span></label>
+            </div>
+          </fieldset>
+
+          <label class="cb cb--agb"><input type="checkbox" name="agb" required><span>Ich habe die <a href="#" data-agb>AGB</a> und die <a href="/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a> gelesen und akzeptiere sie.</span></label>
+          <p class="kasse__proof"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>Vor dem Druck bekommt ihr einen finalen Proof. Gedruckt wird erst nach eurer Freigabe.</p>
+          <button type="submit" class="btn btn--primary btn--lg kasse__submit"><span class="btn__t"><span>Zahlungspflichtig bestellen</span><span>Zahlungspflichtig bestellen</span></span><b class="kasse__betrag" id="kasseSumme"></b></button>
+          <p class="kasse__stripe"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Sichere Zahlung über Stripe · SSL-verschlüsselt</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BESTÄTIGUNG ===================== -->
+  <section class="fertig" id="fertig" hidden>
+    <div class="fertig__in">
+      <div class="fertig__haken" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <span class="eyebrow">Bestellung eingegangen</span>
+      <h1>Danke, eure Kappen sind <em>bestellt.</em></h1>
+      <p class="fertig__lead">Bestellnummer <b id="bestNr"></b>. Die Bestätigung geht an <b id="bestMail"></b>.</p>
+      <div class="fertig__grid">
+        <div class="fertig__mock" id="fertigMock"></div>
+        <ol class="timeline" id="timeline"></ol>
+      </div>
+      <div class="fertig__btns">
+        <button type="button" class="btn btn--ghost" id="btnBestPdf"><span class="btn__t"><span>Bestätigung als PDF</span><span>Bestätigung als PDF</span></span></button>
+        <a class="btn btn--primary" href="/"><span class="btn__t"><span>Zur Startseite</span><span>Zur Startseite</span></span></a>
+      </div>
+      <p class="fertig__demo">Prototyp: Es wurde nichts bezahlt und keine echte Bestellung ausgelöst.</p>
+    </div>
+  </section>
+</main>
+
+<!-- Mobile Preisleiste -->
+<div class="mbar" id="mbar">
+  <button type="button" class="mbar__preis" id="mbarPreis" aria-controls="preis" aria-expanded="false">
+    <span class="mbar__l">Gesamt <i id="mbarRabatt">−5 %</i></span>
+    <b id="mbarSumme">0,00 €</b>
+    <span class="mbar__s" id="mbarStk"></span>
+  </button>
+  <button type="button" class="btn btn--primary mbar__cta" id="mbarBestellen"><span class="btn__t"><span>Bestellen</span><span>Bestellen</span></span></button>
+</div>
+<div class="sheet-bg" id="sheetBg"></div>
+
+<!-- Dialog: Angebot -->
+<div class="dlg" id="dlgAngebot" role="dialog" aria-modal="true" aria-labelledby="dlgAngebotT" hidden>
+  <form class="dlg__karte" id="formAngebot">
+    <button type="button" class="dlg__zu" data-dlg-zu aria-label="Schließen">×</button>
+    <span class="eyebrow">Angebot als PDF</span>
+    <h2 id="dlgAngebotT">Für wen ist das Angebot?</h2>
+    <p>Wir setzen den Namen ins Angebot, damit es im Verein gleich zugeordnet werden kann. Beides ist optional.</p>
+    <div class="field"><label for="aVerein">Verein / Team</label><input id="aVerein" autocomplete="organization" placeholder="z. B. SV Delphin Leipzig"></div>
+    <div class="field"><label for="aName">Ansprechpartner</label><input id="aName" autocomplete="name" placeholder="Vor- und Nachname"></div>
+    <button type="submit" class="btn btn--primary btn--lg"><span class="btn__t"><span>PDF erstellen</span><span>PDF erstellen</span></span></button>
+    <p class="mini">Im Druckdialog »Als PDF sichern« wählen.</p>
+  </form>
+</div>
+
+<!-- Dialog: Zahlung (simuliert) -->
+<div class="dlg dlg--zahlung" id="dlgZahlung" role="dialog" aria-modal="true" aria-label="Zahlung" hidden>
+  <div class="dlg__karte dlg__karte--zahlung">
+    <div class="zahl__kopf"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Sicher bezahlen mit <b>Stripe</b></div>
+    <div class="zahl__betrag" id="zBetrag"></div>
+    <div class="zahl__art" id="zArt"></div>
+    <div class="zahl__status"><span class="zahl__spinner"></span><span class="zahl__ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span id="zStatus"></span></div>
+    <p class="mini">Prototyp: Die Zahlung wird nur simuliert.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="druck" id="druck" aria-hidden="true"></div>
+
+<!--@FOOTER-->
+<script src="/assets/gestalten.js" defer></script>
+<script src="/assets/analytics.js" defer></script>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
