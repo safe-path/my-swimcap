@@ -48,8 +48,10 @@
   };
   const REIHE = ['silikon', '3d', 'stoff', 'langhaar'];
 
-  /* Kappenfarben aus dem Lieferantenkatalog, identisch zum Anfrage-Wizard
-     (index.html, FARBTON/FARBEN). [Name, EN, Hex, helle Farbe] */
+  /* Kappenfarben aus dem Lieferantenkatalog Comercial Group 2026, identisch
+     zum Anfrage-Wizard (index.html, FARBTON/FARBEN). [Name, EN, Hex, helle Farbe]
+     Silikon = G2001 Adult, Langhaar = G2004 Long Hair, 3D = G2014 FVC8,
+     Stoff = G3001SR Elastane Round Comfort. */
   const FARBTON = {
     '10': ['Weiß', 'White', '#ffffff', 1],       '20': ['Neongelb', 'Fluo yellow', '#f2ec00', 1],
     '21': ['Gelb', 'Yellow', '#f7e11e', 1],      '30': ['Orange', 'Orange', '#dd7239', 0],
@@ -63,10 +65,23 @@
   };
   const FARBEN = {
     silikon:  ['10', '20', '21', '30', '40', '43', '50', '60', '61', '70', '71', '72', '81', '85', '86', '90'],
-    langhaar: ['10', '20', '32', '55', '60', '90'],
-    '3d':     ['10', '71', '90', '21', '40', '50'],
+    langhaar: ['10', '20', '32', '55', '60', '70', '90'],
+    '3d':     ['10', '71', '72', '61', '90', '21', '40', '50'],
     stoff:    ['10', '21', '40', '50', '61', '70', '71', '72', '90']
   };
+  /* Kindergrößen: eigene Junior-Varianten mit kleinerer Palette
+     (G2001JR Silicone Junior, G3001JR Elastane Junior). Für 3D und Langhaar
+     führt der Katalog keine Junior-Variante. */
+  const FARBEN_JUNIOR = {
+    silikon:  ['10', '21', '30', '40', '50', '61', '70', '71', '72', '90'],
+    stoff:    ['10', '21', '30', '40', '50', '61', '70', '71', '72']
+  };
+  /* Bei gemischter Bestellung nur Farben, die es in beiden Größen gibt */
+  function farbListe(modell, groesse) {
+    const er = FARBEN[modell], jr = FARBEN_JUNIOR[modell], g = groesse || st.groesse;
+    if (!jr || g === 'erwachsene') return er;
+    return g === 'kinder' ? jr : er.filter((nr) => jr.indexOf(nr) >= 0);
+  }
 
   /* Druckfarben für Text und einfarbige Logos (Siebdruck-Standard). */
   const DRUCK = [
@@ -291,12 +306,13 @@
     const m = q.get('modell');
     if (m && MODELLE[m]) {
       st.modell = m;
-      if (FARBEN[m].indexOf(st.farbe) < 0) st.farbe = standardFarbe(m);
     }
+    /* Gespeicherte Farbe kann nach Katalog-Update oder Größenwahl fehlen */
+    if (farbListe(st.modell).indexOf(st.farbe) < 0) st.farbe = standardFarbe(st.modell);
     if (q.get('modus') === 'service') st.modus = 'service';
   }
   function standardFarbe(m) {
-    const l = FARBEN[m];
+    const l = farbListe(m);
     return l.indexOf('71') >= 0 ? '71' : (l.indexOf('90') >= 0 ? '90' : l[0]);
   }
 
@@ -994,7 +1010,7 @@
     const txt = '#ffffff';
     st.elemente.vorne = st.elemente.vorne.filter((e) => e.name);
     st.elemente.hinten = st.elemente.hinten.filter((e) => e.name);
-    if (FARBEN[st.modell].indexOf('71') >= 0 && luminanz(kappeHex()) > 0.6) st.farbe = '71';
+    if (farbListe(st.modell).indexOf('71') >= 0 && luminanz(kappeHex()) > 0.6) st.farbe = '71';
     const logo = { id: uid(), typ: 'bild', x: 300, y: 300, s: 1, r: 0, src: '/Bilder/beispiel-logo.svg', ohneHg: false, mono: null, datei: 'beispiel-logo.svg', beispiel: true };
     verarbeite(logo).then(() => {
       logo.w = Math.round(logo.w * 0.8); logo.h = Math.round(logo.h * 0.8);
@@ -1201,14 +1217,16 @@
     }).join('');
   }
   function renderFarben() {
-    const liste = FARBEN[st.modell];
+    const liste = farbListe(st.modell);
     $('#farben').innerHTML = liste.map((nr) => {
       const f = FARBTON[nr];
       return `<button type="button" class="sw${st.farbe === nr ? ' sel' : ''}" data-farbe="${nr}" aria-label="${f[0]}" title="${f[0]}" aria-pressed="${st.farbe === nr}">
         <span class="sw__c" style="background:${f[2]}${f[3] ? ';--sw-check:#191818' : ''}"></span><span class="sw__n">${f[0]}</span></button>`;
     }).join('');
     $('#farbName').textContent = FARBTON[st.farbe] ? FARBTON[st.farbe][0] : '';
-    $('#farbZahl').textContent = `${liste.length} Farben für ${MODELLE[st.modell].name}`;
+    const zusatz = !FARBEN_JUNIOR[st.modell] || st.groesse === 'erwachsene' ? ''
+      : (st.groesse === 'kinder' ? ' in Kindergröße' : ', in Kinder- und Erwachsenengröße');
+    $('#farbZahl').textContent = `${liste.length} Farben für ${MODELLE[st.modell].name}${zusatz}`;
   }
   function renderGroesse() {
     $$('#groesse button').forEach((b) => {
@@ -1790,14 +1808,25 @@
       const mo = t.closest('[data-modell]');
       if (mo) {
         st.modell = mo.dataset.modell;
-        if (FARBEN[st.modell].indexOf(st.farbe) < 0) st.farbe = standardFarbe(st.modell);
+        if (farbListe(st.modell).indexOf(st.farbe) < 0) st.farbe = standardFarbe(st.modell);
         renderModelle(); renderFarben(); renderKappe(); renderPreis(); renderMenge(); commit();
         return;
       }
       const fa = t.closest('[data-farbe]');
       if (fa) { st.farbe = fa.dataset.farbe; renderFarben(); renderKappe(); renderInspektor(); renderPreis(); commit(); return; }
       const gr = t.closest('#groesse button');
-      if (gr) { st.groesse = gr.dataset.g; renderGroesse(); commit(); return; }
+      if (gr) {
+        st.groesse = gr.dataset.g;
+        /* Junior-Palette ist kleiner: nicht lieferbare Farbe ersetzen und sagen */
+        if (farbListe(st.modell).indexOf(st.farbe) < 0) {
+          const alt = FARBTON[st.farbe] ? FARBTON[st.farbe][0] : '';
+          st.farbe = standardFarbe(st.modell);
+          toast(`${alt} gibt es nicht in Kindergröße. Wir haben auf ${FARBTON[st.farbe][0]} gewechselt.`);
+          renderKappe(); renderInspektor();
+        }
+        renderGroesse(); renderFarben(); commit();
+        return;
+      }
       const se = t.closest('.seiten__btn,[data-seite-go]');
       if (se) {
         st.seite = se.dataset.seite || se.dataset.seiteGo;
