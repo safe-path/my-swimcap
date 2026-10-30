@@ -56,6 +56,10 @@
 .seiten__btn.is-on{background:var(--ink);color:var(--parchment)}
 .seiten__dot{width:6px;height:6px;border-radius:50%;background:var(--amber);opacity:0;transform:scale(.4);transition:.25s var(--e)}
 .seiten__btn.hat .seiten__dot{opacity:1;transform:none}
+.seiten__btn.grau{color:var(--ink-45)}
+.seiten__btn.grau .seiten__dot{background:var(--ink-45)}
+.seiten__btn.grau.is-on{background:#a8a59e;color:#fff}
+.seiten__btn.grau.is-on .seiten__dot{background:#fff}
 .buehne__tools{display:flex;gap:6px}
 .ib{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.78);box-shadow:inset 0 0 0 1px var(--ink-08);transition:background .2s,box-shadow .2s,color .2s,opacity .2s;color:var(--ink)}
 .ib svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -325,8 +329,10 @@
 .mg__konfig dt{color:var(--ink-45);flex:none;width:84px}
 .mg__konfig dd{min-width:0;overflow-wrap:anywhere;line-height:1.4}
 .mg__h{font-family:var(--serif);font-weight:400;font-size:clamp(22px,2.2vw,28px);letter-spacing:-.02em;margin:34px 0 14px}
-.mg__seite{position:sticky;top:calc(var(--navh) + var(--steph) + 18px);display:flex;flex-direction:column;gap:12px}
-.mg__entwurf{display:flex;gap:12px;padding:16px;border-radius:18px;background:var(--linen)}
+.mg__seite{position:sticky;top:calc(var(--navh) + var(--steph) + 18px);display:flex;flex-direction:column}
+.mg__seite .preis{position:relative;z-index:2;box-shadow:0 26px 40px -22px rgba(25,24,24,.6)}
+/* Entwurf-Box liegt unter der Preiskarte: oben 40 px verdeckt, ohne Lücke dazwischen */
+.mg__entwurf{position:relative;z-index:1;display:flex;gap:12px;margin-top:-40px;padding:70px 18px 18px;border-radius:22px;background:var(--linen)}
 .mg__entwurf > svg{width:36px;height:36px;padding:8px;border-radius:11px;background:#fff;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .mg__entwurf b{display:block;font-size:14.5px;font-weight:600}
 .mg__entwurf span{display:block;font-size:13px;color:var(--ink-60);line-height:1.45;margin:2px 0 6px}

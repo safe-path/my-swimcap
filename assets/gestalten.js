@@ -92,21 +92,27 @@
 
   /* Silhouette der flach liegenden Kappe (viewBox 600 x 560), dieselbe Form
      wie im Loader und im Logo der Website. Nur absolute Befehle, damit
-     Spiegeln und Skalieren per Zahlenpaar klappt. Langhaar: Kuppel höher. */
-  const FORM = {
-    kappe:    'M498.4 418C494.3 423.9 494.4 449.8 495 458.8C495.6 468.7 486.5 476.5 476.7 474.5C389.5 456.9 368.1 479.5 298.5 482.3C232.7 485 220.1 455 121.6 475.1C112 477.1 103.1 469.4 103.5 459.6C103.9 449.7 104.2 422.5 100.5 416.9C76.5 380.1 65 347.4 65 300.2C65 170.6 172.2 70 301.9 70C431.6 70 535 165.8 534.8 300.1C534.7 331 526.5 369.4 498.5 418L498.4 418Z',
-    langhaar: 'M498.4 413.5C494.3 419.8 494.4 447.5 495 457.1C495.6 467.8 486.5 476.1 476.7 474C389.5 455.1 368.1 479.3 298.5 482.4C232.7 485.2 220.1 453.1 121.6 474.7C112 476.8 103.1 468.6 103.5 458C103.9 447.5 104.2 418.3 100.5 412.3C76.5 372.9 65 338 65 287.4C65 148.8 172.2 41.2 301.9 41.2C431.6 41.2 535 143.7 534.8 287.4C534.7 320.4 526.5 361.6 498.5 413.5L498.4 413.5Z'
+     Spiegeln und Skalieren per Zahlenpaar klappt. Langhaar: hinten (rechts)
+     eine Ausbuchtung für die Haare, darüber eine Delle, darunter eine
+     tiefere Aussparung über der Ohrlasche. Kuppelhöhe wie die Standardkappe. */
+  const ECKE_LINKS = 'C112 477.1 103.1 469.4 103.5 459.6';
+  const KUPPEL_LINKS = 'C103.9 449.7 104.2 422.5 100.5 416.9C76.5 380.1 65 347.4 65 300.2C65 170.6 172.2 70 301.9 70';
+  const RECHTS = {
+    kappe:    'C431.6 70 535 165.8 534.8 300.1C534.7 331 526.5 369.4 498.5 418L498.4 418',
+    langhaar: 'C385 70 440 98 471 128C489 145 512 142 538 160C560 175 568 220 565 262C562 320 534 382 498.5 418L498.4 418'
   };
-  /* Gewellte Unterkante mit den Ohrlaschen: hier liegt der gerollte Rand */
-  const RAND = {
-    kappe:    'M495 458.8C495.6 468.7 486.5 476.5 476.7 474.5C389.5 456.9 368.1 479.5 298.5 482.3C232.7 485 220.1 455 121.6 475.1C112 477.1 103.1 469.4 103.5 459.6',
-    langhaar: 'M495 457.1C495.6 467.8 486.5 476.1 476.7 474C389.5 455.1 368.1 479.3 298.5 482.4C232.7 485.2 220.1 453.1 121.6 474.7C112 476.8 103.1 468.6 103.5 458'
-  };
+  const UNTEN = 'C495.6 468.7 486.5 476.5 476.7 474.5C389.5 456.9 368.1 479.5 298.5 482.3C232.7 485 220.1 455 121.6 475.1';
+  const OHR_RECHTS = 'C494.3 423.9 494.4 449.8 495 458.8';
+  const FORM = {}, OBEN = {};
+  Object.keys(RECHTS).forEach((f) => {
+    FORM[f] = `M498.4 418${OHR_RECHTS}${UNTEN}${ECKE_LINKS}${KUPPEL_LINKS}${RECHTS[f]}Z`;
+    /* Kontur ohne die Öffnung unten: nur hier liegt der helle Rollrand */
+    OBEN[f] = `M103.5 459.6${KUPPEL_LINKS}${RECHTS[f]}${OHR_RECHTS}`;
+  });
+  /* Gewellte Unterkante (Öffnung): hier wird es dunkler, ohne hellen Rand */
+  const RAND = 'M495 458.8' + UNTEN + ECKE_LINKS;
   /* Druckbereich: nur die Kuppel, nicht Ohrlaschen und Rand */
-  const SICHER = {
-    kappe:    'M118 410C100 376 94 344 94 300C94 186 186 104 300 104C414 104 506 186 506 300C506 344 500 376 482 410C400 424 200 424 118 410Z',
-    langhaar: 'M118 405C100 368.6 94 334.3 94 287.3C94 165.3 186 77.5 300 77.5C414 77.5 506 165.3 506 287.3C506 334.3 500 368.6 482 405C400 419.9 200 419.9 118 405Z'
-  };
+  const SICHER = 'M118 410C100 376 94 344 94 300C94 186 186 104 300 104C414 104 506 186 506 300C506 344 500 376 482 410C400 424 200 424 118 410Z';
 
   const SB_URL = 'https://nkaznfwfkazfxjofpfcy.supabase.co';
   const SB_ANON = 'sb_publishable_ciub5YQ7vI-BT5zOtXkezQ_0xjk4Llr'; // öffentlicher Key (Frontend)
@@ -295,13 +301,13 @@
   }
 
   const alleElemente = () => st.elemente.vorne.concat(st.elemente.hinten);
-  /* Was auf einer Seite gedruckt wird. Die Rückseite zeigt standardmäßig das
-     Motiv der Vorderseite (ohne Namen, die gibt es nur einmal pro Kappe). Eine
-     eigene Rückseite bleibt gespeichert, auch wenn gerade »wie vorne« gilt. */
+  /* Was auf einer Seite gedruckt wird. Die Rückseite zeigt standardmäßig
+     genau das Motiv der Vorderseite. Eine eigene Rückseite bleibt
+     gespeichert, auch wenn gerade »wie vorne« gilt. */
   function druckElemente(seite) {
     if (seite === 'hinten') {
       if (st.rueckseite === 'leer') return [];
-      if (st.rueckseite === 'gleich') return st.elemente.vorne.filter((e) => !e.name);
+      if (st.rueckseite === 'gleich') return st.elemente.vorne; // 1:1, auch der Name
     }
     return st.elemente[seite];
   }
@@ -556,9 +562,9 @@
   let kid = 0;
   function geometrie(modell, seite) {
     const f = MODELLE[modell].form;
-    let umriss = FORM[f], rand = RAND[f], sicher = SICHER[f];
-    if (seite === 'hinten') { umriss = spiegel(umriss); rand = spiegel(rand); sicher = spiegel(sicher); }
-    return { umriss, rand, sicher, form: f };
+    let umriss = FORM[f], oben = OBEN[f], rand = RAND, sicher = SICHER;
+    if (seite === 'hinten') { umriss = spiegel(umriss); oben = spiegel(oben); rand = spiegel(rand); sicher = spiegel(sicher); }
+    return { umriss, oben, rand, sicher, form: f };
   }
   function bogenRadius(b) { return 150 + (100 - Math.abs(b)) * 14; }
   function textInhalt(e) {
@@ -611,16 +617,18 @@
     const defs = el('defs', {}, ziel);
     el('path', { d: geo.umriss }, el('clipPath', { id: p + 'clip' }, defs));
     const stops = (g, liste) => liste.forEach((s) => el('stop', { offset: s[0], 'stop-color': s[1], 'stop-opacity': s[2] }, g));
-    /* Volumen: Licht von oben links, Kuppel wird zur Unterkante dunkler */
-    stops(el('radialGradient', { id: p + 'licht', cx: '40%', cy: '30%', r: '72%' }, defs),
-      [['0', '#fff', L > 0.8 ? '.10' : '.16'], ['.45', '#fff', '0'], ['.78', '#000', '0'], ['1', '#000', L > 0.8 ? '.10' : '.20']]);
+    /* Volumen: Mitte und oben links heller, zur Öffnung unten dunkler */
+    stops(el('radialGradient', { id: p + 'licht', cx: '42%', cy: '34%', r: '70%' }, defs),
+      [['0', '#fff', L > 0.8 ? '.10' : '.15'], ['.5', '#fff', '0'], ['.82', '#000', '0'], ['1', '#000', L > 0.8 ? '.06' : '.12']]);
     stops(el('linearGradient', { id: p + 'unten', x1: '0', y1: '0', x2: '0', y2: '1' }, defs),
-      [['.55', '#000', '0'], ['1', '#000', L > 0.8 ? '.12' : '.22']]);
+      [['.6', '#000', '0'], ['1', '#000', L > 0.8 ? '.10' : '.20']]);
     /* Rollrand: heller Wulst an der Kante, links stärker (Lichtseite) */
     stops(el('linearGradient', { id: p + 'wulst', gradientUnits: 'userSpaceOnUse', x1: '60', y1: '0', x2: '540', y2: '0' }, defs),
-      [['0', '#fff', L > 0.8 ? '.55' : '.34'], ['.5', '#fff', L > 0.8 ? '.35' : '.16'], ['1', '#fff', L > 0.8 ? '.45' : '.24']]);
-    const blur = (id, sd) => el('feGaussianBlur', { stdDeviation: sd }, el('filter', { id: p + id, x: '-20%', y: '-20%', width: '140%', height: '140%' }, defs));
-    blur('weich', '24'); blur('kante', '9'); blur('fein', '1.4'); blur('rand', '3.5');
+      [['0', '#fff', L > 0.8 ? '.6' : '.42'], ['.5', '#fff', L > 0.8 ? '.4' : '.22'], ['1', '#fff', L > 0.8 ? '.5' : '.32']]);
+    /* Filterfläche fest über die ganze Bühne: bei flachen Pfaden (Unterkante)
+       würde die Standardfläche den Weichzeichner sonst abschneiden */
+    const blur = (id, sd) => el('feGaussianBlur', { stdDeviation: sd }, el('filter', { id: p + id, filterUnits: 'userSpaceOnUse', x: '-40', y: '-40', width: '680', height: '640' }, defs));
+    blur('weich', '24'); blur('kante', '9'); blur('fein', '2'); blur('rand', '3.5'); blur('rinne', '4.5');
     el('feGaussianBlur', { stdDeviation: '13' }, el('filter', { id: p + 'schatten', x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs));
     const fk = el('filter', { id: p + 'korn', x: '0', y: '0', width: '100%', height: '100%' }, defs);
     el('feTurbulence', { type: 'fractalNoise', baseFrequency: fin === 'stoff' ? '1.3' : '.85', numOctaves: '2', seed: '4', stitchTiles: 'stitch' }, fk);
@@ -637,13 +645,13 @@
     const flaeche = (fill, opacity) => el('rect', { width: 600, height: 560, fill, opacity: opacity || '1' }, innen);
     flaeche(`url(#${p}licht)`);
     flaeche(`url(#${p}unten)`);
-    /* Kante: weicher Schatten nach innen, die Kuppel wölbt sich weg */
-    el('path', { d: geo.umriss, fill: 'none', stroke: '#000', 'stroke-opacity': L > 0.8 ? '.10' : '.20', 'stroke-width': '46', filter: `url(#${p}kante)` }, innen);
-    el('path', { d: geo.umriss, fill: 'none', stroke: '#000', 'stroke-opacity': L > 0.8 ? '.06' : '.12', 'stroke-width': '16', filter: `url(#${p}rand)` }, innen);
-    el('path', { d: geo.umriss, fill: 'none', stroke: `url(#${p}wulst)`, 'stroke-width': '6', filter: `url(#${p}fein)` }, innen);
-    /* Unterkante: gerollter Rand, wellt sich an den Seiten hoch */
-    el('path', { d: geo.rand, fill: 'none', stroke: '#000', 'stroke-opacity': L > 0.8 ? '.10' : '.18', 'stroke-width': '20', filter: `url(#${p}rand)` }, innen);
-    el('path', { d: verschiebe(geo.rand, -11), fill: 'none', stroke: '#fff', 'stroke-opacity': L > 0.8 ? '.55' : '.18', 'stroke-width': '2.2', filter: `url(#${p}fein)` }, innen);
+    /* Wie beim Foto der Silikonkappe: Kuppel und Ohrlaschen wölben sich weg.
+       Ganz außen ein heller Rollrand, dahinter ein schmaler dunklerer Übergang. */
+    el('path', { d: geo.oben, fill: 'none', stroke: '#000', 'stroke-opacity': L > 0.8 ? '.07' : '.15', 'stroke-width': '34', filter: `url(#${p}rinne)` }, innen);
+    el('path', { d: geo.oben, fill: 'none', stroke: `url(#${p}wulst)`, 'stroke-width': '15', filter: `url(#${p}fein)` }, innen);
+    /* Unten liegt die Öffnung: kein heller Rand, nur dunkler und ein leichter Schatten */
+    el('path', { d: geo.rand, fill: 'none', stroke: '#000', 'stroke-opacity': L > 0.8 ? '.08' : '.16', 'stroke-width': '44', filter: `url(#${p}kante)` }, innen);
+    el('path', { d: geo.rand, fill: 'none', stroke: '#000', 'stroke-opacity': L > 0.8 ? '.06' : '.12', 'stroke-width': '10', filter: `url(#${p}rand)` }, innen);
     if (fin === 'stoff') {
       el('path', { d: skaliere(geo.umriss, 0.955, 300, 290), fill: 'none', stroke: '#000', 'stroke-opacity': '.24', 'stroke-width': '1.6', 'stroke-dasharray': '5 5' }, innen);
     }
@@ -940,7 +948,8 @@
     const s = seiteVon(id);
     const e = finde(id);
     st.elemente[s] = st.elemente[s].filter((x) => x.id !== id);
-    if (e && e.name) { st.namen.aktiv = false; renderNamen(); }
+    /* Namen bleiben aktiv, solange noch ein Platzhalter existiert (z. B. auf der eigenen Rückseite) */
+    if (e && e.name && !alleElemente().some((x) => x.name)) { st.namen.aktiv = false; renderNamen(); }
     delete cache[id];
     if (st.auswahl === id) st.auswahl = null;
     renderDrucke();
@@ -1046,9 +1055,7 @@
   /* Auf »eigen« schalten. Mit kopieren=true wird das Motiv von vorne als
      Startpunkt übernommen, sofern die Rückseite noch nichts Eigenes hat. */
   function rueckEigen(kopieren) {
-    if (kopieren && !st.elemente.hinten.some((e) => !e.name)) {
-      st.elemente.hinten = st.elemente.hinten.concat(st.elemente.vorne.filter((e) => !e.name).map(klon));
-    }
+    if (kopieren && !st.elemente.hinten.length) st.elemente.hinten = st.elemente.vorne.map(klon);
     st.rueckseite = 'eigen';
   }
   function setRueckseite(wert) {
@@ -1219,6 +1226,10 @@
       b.classList.toggle('is-on', on);
       b.setAttribute('aria-selected', on ? 'true' : 'false');
       b.classList.toggle('hat', (st.modus === 'service' ? st.service.seiten[b.dataset.seite] : druckElemente(b.dataset.seite).length > 0));
+      /* Rückseite »wie vorne«: Tab ausgegraut, sie hat kein eigenes Motiv */
+      const grau = b.dataset.seite === 'hinten' && st.modus === 'selbst' && st.rueckseite === 'gleich';
+      b.classList.toggle('grau', grau);
+      b.title = grau ? 'Rückseite wie vorne' : '';
     });
   }
   function renderBuehnenInfo() {
