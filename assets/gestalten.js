@@ -50,8 +50,8 @@
 
   /* Kappenfarben aus dem Lieferantenkatalog Comercial Group 2026, identisch
      zum Anfrage-Wizard (index.html, FARBTON/FARBEN). [Name, EN, Hex, helle Farbe]
-     Silikon = G2001 Adult, Langhaar = G2004 Long Hair, 3D = G2014 FVC8,
-     Stoff = G3001SR Elastane Round Comfort. */
+     Silikon = G2001 Adult, Langhaar = G2004 Long Hair, 3D = G2075 FVC6,
+     Stoff = G4001 Polyester (Zuordnung von Sebastian bestätigt, 30.10.2026). */
   const FARBTON = {
     '10': ['Weiß', 'White', '#ffffff', 1],       '20': ['Neongelb', 'Fluo yellow', '#f2ec00', 1],
     '21': ['Gelb', 'Yellow', '#f7e11e', 1],      '30': ['Orange', 'Orange', '#dd7239', 0],
@@ -66,15 +66,14 @@
   const FARBEN = {
     silikon:  ['10', '20', '21', '30', '40', '43', '50', '60', '61', '70', '71', '72', '81', '85', '86', '90'],
     langhaar: ['10', '20', '32', '55', '60', '70', '90'],
-    '3d':     ['10', '71', '72', '61', '90', '21', '40', '50'],
-    stoff:    ['10', '21', '40', '50', '61', '70', '71', '72', '90']
+    '3d':     ['10', '21', '40', '71', '72', '90'],
+    stoff:    ['21', '40', '61', '70', '71', '72', '90']
   };
-  /* Kindergrößen: eigene Junior-Varianten mit kleinerer Palette
-     (G2001JR Silicone Junior, G3001JR Elastane Junior). Für 3D und Langhaar
-     führt der Katalog keine Junior-Variante. */
+  /* Kindergrößen: Silikon hat eine Junior-Variante mit kleinerer Palette
+     (G2001JR Silicone Junior). FVC6, Long Hair und Polyester führt der
+     Katalog nur in Erwachsenengröße. */
   const FARBEN_JUNIOR = {
-    silikon:  ['10', '21', '30', '40', '50', '61', '70', '71', '72', '90'],
-    stoff:    ['10', '21', '30', '40', '50', '61', '70', '71', '72']
+    silikon:  ['10', '21', '30', '40', '50', '61', '70', '71', '72', '90']
   };
   /* Bei gemischter Bestellung nur Farben, die es in beiden Größen gibt */
   function farbListe(modell, groesse) {
