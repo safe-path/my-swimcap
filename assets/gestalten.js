@@ -1,12 +1,13 @@
 /* =====================================================================
    MySwimcap · Selbst gestalten (Staging-Prototyp)
    ---------------------------------------------------------------------
-   Live-Konfigurator für bedruckte Badekappen:
-   - Modell + Kappenfarbe (Paletten 1:1 aus dem Anfrage-Wizard)
-   - Logo und Text frei auf Vorder- und Rückseite platzieren: ziehen,
-     skalieren, drehen, Bogentext, individuelle Namen
-   - Live-Preis mit Staffeln, Druckfarben, zweiter Seite, Namen, Express
-   - Drei Wege: direkt bestellen (Sofort-Rabatt), Angebot als PDF,
+   Konfigurator für bedruckte Badekappen in vier Schritten:
+   1 Modell + Kappenfarbe (Paletten 1:1 aus dem Anfrage-Wizard)
+   2 Gestalten: Logo und Text frei platzieren (ziehen, skalieren, drehen,
+     Bogentext). Die Rückseite übernimmt standardmäßig das Motiv von vorne.
+     Individuelle Namen sitzen unter dem Logo, Liste auch als CSV.
+   3 Menge & Preis: Staffeln, Express, Preis erst hier
+   4 Bestellen (Sofort-Rabatt), alternativ Angebot als PDF oder
      kostenloser Entwurf (klassischer Wizard der Startseite, vorbefüllt)
    Die Zahlung ist hier nur simuliert. Stripe folgt im nächsten Schritt.
    ===================================================================== */
@@ -40,9 +41,9 @@
   };
 
   const MODELLE = {
-    silikon:  { name: 'Silikon Premium',    wizard: 'Silikon Premium',    tag: 'Bestseller', bild: '/Bilder/model-silikon.webp', text: '100 % Silikon, rutschfest und robust. Der Klassiker.',      form: 'dome',     finish: 'matt'  },
-    '3d':     { name: '3D-Badekappe',       wizard: '3D-Badekappe',       tag: 'Premium',    bild: '/Bilder/model-3d.webp',      text: 'Volumengeformt und faltenfrei. Die hochwertige Optik.',      form: 'dome3d',   finish: 'glanz' },
-    stoff:    { name: 'Stoff',              wizard: 'Stoff',              tag: 'Leicht',     bild: '/Bilder/model-stoff.webp',   text: 'Dünn und anschmiegsam. Ideal für Schule und Freiwasser.',    form: 'stoff',    finish: 'stoff' },
+    silikon:  { name: 'Silikon Premium',    wizard: 'Silikon Premium',    tag: 'Bestseller', bild: '/Bilder/model-silikon.webp', text: '100 % Silikon, rutschfest und robust. Der Klassiker.',      form: 'kappe',    finish: 'matt'  },
+    '3d':     { name: '3D-Badekappe',       wizard: '3D-Badekappe',       tag: 'Premium',    bild: '/Bilder/model-3d.webp',      text: 'Volumengeformt und faltenfrei. Die hochwertige Optik.',      form: 'kappe',    finish: 'glanz' },
+    stoff:    { name: 'Stoff',              wizard: 'Stoff',              tag: 'Leicht',     bild: '/Bilder/model-stoff.webp',   text: 'Dünn und anschmiegsam. Ideal für Schule und Freiwasser.',    form: 'kappe',    finish: 'stoff' },
     langhaar: { name: 'Langhaar-Badekappe', wizard: 'Langhaar-Badekappe', tag: 'Komfort',    bild: '/Bilder/model-frauen.webp',  text: 'Extra Volumen für lange Haare. Sitzt bequem.',               form: 'langhaar', finish: 'matt'  }
   };
   const REIHE = ['silikon', '3d', 'stoff', 'langhaar'];
@@ -75,26 +76,36 @@
     ['Silber', '#a7a9ac'], ['Gold', '#c7a35b']
   ];
 
+  /* Sport-Schriften lokal gehostet (OFL), siehe @font-face in gestalten.css */
   const SCHRIFTEN = {
-    sport:     { label: 'Sport',     css: "'Oswald','IBM Plex Sans',sans-serif",       weight: 700, gross: true  },
-    block:     { label: 'Block',     css: "'Archivo Black','IBM Plex Sans',sans-serif", weight: 400, gross: true  },
-    modern:    { label: 'Modern',    css: "'IBM Plex Sans',sans-serif",                weight: 600, gross: false },
-    klassisch: { label: 'Klassisch', css: "'IBM Plex Serif',Georgia,serif",            weight: 500, gross: false }
+    sport:     { label: 'Sport',      css: "'Oswald','IBM Plex Sans',sans-serif",          weight: 700, gross: true  },
+    block:     { label: 'Block',      css: "'Archivo Black','IBM Plex Sans',sans-serif",   weight: 400, gross: true  },
+    schmal:    { label: 'Schmal',     css: "'Bebas Neue','Oswald',sans-serif",              weight: 400, gross: true  },
+    college:   { label: 'College',    css: "'Graduate','IBM Plex Serif',serif",             weight: 400, gross: true  },
+    modern:    { label: 'Modern',     css: "'IBM Plex Sans',sans-serif",                   weight: 600, gross: false },
+    rund:      { label: 'Geometrisch', css: "'Montserrat','IBM Plex Sans',sans-serif",     weight: 800, gross: false },
+    klassisch: { label: 'Klassisch',  css: "'IBM Plex Serif',Georgia,serif",               weight: 500, gross: false },
+    schwung:   { label: 'Schwung',    css: "'Kaushan Script','IBM Plex Serif',cursive",    weight: 400, gross: false }
   };
+  const SCHRIFT_LADEN = ['700 44px Oswald', '400 44px "Archivo Black"', '400 44px "Bebas Neue"', '400 44px Graduate',
+    '600 44px "IBM Plex Sans"', '800 44px Montserrat', '500 44px "IBM Plex Serif"', '400 44px "Kaushan Script"'];
 
-  /* Silhouette der flach liegenden Kappe (viewBox 600 x 560). Nur absolute
-     M/C/Z-Befehle, damit Spiegeln und Skalieren per Zahlenpaar klappt. */
+  /* Silhouette der flach liegenden Kappe (viewBox 600 x 560), dieselbe Form
+     wie im Loader und im Logo der Website. Nur absolute Befehle, damit
+     Spiegeln und Skalieren per Zahlenpaar klappt. Langhaar: Kuppel höher. */
   const FORM = {
-    dome:     'M78 452 C60 298 120 72 300 62 C480 72 540 298 522 452 C520 470 508 482 490 485 C400 496 200 496 110 485 C92 482 80 470 78 452 Z',
-    dome3d:   'M86 452 C70 290 112 54 300 46 C488 54 530 290 514 452 C512 470 500 482 482 485 C396 496 204 496 118 485 C100 482 88 470 86 452 Z',
-    stoff:    'M70 454 C58 306 128 84 300 74 C472 84 542 306 530 454 C528 471 516 482 498 485 C404 494 196 494 102 485 C84 482 72 471 70 454 Z',
-    langhaar: 'M80 450 C60 300 116 70 296 60 C452 64 528 200 536 330 C540 380 568 410 562 458 C558 486 538 494 512 494 C410 502 206 496 112 486 C94 483 82 470 80 450 Z'
+    kappe:    'M498.4 418C494.3 423.9 494.4 449.8 495 458.8C495.6 468.7 486.5 476.5 476.7 474.5C389.5 456.9 368.1 479.5 298.5 482.3C232.7 485 220.1 455 121.6 475.1C112 477.1 103.1 469.4 103.5 459.6C103.9 449.7 104.2 422.5 100.5 416.9C76.5 380.1 65 347.4 65 300.2C65 170.6 172.2 70 301.9 70C431.6 70 535 165.8 534.8 300.1C534.7 331 526.5 369.4 498.5 418L498.4 418Z',
+    langhaar: 'M498.4 413.5C494.3 419.8 494.4 447.5 495 457.1C495.6 467.8 486.5 476.1 476.7 474C389.5 455.1 368.1 479.3 298.5 482.4C232.7 485.2 220.1 453.1 121.6 474.7C112 476.8 103.1 468.6 103.5 458C103.9 447.5 104.2 418.3 100.5 412.3C76.5 372.9 65 338 65 287.4C65 148.8 172.2 41.2 301.9 41.2C431.6 41.2 535 143.7 534.8 287.4C534.7 320.4 526.5 361.6 498.5 413.5L498.4 413.5Z'
   };
+  /* Gewellte Unterkante mit den Ohrlaschen: hier liegt der gerollte Rand */
   const RAND = {
-    dome:     'M92 476 C200 490 400 490 508 476',
-    dome3d:   'M100 476 C204 490 396 490 500 476',
-    stoff:    'M84 477 C196 488 404 488 516 477',
-    langhaar: 'M96 476 C210 490 420 492 546 482'
+    kappe:    'M495 458.8C495.6 468.7 486.5 476.5 476.7 474.5C389.5 456.9 368.1 479.5 298.5 482.3C232.7 485 220.1 455 121.6 475.1C112 477.1 103.1 469.4 103.5 459.6',
+    langhaar: 'M495 457.1C495.6 467.8 486.5 476.1 476.7 474C389.5 455.1 368.1 479.3 298.5 482.4C232.7 485.2 220.1 453.1 121.6 474.7C112 476.8 103.1 468.6 103.5 458'
+  };
+  /* Druckbereich: nur die Kuppel, nicht Ohrlaschen und Rand */
+  const SICHER = {
+    kappe:    'M118 410C100 376 94 344 94 300C94 186 186 104 300 104C414 104 506 186 506 300C506 344 500 376 482 410C400 424 200 424 118 410Z',
+    langhaar: 'M118 405C100 368.6 94 334.3 94 287.3C94 165.3 186 77.5 300 77.5C414 77.5 506 165.3 506 287.3C506 334.3 500 368.6 482 405C400 419.9 200 419.9 118 405Z'
   };
 
   const SB_URL = 'https://nkaznfwfkazfxjofpfcy.supabase.co';
@@ -199,8 +210,9 @@
      ================================================================= */
   function neuerZustand() {
     return {
-      v: 1, modus: 'selbst', modell: 'silikon', farbe: '71', seite: 'vorne',
+      v: 2, modus: 'selbst', modell: 'silikon', farbe: '71', seite: 'vorne',
       elemente: { vorne: [], hinten: [] }, auswahl: null,
+      rueckseite: 'gleich', // gleich = Motiv von vorne, eigen = eigenes Motiv, leer = unbedruckt
       menge: 100, groesse: 'erwachsene', kinder: 0,
       namen: { aktiv: false, liste: [], vorschau: 0 },
       express: false, netto: true, druckbereich: true,
@@ -262,7 +274,12 @@
     if (q.get('neu') !== '1') {
       try {
         const raw = localStorage.getItem(KEY);
-        if (raw) st = Object.assign(neuerZustand(), JSON.parse(raw), { auswahl: null, tab: 'modell' });
+        if (raw) {
+          const alt = JSON.parse(raw);
+          /* Entwürfe von vor der Rückseiten-Wahl: eigene Rückseite behalten */
+          if (!alt.rueckseite) alt.rueckseite = (alt.elemente && alt.elemente.hinten || []).some((e) => !e.name) ? 'eigen' : 'gleich';
+          st = Object.assign(neuerZustand(), alt, { auswahl: null, tab: 'modell' });
+        }
       } catch (e) { st = neuerZustand(); }
     }
     const m = q.get('modell');
@@ -278,9 +295,21 @@
   }
 
   const alleElemente = () => st.elemente.vorne.concat(st.elemente.hinten);
+  /* Was auf einer Seite gedruckt wird. Die Rückseite zeigt standardmäßig das
+     Motiv der Vorderseite (ohne Namen, die gibt es nur einmal pro Kappe). Eine
+     eigene Rückseite bleibt gespeichert, auch wenn gerade »wie vorne« gilt. */
+  function druckElemente(seite) {
+    if (seite === 'hinten') {
+      if (st.rueckseite === 'leer') return [];
+      if (st.rueckseite === 'gleich') return st.elemente.vorne.filter((e) => !e.name);
+    }
+    return st.elemente[seite];
+  }
   /* Im Service-Modus zeigt die Kappe nur das hochgeladene Motiv. Das selbst
      gebaute Design bleibt erhalten und ist beim Zurückwechseln wieder da. */
-  const sichtbare = (seite) => (st.modus === 'service' ? st.elemente[seite].filter((e) => e.serviceLogo) : st.elemente[seite]);
+  const sichtbare = (seite) => (st.modus === 'service' ? st.elemente[seite].filter((e) => e.serviceLogo) : druckElemente(seite));
+  /* Rückseite »wie vorne« oder »unbedruckt«: dort wird nichts direkt bearbeitet */
+  const rueckGesperrt = () => st.modus === 'selbst' && st.seite === 'hinten' && st.rueckseite !== 'eigen';
   const alleBilder = () => alleElemente().filter((e) => e.typ === 'bild');
   const finde = (id) => alleElemente().find((e) => e.id === id) || null;
   const seiteVon = (id) => (st.elemente.vorne.some((e) => e.id === id) ? 'vorne' : 'hinten');
@@ -471,7 +500,7 @@
       return st.service.seiten[seite] ? Array.from({ length: st.service.farben[seite] }, (_, i) => 'F' + i) : [];
     }
     const set = new Set();
-    st.elemente[seite].forEach((e) => {
+    druckElemente(seite).forEach((e) => {
       if (e.name) return; // Namen sind im Namenspreis enthalten (Einzeldruck)
       if (e.typ === 'text') set.add(druckName(e.farbe));
       else {
@@ -527,9 +556,8 @@
   let kid = 0;
   function geometrie(modell, seite) {
     const f = MODELLE[modell].form;
-    let umriss = FORM[f], rand = RAND[f];
-    if (seite === 'hinten') { umriss = spiegel(umriss); rand = spiegel(rand); }
-    const sicher = skaliere(umriss, 0.84, 300, f === 'dome3d' ? 254 : 264);
+    let umriss = FORM[f], rand = RAND[f], sicher = SICHER[f];
+    if (seite === 'hinten') { umriss = spiegel(umriss); rand = spiegel(rand); sicher = spiegel(sicher); }
     return { umriss, rand, sicher, form: f };
   }
   function bogenRadius(b) { return 150 + (100 - Math.abs(b)) * 14; }
@@ -582,45 +610,48 @@
     ziel.innerHTML = '';
     const defs = el('defs', {}, ziel);
     el('path', { d: geo.umriss }, el('clipPath', { id: p + 'clip' }, defs));
-    const rg = el('radialGradient', { id: p + 'kante', cx: '46%', cy: '40%', r: '66%' }, defs);
-    el('stop', { offset: '0', 'stop-color': '#000', 'stop-opacity': '0' }, rg);
-    el('stop', { offset: '.6', 'stop-color': '#000', 'stop-opacity': '0' }, rg);
-    el('stop', { offset: '1', 'stop-color': '#000', 'stop-opacity': '1' }, rg);
-    const lg = el('linearGradient', { id: p + 'unten', x1: '0', y1: '0', x2: '0', y2: '1' }, defs);
-    el('stop', { offset: '.58', 'stop-color': '#000', 'stop-opacity': '0' }, lg);
-    el('stop', { offset: '1', 'stop-color': '#000', 'stop-opacity': '.26' }, lg);
-    const gl = el('radialGradient', { id: p + 'glanz', cx: '34%', cy: '24%', r: '46%' }, defs);
-    el('stop', { offset: '0', 'stop-color': '#fff', 'stop-opacity': '1' }, gl);
-    el('stop', { offset: '1', 'stop-color': '#fff', 'stop-opacity': '0' }, gl);
-    el('feGaussianBlur', { stdDeviation: '22' }, el('filter', { id: p + 'weich', x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs));
-    el('feGaussianBlur', { stdDeviation: '14' }, el('filter', { id: p + 'schatten', x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs));
+    const stops = (g, liste) => liste.forEach((s) => el('stop', { offset: s[0], 'stop-color': s[1], 'stop-opacity': s[2] }, g));
+    /* Volumen: Licht von oben links, Kuppel wird zur Unterkante dunkler */
+    stops(el('radialGradient', { id: p + 'licht', cx: '40%', cy: '30%', r: '72%' }, defs),
+      [['0', '#fff', L > 0.8 ? '.10' : '.16'], ['.45', '#fff', '0'], ['.78', '#000', '0'], ['1', '#000', L > 0.8 ? '.10' : '.20']]);
+    stops(el('linearGradient', { id: p + 'unten', x1: '0', y1: '0', x2: '0', y2: '1' }, defs),
+      [['.55', '#000', '0'], ['1', '#000', L > 0.8 ? '.12' : '.22']]);
+    /* Rollrand: heller Wulst an der Kante, links stärker (Lichtseite) */
+    stops(el('linearGradient', { id: p + 'wulst', gradientUnits: 'userSpaceOnUse', x1: '60', y1: '0', x2: '540', y2: '0' }, defs),
+      [['0', '#fff', L > 0.8 ? '.55' : '.34'], ['.5', '#fff', L > 0.8 ? '.35' : '.16'], ['1', '#fff', L > 0.8 ? '.45' : '.24']]);
+    const blur = (id, sd) => el('feGaussianBlur', { stdDeviation: sd }, el('filter', { id: p + id, x: '-20%', y: '-20%', width: '140%', height: '140%' }, defs));
+    blur('weich', '24'); blur('kante', '9'); blur('fein', '1.4'); blur('rand', '3.5');
+    el('feGaussianBlur', { stdDeviation: '13' }, el('filter', { id: p + 'schatten', x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs));
     const fk = el('filter', { id: p + 'korn', x: '0', y: '0', width: '100%', height: '100%' }, defs);
     el('feTurbulence', { type: 'fractalNoise', baseFrequency: fin === 'stoff' ? '1.3' : '.85', numOctaves: '2', seed: '4', stitchTiles: 'stitch' }, fk);
     el('feColorMatrix', { type: 'saturate', values: '0' }, fk);
     const bogenDefs = el('g', { 'class': 'bogen-defs' }, defs);
 
-    el('ellipse', { cx: 300, cy: 506, rx: 226, ry: 20, fill: '#191818', opacity: '.22', filter: `url(#${p}schatten)`, 'class': 'kap-schatten' }, ziel);
+    el('ellipse', { cx: 300, cy: 492, rx: 218, ry: 15, fill: '#191818', opacity: '.24', filter: `url(#${p}schatten)`, 'class': 'kap-schatten' }, ziel);
     const kap = el('g', { 'class': 'kap' }, ziel);
     el('path', { d: geo.umriss, fill: hex, 'class': 'kap-flaeche' }, kap);
     const innen = el('g', { 'clip-path': `url(#${p}clip)` }, kap);
     const drucke = el('g', { 'class': 'drucke' }, innen);
-    const korn = el('rect', { width: 600, height: 560, filter: `url(#${p}korn)`, opacity: fin === 'stoff' ? '.24' : (fin === 'glanz' ? '.03' : '.09') }, innen);
+    const korn = el('rect', { width: 600, height: 560, filter: `url(#${p}korn)`, opacity: fin === 'stoff' ? '.24' : (fin === 'glanz' ? '.03' : '.08') }, innen);
     korn.style.mixBlendMode = 'multiply';
+    const flaeche = (fill, opacity) => el('rect', { width: 600, height: 560, fill, opacity: opacity || '1' }, innen);
+    flaeche(`url(#${p}licht)`);
+    flaeche(`url(#${p}unten)`);
+    /* Kante: weicher Schatten nach innen, die Kuppel wölbt sich weg */
+    el('path', { d: geo.umriss, fill: 'none', stroke: '#000', 'stroke-opacity': L > 0.8 ? '.10' : '.20', 'stroke-width': '46', filter: `url(#${p}kante)` }, innen);
+    el('path', { d: geo.umriss, fill: 'none', stroke: '#000', 'stroke-opacity': L > 0.8 ? '.06' : '.12', 'stroke-width': '16', filter: `url(#${p}rand)` }, innen);
+    el('path', { d: geo.umriss, fill: 'none', stroke: `url(#${p}wulst)`, 'stroke-width': '6', filter: `url(#${p}fein)` }, innen);
+    /* Unterkante: gerollter Rand, wellt sich an den Seiten hoch */
+    el('path', { d: geo.rand, fill: 'none', stroke: '#000', 'stroke-opacity': L > 0.8 ? '.10' : '.18', 'stroke-width': '20', filter: `url(#${p}rand)` }, innen);
+    el('path', { d: verschiebe(geo.rand, -11), fill: 'none', stroke: '#fff', 'stroke-opacity': L > 0.8 ? '.55' : '.18', 'stroke-width': '2.2', filter: `url(#${p}fein)` }, innen);
     if (fin === 'stoff') {
-      el('path', { d: skaliere(geo.umriss, 0.955, 300, 282), fill: 'none', stroke: '#000', 'stroke-opacity': '.24', 'stroke-width': '1.6', 'stroke-dasharray': '5 5' }, innen);
+      el('path', { d: skaliere(geo.umriss, 0.955, 300, 290), fill: 'none', stroke: '#000', 'stroke-opacity': '.24', 'stroke-width': '1.6', 'stroke-dasharray': '5 5' }, innen);
     }
-    if (geo.form === 'langhaar') {
-      const falte = seite === 'hinten' ? spiegel('M440 300 C500 338 536 380 548 448') : 'M440 300 C500 338 536 380 548 448';
-      el('path', { d: falte, fill: 'none', stroke: '#000', 'stroke-opacity': '.12', 'stroke-width': '5', filter: `url(#${p}weich)` }, innen);
-    }
-    el('path', { d: geo.rand, fill: 'none', stroke: '#000', 'stroke-opacity': '.13', 'stroke-width': '30' }, innen);
-    el('path', { d: verschiebe(geo.rand, -16), fill: 'none', stroke: '#fff', 'stroke-opacity': L < 0.5 ? '.16' : '.5', 'stroke-width': '2' }, innen);
-    el('rect', { width: 600, height: 560, fill: `url(#${p}kante)`, opacity: String(0.16 + 0.16 * L) }, innen);
-    el('rect', { width: 600, height: 560, fill: `url(#${p}unten)` }, innen);
-    el('ellipse', { cx: 208, cy: 168, rx: 120, ry: 70, fill: '#fff', opacity: fin === 'glanz' ? '.44' : (fin === 'stoff' ? '.10' : '.26'), filter: `url(#${p}weich)`, transform: 'rotate(-26 208 168)' }, innen);
-    if (fin === 'glanz') el('ellipse', { cx: 470, cy: 300, rx: 26, ry: 120, fill: '#fff', opacity: '.16', filter: `url(#${p}weich)` }, innen);
-    el('rect', { width: 600, height: 560, fill: `url(#${p}glanz)`, opacity: fin === 'stoff' ? '.06' : '.14' }, innen);
-    el('path', { d: geo.umriss, fill: 'none', stroke: '#191818', 'stroke-opacity': L > 0.85 ? '.24' : '.12', 'stroke-width': '1.4' }, kap);
+    /* Glanz: Silikon matt-seidig, 3D glänzend, Stoff kaum */
+    const glanz = fin === 'glanz' ? '.42' : (fin === 'stoff' ? '.08' : (L > 0.8 ? '.30' : '.20'));
+    el('ellipse', { cx: 196, cy: 178, rx: 118, ry: 62, fill: '#fff', opacity: glanz, filter: `url(#${p}weich)`, transform: 'rotate(-32 196 178)' }, innen);
+    if (fin === 'glanz') el('ellipse', { cx: 478, cy: 290, rx: 20, ry: 110, fill: '#fff', opacity: '.18', filter: `url(#${p}weich)` }, innen);
+    el('path', { d: geo.umriss, fill: 'none', stroke: '#191818', 'stroke-opacity': L > 0.85 ? '.26' : '.14', 'stroke-width': '1.2' }, kap);
 
     if (elemente) elemente.forEach((e) => drucke.appendChild(druckKnoten(e, p, bogenDefs)));
     return { drucke, bogenDefs, geo, prefix: p };
@@ -642,7 +673,7 @@
   function renderKappe() {
     B = baueKappe(svg, st.modell, st.farbe, st.seite, null);
     pfadSicher = el('path', { d: B.geo.sicher, 'class': 'sicher' + (st.druckbereich ? ' an' : '') }, svg);
-    gFuehrung = el('line', { x1: 300, y1: 52, x2: 300, y2: 512, 'class': 'fuehrung' }, svg);
+    gFuehrung = el('line', { x1: 300, y1: 60, x2: 300, y2: 496, 'class': 'fuehrung' }, svg);
     gTreffer = el('g', { 'class': 'treffer' }, svg);
     gAuswahl = el('g', { 'class': 'auswahl' }, svg);
     renderDrucke();
@@ -657,13 +688,14 @@
   }
   function renderDrucke() {
     if (!B) return;
+    renderRueckseite(); // zuerst: die Leiste ändert die Bühnenhöhe und damit den Maßstab
     B.drucke.innerHTML = '';
     B.bogenDefs.innerHTML = '';
     gTreffer.innerHTML = '';
     boxen = {};
     const els = sichtbare(st.seite);
     els.forEach((e) => B.drucke.appendChild(druckKnoten(e, B.prefix, B.bogenDefs)));
-    const k = massstab();
+    const k = massstab(), gesperrt = rueckGesperrt();
     $$('g[data-id]', B.drucke).forEach((n) => {
       const e = finde(n.getAttribute('data-id'));
       if (!e) return;
@@ -671,6 +703,7 @@
       try { bb = n.getBBox(); } catch (x) { bb = null; }
       if (!bb || !bb.width) bb = { x: -40, y: -18, width: 80, height: 36 };
       boxen[e.id] = { x: bb.x, y: bb.y, width: bb.width, height: bb.height };
+      if (gesperrt) return;
       const pad = 8 / (k * e.s);
       el('rect', {
         'class': 'hit', 'data-id': e.id, x: bb.x - pad, y: bb.y - pad,
@@ -716,7 +749,8 @@
     const g = el('g', { 'class': 'griff griff--' + typ, 'data-griff': typ, transform: `translate(${pt.x} ${pt.y}) scale(${1 / k})` }, gAuswahl);
     el('circle', { r: 22, 'class': 'griff-hit' }, g);
     el('circle', { r: 12, 'class': 'griff-knopf' }, g);
-    const d = typ === 'drehen' ? 'M-4.6 -2.2 A5 5 0 1 1 -1.6 4.8 M-4.6 -2.2 L-5.4 -6.2 M-4.6 -2.2 L-0.8 -3.4'
+    /* Drehen: Kreispfeil im Uhrzeigersinn (Form wie Lucide »rotate-cw«) */
+    const d = typ === 'drehen' ? 'M4.5 0a4.5 4.5 0 1 1-4.5-4.5c1.26 0 2.47.5 3.37 1.37L4.5-2M4.5-4.5V-2H2'
       : typ === 'skalieren' ? 'M-4.5 4.5 L4.5 -4.5 M0.6 -4.5 H4.5 V-0.6 M-0.6 4.5 H-4.5 V0.6'
       : 'M-4 -4 L4 4 M4 -4 L-4 4';
     el('path', { d, 'class': 'griff-icon' }, g);
@@ -747,15 +781,15 @@
     return [[bb.x, bb.y], [bb.x + bb.width, bb.y], [bb.x + bb.width, bb.y + bb.height], [bb.x, bb.y + bb.height],
       [bb.x + bb.width / 2, bb.y], [bb.x + bb.width, bb.y + bb.height / 2], [bb.x + bb.width / 2, bb.y + bb.height], [bb.x, bb.y + bb.height / 2]];
   }
+  function imBereich(q) {
+    if (!pfadSicher || !pfadSicher.isPointInFill) return true;
+    let p;
+    try { p = new DOMPoint(q.x, q.y); } catch (x) { p = svg.createSVGPoint(); p.x = q.x; p.y = q.y; }
+    try { return pfadSicher.isPointInFill(p); } catch (x) { return true; }
+  }
   function ausserhalb(e) {
     if (!boxen[e.id] || !pfadSicher || !pfadSicher.isPointInFill) return false;
-    for (const q0 of messpunkte(e)) {
-      const q = lokal(e, q0[0], q0[1]);
-      let p;
-      try { p = new DOMPoint(q.x, q.y); } catch (x) { p = svg.createSVGPoint(); p.x = q.x; p.y = q.y; }
-      try { if (!pfadSicher.isPointInFill(p)) return true; } catch (x) { return false; }
-    }
-    return false;
+    return messpunkte(e).some((q0) => !imBereich(lokal(e, q0[0], q0[1])));
   }
   function pruefeBereich() {
     const raus = st.modus === 'selbst' && sichtbare(st.seite).some(ausserhalb);
@@ -792,6 +826,9 @@
       zieh = { typ: 'bewegen', id, p0: p, x0: e.x, y0: e.y, bewegt: false };
     } else {
       if (st.auswahl) waehle(null);
+      if (rueckGesperrt() && st.rueckseite === 'gleich' && sichtbare('hinten').length && imBereich(p)) {
+        toast('Die Rückseite übernimmt das Motiv von vorne. Für Änderungen »Eigenes Motiv« wählen.');
+      }
       return;
     }
     try { svg.setPointerCapture(ev.pointerId); } catch (x) {}
@@ -854,6 +891,9 @@
   function fuegeHinzu(e, seite) {
     seite = seite || st.seite;
     if (seite !== st.seite) { st.seite = seite; renderSeiten(); }
+    /* Neues Element auf der Rückseite: ab jetzt hat sie ein eigenes Motiv.
+       War sie »wie vorne«, bleibt das sichtbare Motiv als Startpunkt stehen. */
+    if (seite === 'hinten' && st.modus === 'selbst' && st.rueckseite !== 'eigen') rueckEigen(st.rueckseite === 'gleich');
     st.elemente[seite].push(e);
     st.auswahl = e.id;
     renderKappe();
@@ -921,6 +961,7 @@
   function aufAndereSeite(id) {
     const s = seiteVon(id), z = s === 'vorne' ? 'hinten' : 'vorne';
     const e = finde(id);
+    if (z === 'hinten' && st.rueckseite !== 'eigen') rueckEigen(false);
     st.elemente[s] = st.elemente[s].filter((x) => x.id !== id);
     st.elemente[z].push(e);
     st.seite = z;
@@ -945,14 +986,15 @@
     st.elemente.vorne = st.elemente.vorne.filter((e) => e.name);
     st.elemente.hinten = st.elemente.hinten.filter((e) => e.name);
     if (FARBEN[st.modell].indexOf('71') >= 0 && luminanz(kappeHex()) > 0.6) st.farbe = '71';
-    const logo = { id: uid(), typ: 'bild', x: 300, y: 312, s: 1, r: 0, src: '/Bilder/beispiel-logo.svg', ohneHg: false, mono: null, datei: 'beispiel-logo.svg', beispiel: true };
+    const logo = { id: uid(), typ: 'bild', x: 300, y: 300, s: 1, r: 0, src: '/Bilder/beispiel-logo.svg', ohneHg: false, mono: null, datei: 'beispiel-logo.svg', beispiel: true };
     verarbeite(logo).then(() => {
       logo.w = Math.round(logo.w * 0.8); logo.h = Math.round(logo.h * 0.8);
       st.elemente.vorne.push(logo,
-        neuerText({ text: 'SV MUSTERSTADT', bogen: 70, y: 206, s: 0.8, spacing: 0.06, farbe: txt }));
+        neuerText({ text: 'SV MUSTERSTADT', bogen: 70, y: 194, s: 0.8, spacing: 0.06, farbe: txt }));
       st.elemente.hinten.push(
         neuerText({ text: 'MUSTERSTADT', y: 250, s: 0.86, spacing: 0.08, farbe: txt }),
         neuerText({ text: 'SEIT 1923', schrift: 'modern', y: 300, s: 0.5, spacing: 0.22, farbe: txt }));
+      st.rueckseite = 'eigen';
       st.seite = 'vorne';
       st.auswahl = null;
       renderAlles();
@@ -993,27 +1035,146 @@
     commit();
   }
 
+  /* ---------- Rückseite: wie vorne / eigenes Motiv / unbedruckt ---------- */
+  function klon(e) {
+    const k = JSON.parse(JSON.stringify(e));
+    k.id = uid();
+    if (cache[e.id]) cache[k.id] = cache[e.id];
+    if (dateien[e.id]) dateien[k.id] = dateien[e.id];
+    return k;
+  }
+  /* Auf »eigen« schalten. Mit kopieren=true wird das Motiv von vorne als
+     Startpunkt übernommen, sofern die Rückseite noch nichts Eigenes hat. */
+  function rueckEigen(kopieren) {
+    if (kopieren && !st.elemente.hinten.some((e) => !e.name)) {
+      st.elemente.hinten = st.elemente.hinten.concat(st.elemente.vorne.filter((e) => !e.name).map(klon));
+    }
+    st.rueckseite = 'eigen';
+  }
+  function setRueckseite(wert) {
+    if (wert === st.rueckseite) return;
+    if (wert === 'eigen') {
+      const vorher = st.rueckseite;
+      rueckEigen(vorher === 'gleich');
+      if (vorher === 'leer' && !st.elemente.hinten.length) toast('Eigene Rückseite: Lad ein Logo hoch oder setz einen Text.');
+    } else {
+      st.rueckseite = wert;
+      if (st.auswahl && seiteVon(st.auswahl) === 'hinten') st.auswahl = null;
+    }
+    if (st.seite !== 'hinten') { st.seite = 'hinten'; renderSeiten(); }
+    renderKappe();
+    renderInspektor();
+    renderEbenen();
+    renderPreis();
+    commit();
+  }
+  /* Aufpreis der Rückseite je Kappe (Differenz zu »unbedruckt«) */
+  function rueckAufpreis(wert) {
+    const alt = st.rueckseite;
+    st.rueckseite = wert || alt;
+    const mit = rechne().stueck;
+    st.rueckseite = 'leer';
+    const ohne = rechne().stueck;
+    st.rueckseite = alt;
+    return r2(mit - ohne);
+  }
+  function renderRueckseite() {
+    const leiste = $('#rsLeiste');
+    const an = st.modus === 'selbst' && st.seite === 'hinten';
+    leiste.hidden = !an;
+    if (!an) return;
+    $$('[data-rs]', leiste).forEach((b) => {
+      const on = b.dataset.rs === st.rueckseite;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+    const vorneLeer = !st.elemente.vorne.some((e) => !e.name);
+    let t;
+    if (st.rueckseite === 'leer') {
+      const a = rueckAufpreis('gleich');
+      t = a > 0 ? `Rückseite bleibt frei. Wie vorne bedruckt: +${euro(zeig(null, a))} je Kappe` : 'Rückseite bleibt frei, kein Aufpreis.';
+    } else if (st.rueckseite === 'gleich' && vorneLeer) {
+      t = 'Übernimmt das Motiv der Vorderseite, sobald dort etwas steht.';
+    } else {
+      const a = rueckAufpreis();
+      t = `${st.rueckseite === 'gleich' ? 'Gleiches Motiv wie vorne' : 'Eigenes Motiv'} · Druck auf der Rückseite <b>+${euro(zeig(null, a))}</b> je Kappe`;
+    }
+    $('#rsInfo').innerHTML = t;
+  }
+
+  /* ---------- Individuelle Namen ---------- */
+  /* Platzhalter unter das größte Logo der Seite setzen (sonst mittig unten) */
+  function namenElement() {
+    const seite = st.seite === 'hinten' && st.rueckseite === 'eigen' ? 'hinten' : 'vorne';
+    const logos = st.elemente[seite].filter((e) => e.typ === 'bild')
+      .sort((a, b) => (b.w || 190) * (b.h || 190) * b.s * b.s - (a.w || 190) * (a.h || 190) * a.s * a.s);
+    let x = 300, y = 340, s = 0.82;
+    if (logos.length) {
+      /* Name: Versalhöhe ca. 31 × s, Mitte liegt auf y. Unterkante max. 418
+         (Druckbereich). Reicht der Platz nicht, rückt das Logo etwas hoch. */
+      const l = logos[0], halb = (l.h || 190) * l.s / 2, abstand = 10, maxY = 402;
+      x = l.x;
+      s = clamp(((l.w || 190) * l.s) / 170, 0.6, 1);
+      const platz = maxY - (l.y + halb) - abstand;
+      if (platz < 15.5 * s) s = Math.max(0.6, platz / 15.5);
+      if (platz < 15.5 * s) l.y = Math.round((l.y - (15.5 * s - platz)) * 10) / 10;
+      y = Math.round((l.y + halb + abstand + 15.5 * s) * 10) / 10;
+    }
+    return { seite, e: neuerText({ name: true, text: '', x, y, s, spacing: 0.06, farbe: kontrastFarbe(kappeHex()) }) };
+  }
+  /* Namensliste aus CSV/TXT: Spalte »Name«, »Aufdruck« oder »Vorname«, sonst
+     die erste Spalte. Excel speichert CSV mit Semikolon. */
+  function namenAusText(txt) {
+    const zeilen = txt.replace(/^﻿/, '').split(/\r?\n/).map((z) => z.trim()).filter(Boolean);
+    if (!zeilen.length) return [];
+    const trenn = [';', '\t', ','].find((t) => zeilen[0].indexOf(t) >= 0);
+    const rein = (s) => String(s || '').replace(/^"+|"+$/g, '').trim();
+    let spalte = 0, start = 0;
+    const kopf = (trenn ? zeilen[0].split(trenn) : [zeilen[0]]).map((s) => rein(s).toLowerCase());
+    const treffer = ['name', 'aufdruck', 'namen', 'vorname', 'spieler', 'spielername'].map((k) => kopf.indexOf(k)).find((i) => i >= 0);
+    if (treffer !== undefined) { spalte = treffer; start = 1; }
+    return zeilen.slice(start).map((z) => rein(trenn ? z.split(trenn)[spalte] : z)).filter(Boolean).slice(0, 2000);
+  }
+  function namenDateiGewaehlt(datei) {
+    if (!datei) return;
+    datei.arrayBuffer().then((buf) => {
+      let txt;
+      try { txt = new TextDecoder('utf-8', { fatal: true }).decode(buf); }
+      catch (x) { txt = new TextDecoder('windows-1252').decode(buf); } // ältere Excel-Exporte
+      const liste = namenAusText(txt);
+      if (!liste.length) { toast('In der Datei wurden keine Namen gefunden.'); return; }
+      st.namen.liste = liste;
+      st.namen.vorschau = 0;
+      renderNamen();
+      renderDrucke();
+      const mehr = liste.length > st.menge;
+      if (mehr) setMenge(liste.length);
+      commit();
+      toast(`${liste.length} Namen übernommen.${mehr ? ` Menge auf ${liste.length} Stück angepasst.` : ''}`);
+    }).catch(() => toast('Die Datei konnte nicht gelesen werden. Speicher sie als CSV oder TXT.'));
+  }
+  function zeigeNamenVorschau(dir) {
+    const z = st.namen.liste.length;
+    if (!z) return;
+    st.namen.vorschau = (st.namen.vorschau + dir + z) % z;
+    renderNamen();
+    const ne = alleElemente().find((e) => e.name);
+    const s = ne ? seiteVon(ne.id) : st.seite;
+    if (st.seite !== s) { st.seite = s; renderSeiten(); renderKappe(); } else renderDrucke();
+  }
+
   /* =================================================================
      8. Panel-Rendering
      ================================================================= */
-  function zeigeTab(name) {
-    st.tab = name;
-    $$('.schritt').forEach((b) => {
-      const on = b.dataset.tab === name;
-      b.classList.toggle('is-on', on);
-      b.setAttribute('aria-selected', on ? 'true' : 'false');
-    });
-    $$('.tab').forEach((t) => t.classList.toggle('is-on', t.dataset.pane === name));
-    panelInSicht(false);
-  }
+  const zeigeTab = (name) => geheZu(name);
   /* Tab-Inhalt sichtbar machen: Desktop scrollt das Panel innen nach oben,
      mobil wird die Seite so gescrollt, dass der Inhalt direkt unter der
-     (klebenden) Schritt-Leiste beginnt. */
+     (klebenden) Bühne beginnt. */
   function panelInSicht(sanft) {
     if (window.matchMedia('(max-width: 899px)').matches) {
-      const nav = $('.schritte'), pane = $('.tab.is-on');
-      if (!nav || !pane) return;
-      const soll = (parseFloat(getComputedStyle(nav).top) || 0) + nav.offsetHeight;
+      const bu = $('#buehne'), pane = $('.tab.is-on');
+      if (!bu || !pane) return;
+      const soll = (parseFloat(getComputedStyle(bu).top) || 0) + bu.offsetHeight;
       const diff = pane.getBoundingClientRect().top - soll;
       if (Math.abs(diff) > 4) scrollTo({ top: scrollY + diff, behavior: sanft === false ? 'auto' : 'smooth' });
     } else {
@@ -1022,7 +1183,6 @@
     }
   }
   function renderModelle() {
-    const p100 = (id) => PREIS.basis[id][stufe(st.menge)];
     $('#modelle').innerHTML = REIHE.map((id) => {
       const m = MODELLE[id];
       return `<button type="button" class="mod${st.modell === id ? ' is-on' : ''}" data-modell="${id}" aria-pressed="${st.modell === id}">
@@ -1030,7 +1190,6 @@
         <span class="mod__tag">${m.tag}</span>
         <b class="mod__name">${m.name}</b>
         <span class="mod__txt">${m.text}</span>
-        <span class="mod__preis">ab <b>${euro(zeig(null, p100(id)))}</b> bei ${st.menge} Stk.</span>
       </button>`;
     }).join('');
   }
@@ -1059,11 +1218,11 @@
       const on = b.dataset.seite === st.seite;
       b.classList.toggle('is-on', on);
       b.setAttribute('aria-selected', on ? 'true' : 'false');
-      b.classList.toggle('hat', (st.modus === 'service' ? st.service.seiten[b.dataset.seite] : st.elemente[b.dataset.seite].length > 0));
+      b.classList.toggle('hat', (st.modus === 'service' ? st.service.seiten[b.dataset.seite] : druckElemente(b.dataset.seite).length > 0));
     });
   }
   function renderBuehnenInfo() {
-    const leer = st.modus === 'selbst' && !st.elemente.vorne.length && !st.elemente.hinten.length;
+    const leer = st.modus === 'selbst' && !druckElemente('vorne').length && !druckElemente('hinten').length;
     $('#leer').hidden = !leer;
     $('#serviceHinweis').hidden = st.modus !== 'service';
     const f = FARBTON[st.farbe];
@@ -1135,8 +1294,10 @@
         <span class="ebene__t">${esc(label)}</span><span class="ebene__s">${s === 'vorne' ? 'Vorne' : 'Hinten'}</span></button>`;
     };
     const v = st.elemente.vorne.map((e) => zeile(e, 'vorne')).join('');
-    const h = st.elemente.hinten.map((e) => zeile(e, 'hinten')).join('');
-    box.innerHTML = (v || h) ? `<div class="pt pt--klein">Elemente</div>${v}${h}` : '';
+    const h = st.rueckseite === 'eigen' ? st.elemente.hinten.map((e) => zeile(e, 'hinten')).join('') : '';
+    const hinweis = v && st.rueckseite !== 'eigen'
+      ? `<p class="ebenen__rs">Rückseite: ${st.rueckseite === 'gleich' ? 'wie vorne' : 'unbedruckt'} · <button type="button" class="linkbtn" data-seite-go="hinten">ändern</button></p>` : '';
+    box.innerHTML = (v || h) ? `<div class="pt pt--klein">Elemente</div>${v}${h}${hinweis}` : '';
   }
   function renderNamen() {
     const n = st.namen;
@@ -1164,14 +1325,14 @@
     });
   }
   function renderModus() {
-    $$('.cfg-modus__btn').forEach((b) => {
+    $$('.mk__btn').forEach((b) => {
       const on = b.dataset.modus === st.modus;
       b.classList.toggle('is-on', on);
-      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.setAttribute('aria-checked', on ? 'true' : 'false');
     });
     $('#designSelbst').hidden = st.modus !== 'selbst';
     $('#designService').hidden = st.modus !== 'service';
-    $('#tabDesignLabel').textContent = st.modus === 'selbst' ? 'Gestalten' : 'Euer Motiv';
+    $('[data-step="design"] span').textContent = st.modus === 'selbst' ? 'Gestalten' : 'Euer Motiv';
     document.body.classList.toggle('modus-service', st.modus === 'service');
     if (st.modus === 'service') st.auswahl = null;
     renderService();
@@ -1234,17 +1395,8 @@
     $('#mbarSumme').textContent = euro(basis);
     $('#mbarStk').textContent = `${euro(proStk)} / Kappe · ${st.netto ? 'netto' : 'brutto'}`;
     $('#mbarRabatt').textContent = `−${Math.round(PREIS.sofortRabatt * 100)} %`;
-    renderBuehnenInfoLeicht(p);
-    renderModelleLeicht();
-  }
-  function renderBuehnenInfoLeicht(p) {
     if (st.modus !== 'service') $('#infoFarben').textContent = `Druckfarben: vorne ${p.fv}, hinten ${p.fh}`;
-  }
-  function renderModelleLeicht() {
-    $$('.mod').forEach((b) => {
-      const id = b.dataset.modell, pr = b.querySelector('.mod__preis');
-      if (pr) pr.innerHTML = `ab <b>${euro(zeig(null, PREIS.basis[id][stufe(st.menge)]))}</b> bei ${st.menge.toLocaleString('de-DE')} Stk.`;
-    });
+    if (!$('#rsLeiste').hidden) renderRueckseite();
   }
   function renderVerlaufBtns() {
     $('#btnUndo').disabled = verlauf.length < 2;
@@ -1263,25 +1415,24 @@
     renderMenge();
     renderPreis();
     renderVerlaufBtns();
+    renderSchritte();
     $('#btnBereich').setAttribute('aria-pressed', st.druckbereich ? 'true' : 'false');
   }
 
   /* =================================================================
      9. Kasse, Bestätigung, Angebot
      ================================================================= */
-  function designOk() {
+  function designOk(leise) {
+    const nein = (msg) => {
+      if (!leise) { toast(msg); zeigeTab('design'); }
+      return false;
+    };
     if (st.modus === 'service') {
-      if (!st.service.datei && !st.service.notiz.trim()) {
-        toast('Lad euer Logo hoch oder beschreib kurz, was auf die Kappe soll.');
-        zeigeTab('design');
-        return false;
-      }
+      if (!st.service.datei && !st.service.notiz.trim()) return nein('Lad euer Logo hoch oder beschreib kurz, was auf die Kappe soll.');
       return true;
     }
-    if (!alleElemente().some((e) => !e.name) && !st.namen.aktiv) {
-      toast('Füg zuerst ein Logo oder einen Text hinzu. Oder wähl »Gestaltet ihr für uns«.');
-      zeigeTab('design');
-      return false;
+    if (!druckElemente('vorne').concat(druckElemente('hinten')).some((e) => !e.name) && !st.namen.aktiv) {
+      return nein('Füg zuerst ein Logo oder einen Text hinzu. Oder wähl unten »Ihr für uns«.');
     }
     return true;
   }
@@ -1293,11 +1444,13 @@
       : (st.groesse === 'kinder' ? 'Kinder' : 'Erwachsene');
     const seite = (s) => {
       if (st.modus === 'service') return st.service.seiten[s] ? `${st.service.farben[s]} Druckfarbe${st.service.farben[s] > 1 ? 'n' : ''} (geschätzt)` : 'unbedruckt';
-      const els = st.elemente[s];
+      const els = druckElemente(s);
       if (!els.length) return 'unbedruckt';
-      const teile = els.map((e) => (e.typ === 'bild' ? 'Logo' : (e.name ? 'Namen' : `»${textInhalt(e)}«`)));
       const n = farbenSeite(s).length;
-      return `${teile.join(', ')}${n ? ` · ${n} Druckfarbe${n > 1 ? 'n' : ''}` : ''}`;
+      const farben = n ? ` · ${n} Druckfarbe${n > 1 ? 'n' : ''}` : '';
+      if (s === 'hinten' && st.rueckseite === 'gleich') return 'wie Vorderseite' + farben;
+      const teile = els.map((e) => (e.typ === 'bild' ? 'Logo' : (e.name ? 'Namen' : `»${textInhalt(e)}«`)));
+      return teile.join(', ') + farben;
     };
     return [
       ['Modell', MODELLE[st.modell].name],
@@ -1355,33 +1508,85 @@
   function bereichBeideSeiten() {
     const orig = st.seite, res = {};
     ['vorne', 'hinten'].forEach((s) => {
-      if (!st.elemente[s].length) { res[s] = false; return; }
+      if (st.modus !== 'selbst' || !druckElemente(s).length) { res[s] = false; return; }
       if (st.seite !== s) { st.seite = s; renderKappe(); }
-      res[s] = st.elemente[s].some(ausserhalb);
+      res[s] = druckElemente(s).some(ausserhalb);
     });
     if (st.seite !== orig) { st.seite = orig; renderKappe(); }
     return res;
   }
-  function route(ziel, ohneVerlauf) {
-    const app = ['#cfgKopf', '#app', '#cfgInfo'];
-    const kasse = ziel === 'kasse', fertig = ziel === 'fertig';
-    if (kasse && !$('#app').hidden) {
+
+  /* ---------- Schritte: 1 Modell · 2 Gestalten · 3 Menge & Preis · 4 Bestellen ---------- */
+  const SCHRITTE = ['modell', 'design', 'menge', 'kasse'];
+  const HASH = { modell: '', design: '#gestalten', menge: '#menge', kasse: '#kasse', fertig: '#fertig' };
+  const WEITER = { modell: 'Weiter: Gestalten', design: 'Weiter: Menge & Preis' };
+  function geheZu(ziel, ohneVerlauf) {
+    if ((ziel === 'menge' || ziel === 'kasse') && !designOk()) return;
+    const war = st.tab;
+    const istApp = ziel === 'modell' || ziel === 'design';
+    /* Druckbereich messen, solange die Bühne noch sichtbar ist */
+    if (!istApp && !$('#app').hidden) {
       const w = bereichBeideSeiten();
       kasseWarnung = w.vorne || w.hinten;
     }
-    app.forEach((s) => { $(s).hidden = kasse || fertig; });
-    $('#kasse').hidden = !kasse;
-    $('#fertig').hidden = !fertig;
-    document.body.classList.toggle('route-kasse', kasse || fertig);
-    if (kasse) renderKasse();
-    if (!ohneVerlauf) history.pushState({ r: ziel }, '', ziel === 'gestalten' ? location.pathname + location.search : '#' + ziel);
-    scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
-    schliesseSheet();
-    if (!kasse && !fertig) requestAnimationFrame(() => renderDrucke());
+    st.tab = ziel;
+    document.body.dataset.schritt = ziel;
+    $('#cfgKopf').hidden = ziel !== 'modell';
+    $('#app').hidden = !istApp;
+    $('#cfgInfo').hidden = !(ziel === 'modell' || ziel === 'menge');
+    $('#mengeSeite').hidden = ziel !== 'menge';
+    $('#kasse').hidden = ziel !== 'kasse';
+    $('#fertig').hidden = ziel !== 'fertig';
+    $('#stepbar').hidden = ziel === 'fertig';
+    document.body.classList.toggle('route-kasse', ziel === 'kasse' || ziel === 'fertig');
+    $$('.tab').forEach((t) => t.classList.toggle('is-on', t.dataset.pane === ziel));
+    renderSchritte();
+    if (ziel === 'menge') renderMengeSeite();
+    if (ziel === 'kasse') renderKasse();
+    if (!ohneVerlauf && war !== ziel) history.pushState({ r: ziel }, '', HASH[ziel] || location.pathname + location.search);
+    if (war !== ziel) scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    if (istApp) {
+      requestAnimationFrame(() => renderDrucke());
+      if (war !== ziel) $('#panelInhalt').scrollTop = 0;
+    }
   }
-  function zurKasse() {
-    if (!designOk()) return;
-    route('kasse');
+  function renderSchritte() {
+    const i = SCHRITTE.indexOf(st.tab);
+    $$('.step').forEach((b) => {
+      const k = SCHRITTE.indexOf(b.dataset.step);
+      b.classList.toggle('is-on', k === i);
+      b.classList.toggle('ok', i >= 0 && k < i);
+      if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+    const weiter = WEITER[st.tab];
+    if (weiter) { setBtnText($('#btnWeiter'), weiter); setBtnText($('#mbarWeiter'), weiter); }
+    $('#btnZurueck').hidden = st.tab !== 'design';
+    $('#mbarZurueck').hidden = st.tab !== 'design';
+  }
+  function schrittWeiter() { geheZu(st.tab === 'modell' ? 'design' : 'menge'); }
+  function zurKasse() { geheZu('kasse'); }
+  function renderMengeSeite() {
+    const mock = $('#mgMock');
+    mock.innerHTML = '';
+    ['vorne', 'hinten'].forEach((s) => {
+      const fig = document.createElement('figure');
+      fig.appendChild(statischeKappe(s));
+      const cap = document.createElement('figcaption');
+      cap.textContent = s === 'vorne' ? 'Vorne' : 'Hinten';
+      fig.appendChild(cap);
+      mock.appendChild(fig);
+    });
+    const f = FARBTON[st.farbe];
+    $('#mgTitel').textContent = `${MODELLE[st.modell].name} · ${f ? f[0] : ''}`;
+    const z = konfigZeilen().filter((r) => ['Vorderseite', 'Rückseite', 'Namen', 'Gestaltung'].indexOf(r[0]) >= 0);
+    $('#mgKonfig').innerHTML = z.map((r) => `<div><dt>${r[0]}</dt><dd>${esc(r[1])}</dd></div>`).join('');
+    const svc = st.modus === 'service';
+    $('#mgEntwurfT').textContent = svc ? 'Erst nur den Entwurf sehen?' : 'Lieber gestalten lassen?';
+    $('#mgEntwurfS').textContent = svc
+      ? 'Ihr könnt den kostenlosen Entwurf auch ohne Bestellung anfragen. Unverbindlich, meist innerhalb von 48 Stunden.'
+      : 'Wir machen euch auch gerne einen kostenlosen Entwurf. Unverbindlich, meist innerhalb von 48 Stunden.';
+    renderMenge();
+    renderPreis();
   }
   function pruefeKasse() {
     const f = $('#kasseForm');
@@ -1437,7 +1642,7 @@
     ];
     $('#timeline').innerHTML = schritte.map((s, i) => `<li class="${s[2] ? 'ok' : ''}"><i>${s[2] ? '✓' : i + 1}</i><div><b>${s[0]}</b><span>${s[1]}</span></div></li>`).join('');
     window.__bestellung = { nr, p, za, mail, verein: $('#kVerein').value.trim(), name: $('#kName').value.trim() };
-    route('fertig');
+    geheZu('fertig');
   }
 
   /* ---------- Druckansicht: Angebot / Bestellbestätigung ---------- */
@@ -1539,24 +1744,7 @@
   }
 
   /* =================================================================
-     10. Mobile Preis-Sheet
-     ================================================================= */
-  function oeffneSheet() {
-    if (!window.matchMedia('(max-width: 899px)').matches) return;
-    $('#preis').classList.add('is-open');
-    $('#sheetBg').classList.add('an');
-    $('#mbarPreis').setAttribute('aria-expanded', 'true');
-    document.documentElement.classList.add('sheet-offen');
-  }
-  function schliesseSheet() {
-    $('#preis').classList.remove('is-open');
-    $('#sheetBg').classList.remove('an');
-    $('#mbarPreis').setAttribute('aria-expanded', 'false');
-    document.documentElement.classList.remove('sheet-offen');
-  }
-
-  /* =================================================================
-     11. Events
+     10. Events
      ================================================================= */
   function binde() {
     svg = $('#kappe');
@@ -1577,6 +1765,7 @@
         if (k === 'logo-service') { $('#dateiInput').dataset.ziel = 'service'; $('#dateiInput').click(); }
         if (k === 'text') textHinzu();
         if (k === 'beispiel') beispielLaden();
+        if (k === 'namen-datei') $('#namenDatei').click();
         if (k === 'svc-weg') {
           st.service.datei = '';
           delete dateien.service;
@@ -1598,18 +1787,20 @@
       if (fa) { st.farbe = fa.dataset.farbe; renderFarben(); renderKappe(); renderInspektor(); renderPreis(); commit(); return; }
       const gr = t.closest('#groesse button');
       if (gr) { st.groesse = gr.dataset.g; renderGroesse(); commit(); return; }
-      const se = t.closest('.seiten__btn');
+      const se = t.closest('.seiten__btn,[data-seite-go]');
       if (se) {
-        st.seite = se.dataset.seite;
+        st.seite = se.dataset.seite || se.dataset.seiteGo;
         if (st.auswahl && seiteVon(st.auswahl) !== st.seite) st.auswahl = null;
         renderSeiten(); renderKappe(); renderInspektor(); renderEbenen();
         return;
       }
-      const tb = t.closest('[data-tab]');
-      if (tb) { zeigeTab(tb.dataset.tab); return; }
-      const tg = t.closest('[data-tab-go]');
-      if (tg) { zeigeTab(tg.dataset.tabGo); return; }
-      const md = t.closest('.cfg-modus__btn');
+      const rs = t.closest('[data-rs]');
+      if (rs) { setRueckseite(rs.dataset.rs); return; }
+      const sp = t.closest('[data-step]');
+      if (sp) { if (sp.dataset.step === 'kasse') zurKasse(); else geheZu(sp.dataset.step); return; }
+      const sg = t.closest('[data-step-go]');
+      if (sg) { geheZu(sg.dataset.stepGo); return; }
+      const md = t.closest('.mk__btn');
       if (md) { if (md.dataset.modus !== st.modus) setModus(md.dataset.modus); return; }
       const eb = t.closest('[data-ebene]');
       if (eb) { waehle(eb.dataset.ebene); return; }
@@ -1649,13 +1840,15 @@
         renderService(); renderPreis(); commit();
         return;
       }
-      const ro = t.closest('[data-route]');
-      if (ro) { ev.preventDefault(); route(ro.dataset.route); return; }
     });
 
     $('#dateiInput').addEventListener('change', (e) => {
       const f = e.target.files[0];
       dateiGewaehlt(f, e.target.dataset.ziel);
+      e.target.value = '';
+    });
+    $('#namenDatei').addEventListener('change', (e) => {
+      namenDateiGewaehlt(e.target.files[0]);
       e.target.value = '';
     });
     /* Drag & Drop direkt auf die Bühne */
@@ -1704,14 +1897,14 @@
       st.namen.aktiv = ev.target.checked;
       if (st.namen.aktiv) {
         if (!alleElemente().some((e) => e.name)) {
-          const e = neuerText({ name: true, text: '', y: 330, s: 0.82, spacing: 0.06, farbe: kontrastFarbe(kappeHex()) });
-          st.elemente.hinten.push(e);
-          st.seite = 'hinten';
-          st.auswahl = e.id;
+          const n = namenElement();
+          st.elemente[n.seite].push(n.e);
+          st.seite = n.seite;
+          st.auswahl = n.e.id;
           renderSeiten();
           renderKappe();
         }
-        toast('Namen sind auf der Rückseite. Zieh den Platzhalter an die gewünschte Stelle.');
+        toast('Der Name sitzt unter eurem Logo. Zieh den Platzhalter an die gewünschte Stelle.');
       } else {
         ['vorne', 'hinten'].forEach((s) => { st.elemente[s] = st.elemente[s].filter((e) => !e.name); });
         st.auswahl = null;
@@ -1732,8 +1925,8 @@
       }
       commit();
     });
-    $('#nVor').addEventListener('click', () => { const z = st.namen.liste.length; if (!z) return; st.namen.vorschau = (st.namen.vorschau - 1 + z) % z; renderNamen(); if (st.seite !== 'hinten') { st.seite = 'hinten'; renderSeiten(); renderKappe(); } else renderDrucke(); });
-    $('#nNach').addEventListener('click', () => { const z = st.namen.liste.length; if (!z) return; st.namen.vorschau = (st.namen.vorschau + 1) % z; renderNamen(); if (st.seite !== 'hinten') { st.seite = 'hinten'; renderSeiten(); renderKappe(); } else renderDrucke(); });
+    $('#nVor').addEventListener('click', () => zeigeNamenVorschau(-1));
+    $('#nNach').addEventListener('click', () => zeigeNamenVorschau(1));
 
     /* Service-Modus */
     $('#svcNotiz').addEventListener('input', (ev) => { st.service.notiz = ev.target.value; speichernBald(); });
@@ -1768,6 +1961,12 @@
       speichernBald();
     });
 
+    /* Schritt-Navigation */
+    $('#btnWeiter').addEventListener('click', schrittWeiter);
+    $('#mbarWeiter').addEventListener('click', schrittWeiter);
+    $('#btnZurueck').addEventListener('click', () => geheZu('modell'));
+    $('#mbarZurueck').addEventListener('click', () => geheZu('modell'));
+
     /* Preis-CTAs */
     $('#btnBestellen').addEventListener('click', zurKasse);
     $('#mbarBestellen').addEventListener('click', zurKasse);
@@ -1776,9 +1975,7 @@
       setTimeout(() => $('#aVerein').focus(), 30);
     });
     $('#btnEntwurf').addEventListener('click', zumEntwurf);
-    $('#mbarPreis').addEventListener('click', () => ($('#preis').classList.contains('is-open') ? schliesseSheet() : oeffneSheet()));
-    $('#sheetBg').addEventListener('click', schliesseSheet);
-    $('.preis__griff').addEventListener('click', schliesseSheet);
+    $('#mbarPreis').addEventListener('click', () => $('#preis').scrollIntoView({ behavior: 'smooth', block: 'center' }));
 
     /* Angebots-Dialog */
     $('#dlgAngebot').addEventListener('click', (ev) => { if (ev.target.id === 'dlgAngebot' || ev.target.closest('[data-dlg-zu]')) $('#dlgAngebot').hidden = true; });
@@ -1830,12 +2027,11 @@
       }
       if (ev.key === 'Escape') {
         if (!$('#dlgAngebot').hidden) { $('#dlgAngebot').hidden = true; return; }
-        schliesseSheet();
         if (st.auswahl && !tippt) waehle(null);
         return;
       }
       const e = finde(st.auswahl);
-      if (!e || tippt || !$('#kasse').hidden) return;
+      if (!e || tippt || $('#app').hidden) return;
       const schritt = ev.shiftKey ? 10 : 2;
       const m = { ArrowLeft: [-schritt, 0], ArrowRight: [schritt, 0], ArrowUp: [0, -schritt], ArrowDown: [0, schritt] }[ev.key];
       if (m) { ev.preventDefault(); e.x += m[0]; e.y += m[1]; aktualisiereElement(e); clearTimeout(binde.t); binde.t = setTimeout(() => { renderDrucke(); commit(); }, 300); }
@@ -1844,17 +2040,21 @@
     });
 
     /* Routing (Zurück-Button) */
-    addEventListener('popstate', () => {
-      const h = location.hash.replace('#', '');
-      route(h === 'kasse' ? 'kasse' : (h === 'fertig' && window.__bestellung ? 'fertig' : 'gestalten'), true);
-    });
+    addEventListener('popstate', () => geheZu(schrittAusHash(), true));
 
     /* Neu skalieren: Griffe bleiben gleich groß auf dem Bildschirm */
     let rz = 0;
     addEventListener('resize', () => {
       clearTimeout(rz);
-      rz = setTimeout(() => { navHoehe(); renderDrucke(); if (!window.matchMedia('(max-width: 899px)').matches) schliesseSheet(); }, 120);
+      rz = setTimeout(() => { navHoehe(); renderDrucke(); }, 120);
     });
+  }
+  function schrittAusHash() {
+    const h = location.hash;
+    if (h === '#fertig' && window.__bestellung) return 'fertig';
+    const s = Object.keys(HASH).find((k) => HASH[k] && HASH[k] === h);
+    if (!s || s === 'fertig') return 'modell';
+    return (s === 'menge' || s === 'kasse') && !designOk(true) ? 'design' : s;
   }
   function setMenge(v) {
     st.menge = clamp(Math.round(v) || PREIS.mindest, PREIS.mindest, 20000);
@@ -1891,6 +2091,7 @@
     /* Bilder neu aufbereiten (Ansicht + Farben) */
     Promise.all(alleBilder().map(verarbeite)).then(() => {
       renderAlles();
+      if (st.tab === 'menge') renderMengeSeite();
       verlauf = [snapshot()];
       renderVerlaufBtns();
     });
@@ -1900,11 +2101,11 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => renderDrucke());
     /* Schriften sicher laden, damit Textmaße stimmen */
     if (document.fonts && document.fonts.load) {
-      Promise.all(['700 44px Oswald', '400 44px "Archivo Black"', '600 44px "IBM Plex Sans"', '500 44px "IBM Plex Serif"'].map((f) => document.fonts.load(f).catch(() => null)))
-        .then(() => renderDrucke());
+      Promise.all(SCHRIFT_LADEN.map((f) => document.fonts.load(f).catch(() => null))).then(() => renderDrucke());
     }
-    const h = location.hash.replace('#', '');
-    if (h === 'kasse') route('kasse', true);
+    const s = schrittAusHash();
+    geheZu(s, true);
+    if ((HASH[s] || '') !== location.hash) history.replaceState({ r: s }, '', HASH[s] || location.pathname + location.search);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
