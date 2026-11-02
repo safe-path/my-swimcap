@@ -20,8 +20,10 @@
 
   /* DEMO-PREISE. Abgeleitet aus den Richtwerten der Website
      (Silikon 50 Stk. 6,50 €, 100 Stk. 4,50 €, mit Namen ab 12,00 €).
-     Vor dem Livegang mit Sebastian abstimmen. Alle Werte netto je Kappe,
-     Index = Staffel (50 / 100 / 250 / 500 / 1000 Stück). */
+     Die echten Preise liefert Thomas nach. Alle Werte netto je Kappe,
+     Index = Staffel (50 / 100 / 250 / 500 / 1000 Stück).
+     Vorerst nur Preisvorschlag + Angebotsanfrage: keine Online-Zahlung,
+     kein Sofort-Rabatt, keine Express-Option. */
   const PREIS = {
     staffeln:     [50, 100, 250, 500, 1000],
     basis: {                                    // inkl. 1 Druckfarbe auf einer Seite
@@ -33,8 +35,6 @@
     zusatzfarbe:  [0.40, 0.30, 0.25, 0.20, 0.18], // jede weitere Druckfarbe
     zweiteSeite:  [1.20, 0.90, 0.75, 0.60, 0.50], // erste Farbe auf der 2. Seite
     namen:        [5.50, 5.00, 4.60, 4.20, 3.90], // individueller Name je Kappe
-    express:      0.25,   // Aufschlag auf die Kappensumme
-    sofortRabatt: 0.05,   // bei direkter Online-Zahlung
     mwst:         0.19,
     mindest:      50,
     maxFarben:    6
@@ -222,7 +222,7 @@
     t.textContent = msg;
     t.classList.add('an');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('an'), 3400);
+    toastTimer = setTimeout(() => t.classList.remove('an'), Math.max(3400, msg.length * 60));
   }
 
   /* =================================================================
@@ -235,7 +235,7 @@
       rueckseite: 'gleich', // gleich = Motiv von vorne, eigen = eigenes Motiv, leer = unbedruckt
       menge: 100, groesse: 'erwachsene', kinder: 0,
       namen: { aktiv: false, liste: [], vorschau: 0 },
-      express: false, netto: true, druckbereich: true,
+      netto: true, druckbereich: true,
       service: { notiz: '', datei: '', seiten: { vorne: true, hinten: false }, farben: { vorne: 2, hinten: 1 } },
       tab: 'modell'
     };
@@ -264,7 +264,7 @@
     const alt = { auswahl: st.auswahl, tab: st.tab };
     st = Object.assign(neuerZustand(), JSON.parse(json), alt);
     if (st.auswahl && !finde(st.auswahl)) st.auswahl = null;
-    Promise.all(alleBilder().map((e) => (cache[e.id] ? null : verarbeite(e)))).then(renderAlles);
+    Promise.all(alleBilder().map((e) => (cache[e.id] && cache[e.id].sig === bildSig(e) ? null : verarbeite(e)))).then(renderAlles);
     renderAlles();
     speichernBald();
   }
@@ -432,8 +432,30 @@
       const nm = naechsteDruckfarbe([c.r, c.g, c.b]);
       if (namen.indexOf(nm) < 0) namen.push(nm);
     });
-    return { namen, viele: sig.length > PREIS.maxFarben };
+    return { namen, viele: sig.length > PREIS.maxFarben, cluster: sig.map((c) => ({ rgb: [c.r, c.g, c.b], name: naechsteDruckfarbe([c.r, c.g, c.b]) })) };
   }
+  /* Erkannte Logofarben auf andere Druckfarben legen (map: Name → Ziel-Hex).
+     Jedes Pixel geht zur nächstgelegenen erkannten Farbe, damit auch
+     Kantenpixel mitwandern. So lassen sich Farben zusammenlegen. */
+  function umfaerben(d, cluster, map) {
+    const ziel = cluster.map((c) => (map[c.name] ? hexRgb(map[c.name]) : null));
+    if (!ziel.some(Boolean)) return;
+    const px = d.data;
+    for (let i = 0; i < px.length; i += 4) {
+      if (px[i + 3] < 10) continue;
+      let best = 0, bd = 1e12;
+      for (let k = 0; k < cluster.length; k++) {
+        const c = cluster[k].rgb, dr = px[i] - c[0], dg = px[i + 1] - c[1], db = px[i + 2] - c[2];
+        const dist = dr * dr + dg * dg + db * db;
+        if (dist < bd) { bd = dist; best = k; }
+      }
+      const z = ziel[best];
+      if (z) { px[i] = z[0]; px[i + 1] = z[1]; px[i + 2] = z[2]; }
+    }
+  }
+  /* Kennung der Bildeinstellungen: ändert sie sich (z. B. durch Rückgängig),
+     muss das Bild neu aufbereitet werden */
+  const bildSig = (e) => JSON.stringify([e.src.length, !!e.ohneHg, e.mono || null, e.farbMap || null]);
   function faerbe(d, hex) {
     const [r, g, b] = hexRgb(hex), px = d.data;
     for (let i = 0; i < px.length; i += 4) {
@@ -467,7 +489,14 @@
       if (e.hgErkannt === undefined) e.hgErkannt = !!eckFarbe(d);
       if (e.ohneHg) entferneHg(d);
       let info = analysiere(d);
+      const erkannt = info.namen;
       if (e.mono) { faerbe(d, e.mono); info = { namen: [druckName(e.mono)], viele: false }; }
+      else if (e.farbMap && Object.keys(e.farbMap).length) {
+        umfaerben(d, info.cluster, e.farbMap);
+        const namen = [];
+        erkannt.forEach((n) => { const z = e.farbMap[n] ? druckName(e.farbMap[n]) : n; if (namen.indexOf(z) < 0) namen.push(z); });
+        info = { namen, viele: info.viele };
+      }
       x.putImageData(d, 0, 0);
       const box = inhaltBox(d);
       let out = c;
@@ -476,7 +505,7 @@
         out.width = box.w; out.height = box.h;
         out.getContext('2d').drawImage(c, box.x, box.y, box.w, box.h, 0, 0, box.w, box.h);
       }
-      cache[e.id] = { view: out.toDataURL('image/png'), palette: info.namen, viele: info.viele };
+      cache[e.id] = { view: out.toDataURL('image/png'), palette: info.namen, erkannt, viele: info.viele, sig: bildSig(e) };
       const asp = out.height / out.width;
       if (!e.w) {
         if (asp > 1) { e.h = 190; e.w = Math.round(190 / asp); } else { e.w = 190; e.h = Math.round(190 * asp); }
@@ -484,7 +513,7 @@
         e.h = Math.round(e.w * asp * 10) / 10;
       }
     }).catch(() => {
-      cache[e.id] = { view: e.src, palette: [], viele: false };
+      cache[e.id] = { view: e.src, palette: [], erkannt: [], viele: false, sig: bildSig(e) };
       if (!e.w) { e.w = 190; e.h = 190; }
     });
   }
@@ -544,20 +573,16 @@
     const seite2 = zweite > 0 ? PREIS.zweiteSeite[t] : 0;
     const namen = st.namen.aktiv ? PREIS.namen[t] : 0;
     const stueck = r2(basis + zusatz + seite2 + namen);
-    const summe = r2(stueck * m);
-    const express = st.express ? r2(summe * PREIS.express) : 0;
-    const vorRabatt = r2(summe + express);
-    const rabatt = opt.ohneRabatt ? 0 : r2(vorRabatt * PREIS.sofortRabatt);
-    const netto = r2(vorRabatt - rabatt);
+    const netto = r2(stueck * m);
     const mwst = r2(netto * PREIS.mwst);
-    return { m, t, fv, fh, erste, zweite, basis, extra, zusatz, seite2, namen, stueck, summe, express, vorRabatt, rabatt, netto, mwst, brutto: r2(netto + mwst) };
+    return { m, t, fv, fh, erste, zweite, basis, extra, zusatz, seite2, namen, stueck, netto, mwst, brutto: r2(netto + mwst) };
   }
   const zeig = (p, wert) => (st.netto ? wert : r2(wert * (1 + PREIS.mwst))); // Anzeige netto/brutto
   function lieferung() {
-    const wochen = st.express ? 3 : (st.namen.aktiv ? 6 : 5);
+    const wochen = st.namen.aktiv ? 6 : 5;
     const d = new Date();
     d.setDate(d.getDate() + wochen * 7 + 2); // + Proof & Freigabe
-    return { wochen, datum: d, text: st.express ? 'ca. 3 Wochen' : (st.namen.aktiv ? '5 bis 6 Wochen' : '4 bis 5 Wochen') };
+    return { wochen, datum: d, text: st.namen.aktiv ? '5 bis 6 Wochen' : '4 bis 5 Wochen' };
   }
   function farbenBand(n) {
     if (n <= 1) return '1-farbig';
@@ -955,7 +980,12 @@
     }).then((e2) => {
       delete e2.autoHg;
       fuegeHinzu(e2, meta && meta.seite);
-      if (e2.ohneHg) toast('Hintergrund automatisch entfernt. Du kannst das im Logo-Bereich umschalten.');
+      /* Sofort sagen, wie viele Druckfarben erkannt wurden und was jede weitere kostet */
+      const n = cache[e2.id] ? cache[e2.id].palette.length : 0;
+      let msg = n ? `${n} Druckfarbe${n > 1 ? 'n' : ''} im Logo erkannt.` : '';
+      if (n > 1 && !e2.serviceLogo) msg += ` Jede weitere Farbe kostet +${euro(zeig(null, PREIS.zusatzfarbe[stufe(st.menge)]))} je Kappe. Ihr könnt Farben im Logo-Bereich anpassen.`;
+      if (e2.ohneHg) msg += ' Hintergrund automatisch entfernt.';
+      if (msg) toast(msg.trim());
       return e2;
     });
   }
@@ -1291,11 +1321,24 @@
       mitte += regler('Bogen', 'bogen', e.bogen, -100, 100, 1, e.bogen === 0 ? 'gerade' : (e.bogen > 0 ? 'nach oben' : 'nach unten'));
       mitte += regler('Zeichenabstand', 'spacing', Math.round((e.spacing || 0) * 100), 0, 40, 1, Math.round((e.spacing || 0) * 100) + ' %');
     } else {
-      const c = cache[e.id] || { palette: [] };
+      const c = cache[e.id] || { palette: [], erkannt: [] };
       const farben = e.mono ? [druckName(e.mono)] : c.palette;
+      const erkannt = c.erkannt || c.palette;
       mitte += `<div class="ins__logo"><span class="ins__thumb" style="--bg:${kappeHex()}"><img src="${c.view || e.src}" alt=""></span>
-        <div><b>${esc(e.datei || 'Logo')}</b><span>${farben.length ? `${farben.length} Druckfarbe${farben.length > 1 ? 'n' : ''} erkannt` : 'Farben werden erkannt …'}</span>
+        <div><b>${esc(e.datei || 'Logo')}</b><span>${erkannt.length ? `${erkannt.length} Druckfarbe${erkannt.length > 1 ? 'n' : ''} erkannt` : 'Farben werden erkannt …'}</span>
         <span class="ins__chips">${farben.map((n) => `<i style="--c:${druckHex(n)}" title="${n}"></i>`).join('')}</span></div></div>`;
+      /* Erkannte Farben einzeln umstellen oder zusammenlegen, mit Aufpreis-Hinweis */
+      if (!e.mono && erkannt.length) {
+        const extra = euro(zeig(null, PREIS.zusatzfarbe[stufe(st.menge)]));
+        mitte += `<div class="ins__zeile fz"><span class="ins__lbl">Druckfarben im Logo <em>${farben.length} ${farben.length === 1 ? 'Farbe' : 'Farben'} im Druck</em></span>
+          ${erkannt.map((n) => {
+            const ziel = e.farbMap && e.farbMap[n] ? druckName(e.farbMap[n]) : n;
+            return `<label class="fz__zeile"><i class="fz__punkt" style="--c:${druckHex(n)}"></i><span class="fz__name">${n}</span>
+              <svg class="fz__pfeil" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <span class="fz__wahl"><i class="fz__punkt" style="--c:${druckHex(ziel)}"></i><select data-farbmap="${n}" aria-label="Druckfarbe für ${n}">${DRUCK.map((d) => `<option value="${d[0]}"${d[0] === ziel ? ' selected' : ''}>${d[0]}</option>`).join('')}</select></span></label>`;
+          }).join('')}
+          <p class="fz__hinweis">Eine Druckfarbe ist im Grundpreis enthalten, jede weitere kostet <b>+${extra}</b> je Kappe (bei ${st.menge.toLocaleString('de-DE')} Stück). Gebt zwei Farben dieselbe Druckfarbe, um sie zusammenzulegen.${e.farbMap ? ' <button type="button" class="linkbtn" data-ins="farbreset">Erkannte Farben wiederherstellen</button>' : ''}</p></div>`;
+      }
       if (c.viele) mitte += `<p class="hinweis hinweis--warn">Mehr als 6 Farben oder Verläufe erkannt. Wir prüfen das beim Druck-Check und schlagen euch eine Lösung vor (meist einfarbig oder Digitaldruck).</p>`;
       if (e.hgErkannt || e.ohneHg) {
         mitte += `<label class="toggle"><input type="checkbox" data-ins-cb="ohneHg"${e.ohneHg ? ' checked' : ''}><span class="toggle__ui"></span><span class="toggle__t"><b>Hintergrund entfernen</b><em>Für Logos mit weißem Kasten</em></span></label>`;
@@ -1386,19 +1429,13 @@
       hin.hidden = false;
       hin.innerHTML = `Noch <b>${nx - m}</b> Kappen bis zum nächsten Staffelpreis: dann <b>${euro(zeig(null, q.stueck))}</b> statt ${euro(zeig(null, p.stueck))} pro Kappe. <button type="button" class="linkbtn" data-menge-setzen="${nx}">Auf ${nx} erhöhen</button>`;
     } else hin.hidden = true;
-    $('#express').checked = st.express;
     const l = lieferung();
-    $('#lieferText').innerHTML = `Fertig in <b>${l.text}</b> nach eurer Freigabe. Voraussichtlich bei euch bis <b>KW ${kw(l.datum)}</b> (${datumLang(l.datum)}).`;
-    $('#expressPreis').textContent = `+${Math.round(PREIS.express * 100)} %`;
+    $('#lieferText').innerHTML = `Fertig in <b>${l.text}</b> nach eurer Freigabe. Voraussichtlich bei euch bis <b>KW ${kw(l.datum)}</b> (${datumLang(l.datum)}). Ihr braucht die Kappen früher? Schreibt es in die Hinweise zum Angebot.`;
   }
   function renderPreis() {
     const p = rechne();
-    const mit = PREIS.sofortRabatt > 0;
     const basis = st.netto ? p.netto : p.brutto;
-    const alt = st.netto ? p.vorRabatt : r2(p.vorRabatt * (1 + PREIS.mwst));
     $('#pGesamt').textContent = euro(basis);
-    $('#pAlt').textContent = mit ? euro(alt) : '';
-    $('#pRabattBadge').textContent = `−${Math.round(PREIS.sofortRabatt * 100)} % Sofort-Rabatt`;
     const proStk = basis / p.m;
     $('#pUnter').textContent = `${euro(proStk)} pro Kappe · ${p.m.toLocaleString('de-DE')} Stück · ${st.netto ? 'zzgl. 19 % MwSt.' : 'inkl. 19 % MwSt.'}`;
     $$('.nb button').forEach((b) => b.classList.toggle('is-on', (b.dataset.nb === 'netto') === st.netto));
@@ -1409,20 +1446,16 @@
     if (p.namen) z.push(['Individuelle Namen', p.namen]);
     let html = `<div class="pz pz--klein"><span>Pro Kappe</span><span></span></div>`;
     html += z.map((r) => `<div class="pz"><span>${r[0]}</span><span>${euro(zeig(null, r[1]))}</span></div>`).join('');
-    html += `<div class="pz pz--summe"><span>${euro(zeig(null, p.stueck))} × ${p.m.toLocaleString('de-DE')} Stück</span><span>${euro(zeig(null, p.summe))}</span></div>`;
-    if (p.express) html += `<div class="pz"><span>Express-Produktion (+${Math.round(PREIS.express * 100)} %)</span><span>${euro(zeig(null, p.express))}</span></div>`;
-    html += `<div class="pz pz--rabatt"><span>Sofort-Rabatt bei Online-Zahlung (−${Math.round(PREIS.sofortRabatt * 100)} %)</span><span>−${euro(zeig(null, p.rabatt))}</span></div>`;
+    html += `<div class="pz pz--summe"><span>${euro(zeig(null, p.stueck))} × ${p.m.toLocaleString('de-DE')} Stück</span><span>${euro(zeig(null, p.netto))}</span></div>`;
     html += `<div class="pz pz--total"><span>Gesamt netto</span><span>${euro(p.netto)}</span></div>`;
     html += `<div class="pz"><span>zzgl. 19 % MwSt.</span><span>${euro(p.mwst)}</span></div>`;
     html += `<div class="pz pz--total"><span>Gesamt brutto</span><span>${euro(p.brutto)}</span></div>`;
-    html += `<p class="pz-note">Versand innerhalb Deutschlands inklusive. Demo-Preise im Prototyp.</p>`;
+    html += `<p class="pz-note">${p.extra ? 'Weniger Druckfarben senken den Preis: Im Schritt Gestalten könnt ihr Logofarben zusammenlegen. ' : ''}Versand innerhalb Deutschlands inklusive. Demo-Preise im Prototyp.</p>`;
     $('#pZeilen').innerHTML = html;
     const l = lieferung();
     $('#pLiefer').innerHTML = `<svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span>Lieferung bis ca. <b>KW ${kw(l.datum)}</b> · ${l.text} nach Freigabe</span>`;
-    setBtnText($('#btnBestellen'), `Jetzt bestellen & ${Math.round(PREIS.sofortRabatt * 100)} % sparen`);
     $('#mbarSumme').textContent = euro(basis);
     $('#mbarStk').textContent = `${euro(proStk)} / Kappe · ${st.netto ? 'netto' : 'brutto'}`;
-    $('#mbarRabatt').textContent = `−${Math.round(PREIS.sofortRabatt * 100)} %`;
     if (st.modus !== 'service') $('#infoFarben').textContent = `Druckfarben: vorne ${p.fv}, hinten ${p.fh}`;
     if (!$('#rsLeiste').hidden) renderRueckseite();
   }
@@ -1489,18 +1522,11 @@
       ['Rückseite', seite('hinten')],
       ['Namen', st.namen.aktiv ? `Ja, ${st.namen.liste.length || 'Liste folgt'}${st.namen.liste.length ? ' Namen' : ''}` : 'Nein'],
       ['Gestaltung', st.modus === 'service' ? 'Durch MySwimcap (kostenlos)' : 'Selbst gestaltet, mit Druck-Check'],
-      ['Produktion', st.express ? 'Express (ca. 3 Wochen)' : `Standard (${lieferung().text})`]
+      ['Produktion', `${lieferung().text} nach Freigabe`]
     ];
   }
-  function zahlungsart() {
-    const r = $('input[name="zahlung"]:checked');
-    return r ? r.value : 'karte';
-  }
-  function kassePreis() {
-    return rechne({ ohneRabatt: zahlungsart() === 'rechnung' });
-  }
   function renderKasse() {
-    const p = kassePreis();
+    const p = rechne();
     const mock = $('#kasseMock');
     mock.innerHTML = '';
     ['vorne', 'hinten'].forEach((s) => {
@@ -1512,16 +1538,11 @@
       mock.appendChild(fig);
     });
     $('#kasseKonfig').innerHTML = konfigZeilen().map((z) => `<div><dt>${z[0]}</dt><dd>${esc(z[1])}</dd></div>`).join('');
-    const rab = p.rabatt > 0;
     $('#kasseZeilen').innerHTML = `
-      <div class="pz"><span>${euro(p.stueck)} × ${p.m.toLocaleString('de-DE')} Stück</span><span>${euro(p.summe)}</span></div>
-      ${p.express ? `<div class="pz"><span>Express-Produktion</span><span>${euro(p.express)}</span></div>` : ''}
-      <div class="pz ${rab ? 'pz--rabatt' : 'pz--aus'}"><span>Sofort-Rabatt (−${Math.round(PREIS.sofortRabatt * 100)} %)</span><span>${rab ? '−' + euro(p.rabatt) : 'nicht bei Rechnung'}</span></div>
+      <div class="pz"><span>${euro(p.stueck)} × ${p.m.toLocaleString('de-DE')} Stück</span><span>${euro(p.netto)}</span></div>
       <div class="pz"><span>Versand (DE)</span><span>inklusive</span></div>
-      <div class="pz pz--total"><span>Gesamt netto</span><span>${euro(p.netto)}</span></div>
       <div class="pz"><span>zzgl. 19 % MwSt.</span><span>${euro(p.mwst)}</span></div>
-      <div class="pz pz--gross"><span>Zu zahlen</span><span>${euro(p.brutto)}</span></div>`;
-    $('#kasseSumme').textContent = euro(p.brutto);
+      <div class="pz pz--gross"><span>Preisvorschlag brutto</span><span>${euro(p.brutto)}</span></div>`;
     $('#kasseSumMobil').textContent = euro(p.brutto);
     $('#kasseWarn').hidden = !(st.modus === 'selbst' && kasseWarnung);
     const min = new Date();
@@ -1635,63 +1656,87 @@
     }
     return ok;
   }
-  function zahlen(ev) {
+  /* Angebotsanfrage: gleiches Datenformat wie der Anfrage-Wizard der
+     Startseite (index.html, submit()), damit das Make-Szenario sie ohne
+     Änderung verarbeitet. Konfiguration und Preisvorschlag stehen in der Notiz. */
+  const ANFRAGE_HOOK = 'https://hook.eu2.make.com/4bwqb1defy559ktpwosj9u11kx3x7x6m';
+  function anfrageDaten() {
+    const p = rechne(), f = FARBTON[st.farbe];
+    const tel = $('#kTel').value.trim(), hinweis = $('#kNotiz').value.trim();
+    const namen = st.namen.liste;
+    const notiz = [
+      ISTPROD ? '' : '[Staging-Test]',
+      'Angebotsanfrage aus dem Online-Konfigurator.',
+      `Preisvorschlag: ${euro(p.netto)} netto, ${euro(p.stueck)} je Kappe bei ${p.m.toLocaleString('de-DE')} Stück.`,
+      konfigZeilen().map((z) => `${z[0]}: ${z[1]}`).join(' · '),
+      st.modus === 'service' && st.service.notiz ? 'Wünsche: ' + st.service.notiz : '',
+      st.namen.aktiv && namen.length ? `Namensliste (${namen.length}): ${namen.join(', ').slice(0, 1500)}` : '',
+      tel ? 'Telefon: ' + tel : '',
+      hinweis ? 'Hinweise: ' + hinweis : ''
+    ].filter(Boolean).join('\n');
+    return {
+      termin: $('#kTermin').value || '', verein: $('#kVerein').value.trim(), name: $('#kName').value.trim(),
+      notiz: notiz.slice(0, 4000), email: $('#kEmail').value.trim(), dsgvo: 'on',
+      modell: MODELLE[st.modell].wizard, kappenfarbe: f ? f[0] : '', menge: mengenBand(p.m),
+      farben: farbenBand(Math.max(p.fv, p.fh)), namen: st.namen.aktiv ? 'Ja, mit Namen' : 'Nein',
+      logo: '(keins)', sprache: 'de', logo_url: ''
+    };
+  }
+  function anfrageSenden(ev) {
     ev.preventDefault();
     if (!pruefeKasse()) return;
-    const dlg = $('#dlgZahlung');
-    const za = zahlungsart();
-    const p = kassePreis();
-    const label = { karte: 'Kreditkarte', sepa: 'SEPA-Lastschrift', paypal: 'PayPal', wallet: 'Apple Pay / Google Pay', rechnung: 'Rechnung' }[za];
-    $('#zBetrag').textContent = euro(p.brutto);
-    $('#zArt').textContent = label;
-    $('#zStatus').textContent = za === 'rechnung' ? 'Bestellung wird angelegt …' : `Verbindung zu Stripe (${label}) …`;
-    dlg.hidden = false;
-    dlg.classList.remove('ok');
-    setTimeout(() => { $('#zStatus').textContent = za === 'rechnung' ? 'Rechnung wird erstellt …' : 'Zahlung wird bestätigt …'; }, 900);
-    setTimeout(() => { dlg.classList.add('ok'); $('#zStatus').textContent = 'Erfolgreich'; }, 1900);
-    setTimeout(() => { dlg.hidden = true; fertigZeigen(p, za); }, 2700);
+    const btn = $('#kasseSenden');
+    btn.disabled = true;
+    setBtnText(btn, 'Wird gesendet …');
+    const daten = anfrageDaten();
+    const zuruecksetzen = () => { btn.disabled = false; setBtnText(btn, 'Angebot anfordern'); };
+    logoHochladen().then((url) => {
+      if (url) { daten.logo = url; daten.logo_url = url; }
+      return fetch(ANFRAGE_HOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(daten) });
+    }).then((r) => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      zuruecksetzen();
+      fertigZeigen(daten);
+    }).catch(() => {
+      zuruecksetzen();
+      toast('Senden hat nicht geklappt. Versuch es bitte noch einmal oder schreib an info@my-swimcap.de.');
+    });
   }
-  function fertigZeigen(p, za) {
-    const nr = 'MS-' + String(new Date().getFullYear()).slice(2) + '-' + String(Math.floor(10000 + Math.random() * 89999));
-    const mail = $('#kEmail').value.trim();
-    $('#bestNr').textContent = nr;
-    $('#bestMail').textContent = mail;
+  function fertigZeigen(daten) {
+    $('#bestMail').textContent = daten.email;
     const mock = $('#fertigMock');
     mock.innerHTML = '';
     mock.appendChild(statischeKappe('vorne', 'kappe-mini kappe-mini--gross'));
     const heute = new Date(), l = lieferung();
     const plus = (t) => { const d = new Date(heute); d.setDate(d.getDate() + t); return d; };
     const schritte = [
-      ['Bestellung eingegangen', `Heute · ${za === 'rechnung' ? 'Rechnung per Mail' : 'Zahlung bestätigt'}`, true],
-      ['Druck-Check & Proof', `bis ${datumLang(plus(2))} · ihr bekommt den finalen Entwurf`, false],
-      ['Eure Freigabe', 'Ein Klick im Proof genügt. Erst dann drucken wir.', false],
-      ['Produktion in Europa', st.express ? 'Express, ca. 2 Wochen' : 'Siebdruck, ca. 4 Wochen', false],
-      ['Lieferung', `bis ca. KW ${kw(l.datum)} · mit Sendungsverfolgung`, false]
+      ['Anfrage eingegangen', `Heute, ${datumLang(heute)}`, true],
+      ['Druck-Check', 'Wir prüfen Logo, Druckfarben und Druckbereich', false],
+      ['Verbindliches Angebot', `bis ${datumLang(plus(2))} per Mail, mit finalem Entwurf`, false],
+      ['Eure Freigabe', 'Erst mit eurer Zusage wird bestellt und gedruckt', false],
+      ['Produktion und Lieferung', `${l.text} nach Freigabe, mit Sendungsverfolgung`, false]
     ];
     $('#timeline').innerHTML = schritte.map((s, i) => `<li class="${s[2] ? 'ok' : ''}"><i>${s[2] ? '✓' : i + 1}</i><div><b>${s[0]}</b><span>${s[1]}</span></div></li>`).join('');
-    window.__bestellung = { nr, p, za, mail, verein: $('#kVerein').value.trim(), name: $('#kName').value.trim() };
+    $('#fertigDemo').hidden = ISTPROD;
+    window.__anfrage = { verein: daten.verein, name: daten.name, mail: daten.email };
     geheZu('fertig');
   }
 
-  /* ---------- Druckansicht: Angebot / Bestellbestätigung ---------- */
-  function druckDokument(art, kunde) {
-    const p = art === 'angebot' ? rechne({ ohneRabatt: true }) : window.__bestellung.p;
-    const pr = rechne();
+  /* ---------- Druckansicht: Preisvorschlag (PDF über den Druckdialog) ---------- */
+  function druckDokument(kunde) {
+    const p = rechne();
     const heute = new Date();
     const gueltig = new Date(); gueltig.setDate(gueltig.getDate() + 30);
     const zwei = (n) => String(n).padStart(2, '0');
-    const nr = art === 'angebot'
-      ? `A-${String(heute.getFullYear()).slice(2)}${zwei(heute.getMonth() + 1)}${zwei(heute.getDate())}-${Math.floor(100 + Math.random() * 899)}`
-      : window.__bestellung.nr;
+    const nr = `P-${String(heute.getFullYear()).slice(2)}${zwei(heute.getMonth() + 1)}${zwei(heute.getDate())}-${Math.floor(100 + Math.random() * 899)}`;
     const logo = $('.nav .brand__logo') ? $('.nav .brand__logo').outerHTML : '<b>MySwimcap</b>';
     const d = $('#druck');
-    const zeilen = [[1, `Badekappe ${MODELLE[st.modell].name}, ${FARBTON[st.farbe] ? FARBTON[st.farbe][0] : ''}, bedruckt laut Entwurf`, p.m, p.stueck, p.summe]];
-    if (p.express) zeilen.push([2, 'Express-Produktion', 1, p.express, p.express]);
+    const zeilen = [[1, `Badekappe ${MODELLE[st.modell].name}, ${FARBTON[st.farbe] ? FARBTON[st.farbe][0] : ''}, bedruckt laut Entwurf`, p.m, p.stueck, p.netto]];
     d.innerHTML = `
       <div class="doc">
         <header class="doc__kopf">${logo}<div class="doc__absender">ssM swimsportMedia GmbH<br>Elsterstraße 65 · 04109 Leipzig<br>info@my-swimcap.de · my-swimcap.de</div></header>
-        <div class="doc__titel"><div><h1>${art === 'angebot' ? 'Angebot' : 'Bestellbestätigung'}</h1>
-          <p>Nr. ${nr} · ${datumKurz(heute)}${art === 'angebot' ? ` · gültig bis ${datumKurz(gueltig)}` : ''}</p></div>
+        <div class="doc__titel"><div><h1>Preisvorschlag</h1>
+          <p>Nr. ${nr} · ${datumKurz(heute)} · unverbindlich, gültig bis ${datumKurz(gueltig)}</p></div>
           <div class="doc__fuer">${kunde.verein ? `<b>${esc(kunde.verein)}</b><br>` : ''}${kunde.name ? esc(kunde.name) + '<br>' : ''}${kunde.mail ? esc(kunde.mail) : ''}</div></div>
         <div class="doc__mock" id="docMock"></div>
         <h2>Eure Konfiguration</h2>
@@ -1699,17 +1744,16 @@
         <h2>Preis</h2>
         <table class="doc__tab"><thead><tr><th>Pos.</th><th>Beschreibung</th><th>Menge</th><th>Einzelpreis</th><th>Gesamt</th></tr></thead><tbody>
           ${zeilen.map((z) => `<tr><td>${z[0]}</td><td>${esc(z[1])}</td><td>${z[2].toLocaleString('de-DE')}</td><td>${euro(z[3])}</td><td>${euro(z[4])}</td></tr>`).join('')}
-          ${p.rabatt ? `<tr><td></td><td>Sofort-Rabatt Online-Zahlung (−${Math.round(PREIS.sofortRabatt * 100)} %)</td><td></td><td></td><td>−${euro(p.rabatt)}</td></tr>` : ''}
         </tbody><tfoot>
           <tr><td colspan="4">Summe netto</td><td>${euro(p.netto)}</td></tr>
           <tr><td colspan="4">zzgl. 19 % MwSt.</td><td>${euro(p.mwst)}</td></tr>
           <tr class="doc__summe"><td colspan="4">Gesamtbetrag</td><td>${euro(p.brutto)}</td></tr>
         </tfoot></table>
-        ${art === 'angebot' ? `<div class="doc__tipp"><b>Online bestellen und ${Math.round(PREIS.sofortRabatt * 100)} % sparen:</b> Bei direkter Online-Zahlung kostet diese Konfiguration nur ${euro(pr.brutto)} brutto. Der Entwurf ist im Browser gespeichert unter my-swimcap.de/gestalten.</div>` : ''}
+        <div class="doc__tipp"><b>Preisvorschlag, Änderungen vorbehalten.</b> Den endgültigen Preis bestätigen wir nach dem Druck-Check mit dem verbindlichen Angebot. Er kann sich ändern, wenn das Logo andere Druckfarben braucht als erkannt oder für den Druck noch überarbeitet werden muss.</div>
         <h2>So geht es weiter</h2>
-        <ol class="doc__schritte"><li>${art === 'angebot' ? 'Angebot im Verein abstimmen und online bestellen oder per Mail an info@my-swimcap.de bestätigen.' : 'Wir prüfen eure Druckdaten (Druck-Check).'}</li>
-          <li>Ihr bekommt einen finalen Proof. Gedruckt wird erst nach eurer Freigabe.</li>
-          <li>Produktion im Siebdruck in Europa, Lieferung ${lieferung().text} nach Freigabe mit Sendungsverfolgung.</li></ol>
+        <ol class="doc__schritte"><li>Angebot anfordern unter my-swimcap.de/gestalten (der Entwurf ist dort in diesem Browser gespeichert) oder per Mail an info@my-swimcap.de.</li>
+          <li>Wir prüfen euren Entwurf und schicken das verbindliche Angebot mit finalem Proof.</li>
+          <li>Gedruckt wird erst nach eurer Freigabe. Produktion im Siebdruck in Europa, Lieferung ${lieferung().text} nach Freigabe.</li></ol>
         <footer class="doc__fuss">ssM swimsportMedia GmbH · Elsterstraße 65 · 04109 Leipzig · GF Sebastian Schwenke · HRB 30212 · USt-IdNr. DE294075404${ISTPROD ? '' : ' · Prototyp: Preise sind Demo-Werte'}</footer>
       </div>`;
     const mock = $('#docMock');
@@ -1723,7 +1767,7 @@
     });
     document.documentElement.classList.add('druckt');
     const alt = document.title;
-    document.title = `${art === 'angebot' ? 'Angebot' : 'Bestellbestaetigung'} MySwimcap ${nr}`;
+    document.title = `Preisvorschlag MySwimcap ${nr}`;
     const fertig = () => {
       document.documentElement.classList.remove('druckt');
       document.title = alt;
@@ -1757,18 +1801,21 @@
       menge: mengenBand(p.m), farben: farbenBand(Math.max(p.fv, p.fh)),
       namen: st.namen.aktiv ? 'Ja, mit Namen' : 'Nein', notiz: notiz.slice(0, 900)
     });
-    const los = (url) => {
-      if (url) q.set('logo', url);
-      location.href = '/?' + q.toString() + '#anfrage';
-    };
-    const logoEl = alleBilder().find((e) => !e.beispiel);
-    const datei = (logoEl && dateien[logoEl.id]) || dateien.service;
-    if (!datei && !logoEl) { los(''); return; }
     btn.classList.add('laedt');
     btn.disabled = true;
+    logoHochladen().then((url) => {
+      if (url) q.set('logo', url);
+      location.href = '/?' + q.toString() + '#anfrage';
+    });
+  }
+  /* Eigenes Logo (Original, sonst die aufbereitete Ansicht) in den Bucket
+     laden. Liefert die öffentliche URL oder '' (kein Logo, Upload fehlgeschlagen). */
+  function logoHochladen() {
+    const logoEl = alleBilder().find((e) => !e.beispiel);
+    const datei = (logoEl && dateien[logoEl.id]) || dateien.service;
+    if (!datei && !logoEl) return Promise.resolve('');
     const blobP = datei ? Promise.resolve(datei) : fetch(cache[logoEl.id] ? cache[logoEl.id].view : logoEl.src).then((r) => r.blob());
-    blobP.then((b) => hochladen(b, datei ? datei.name : 'logo-konfigurator.png'))
-      .then(los, () => los(''));
+    return blobP.then((b) => hochladen(b, datei ? datei.name : 'logo-konfigurator.png')).catch(() => '');
   }
 
   /* =================================================================
@@ -1854,6 +1901,7 @@
         if (k === 'weg') entferne(id);
         if (k === 'zu') waehle(null);
         if (k === 'mitte') { e.x = 300; renderDrucke(); renderInspektor(); commit(); }
+        if (k === 'farbreset') { delete e.farbMap; verarbeite(e).then(() => { renderDrucke(); renderInspektor(); renderPreis(); commit(); }); }
         return;
       }
       const sch = t.closest('[data-schrift]');
@@ -1919,6 +1967,14 @@
     $('#inspektor').addEventListener('change', (ev) => {
       const e = finde(st.auswahl);
       if (!e) return;
+      const fm = ev.target.dataset.farbmap;
+      if (fm) {
+        const map = Object.assign({}, e.farbMap);
+        if (ev.target.value === fm) delete map[fm]; else map[fm] = druckHex(ev.target.value);
+        if (Object.keys(map).length) e.farbMap = map; else delete e.farbMap;
+        verarbeite(e).then(() => { renderDrucke(); renderInspektor(); renderPreis(); commit(); });
+        return;
+      }
       const cb = ev.target.dataset.insCb;
       if (cb === 'ohneHg') { e.ohneHg = ev.target.checked; verarbeite(e).then(() => { renderDrucke(); renderInspektor(); renderPreis(); commit(); }); return; }
       if (cb === 'mono') {
@@ -1988,7 +2044,6 @@
     mi.addEventListener('change', () => setMenge(parseInt(mi.value, 10) || PREIS.mindest));
     $('#mMinus').addEventListener('click', () => setMenge(st.menge - (st.menge > 100 ? 10 : 5)));
     $('#mPlus').addEventListener('click', () => setMenge(st.menge + (st.menge >= 100 ? 10 : 5)));
-    $('#express').addEventListener('change', (ev) => { st.express = ev.target.checked; renderMenge(); renderPreis(); commit(); });
 
     /* Bühnen-Werkzeuge */
     $('#btnUndo').addEventListener('click', undo);
@@ -2007,8 +2062,8 @@
     $('#mbarZurueck').addEventListener('click', () => geheZu('modell'));
 
     /* Preis-CTAs */
-    $('#btnBestellen').addEventListener('click', zurKasse);
-    $('#mbarBestellen').addEventListener('click', zurKasse);
+    $('#btnAnfordern').addEventListener('click', zurKasse);
+    $('#mbarAnfordern').addEventListener('click', zurKasse);
     $('#btnAngebot').addEventListener('click', () => {
       $('#dlgAngebot').hidden = false;
       setTimeout(() => $('#aVerein').focus(), 30);
@@ -2021,14 +2076,12 @@
     $('#formAngebot').addEventListener('submit', (ev) => {
       ev.preventDefault();
       $('#dlgAngebot').hidden = true;
-      druckDokument('angebot', { verein: $('#aVerein').value.trim(), name: $('#aName').value.trim() });
+      druckDokument({ verein: $('#aVerein').value.trim(), name: $('#aName').value.trim() });
     });
 
     /* Kasse */
-    $('#kasseForm').addEventListener('submit', zahlen);
+    $('#kasseForm').addEventListener('submit', anfrageSenden);
     $('#kasseForm').addEventListener('change', (ev) => {
-      if (ev.target.name === 'zahlung') renderKasse();
-      if (ev.target.id === 'kLieferAbw') $('#lieferFelder').hidden = !ev.target.checked;
       const feld = ev.target.closest('.field, label');
       if (feld && feld.classList.contains('fehler')) feld.classList.remove('fehler');
     });
@@ -2041,11 +2094,7 @@
       s.classList.toggle('offen');
       $('#kasseSumToggle').setAttribute('aria-expanded', s.classList.contains('offen') ? 'true' : 'false');
     });
-    $('#btnBestPdf').addEventListener('click', () => {
-      const b = window.__bestellung || {};
-      druckDokument('bestellung', { verein: b.verein, name: b.name, mail: b.mail });
-    });
-    $$('[data-agb]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); toast('AGB folgen vor dem Livegang (offener Punkt).'); }));
+    $('#btnFertigPdf').addEventListener('click', () => druckDokument(window.__anfrage || {}));
 
     /* Nav-Buttons »Kostenlos anfragen« (data-open-modal) → klassischer Weg */
     $$('[data-open-modal]').forEach((b) => b.addEventListener('click', (e) => {
@@ -2090,7 +2139,7 @@
   }
   function schrittAusHash() {
     const h = location.hash;
-    if (h === '#fertig' && window.__bestellung) return 'fertig';
+    if (h === '#fertig' && window.__anfrage) return 'fertig';
     const s = Object.keys(HASH).find((k) => HASH[k] && HASH[k] === h);
     if (!s || s === 'fertig') return 'modell';
     return (s === 'menge' || s === 'kasse') && !designOk(true) ? 'design' : s;

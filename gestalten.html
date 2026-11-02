@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Badekappe selbst gestalten und online bestellen | MySwimcap</title>
-<meta name="description" content="Gestalte eure Vereinsbadekappe in vier Schritten: Modell wählen, Logo und Text setzen, Menge festlegen, bestellen. Online bezahlen und 5 % sparen oder kostenlos einen Entwurf anfragen." />
+<title>Badekappe selbst gestalten mit Preisvorschlag | MySwimcap</title>
+<meta name="description" content="Gestalte eure Vereinsbadekappe online, seht direkt einen Preisvorschlag und fordert das Angebot an. Oder lasst euch kostenlos einen Entwurf machen." />
 <!-- Staging-Prototyp: vor dem Livegang noindex entfernen und in die Sitemap aufnehmen -->
 <meta name="robots" content="noindex, nofollow" />
 <meta name="theme-color" content="#f7f7f2" />
@@ -38,12 +38,12 @@
 <main class="cfg">
 
   <!-- ===================== SCHRITTLEISTE ===================== -->
-  <nav class="stepbar" id="stepbar" aria-label="Bestellschritte">
+  <nav class="stepbar" id="stepbar" aria-label="Schritte">
     <ol class="stepbar__in">
       <li><button type="button" class="step" data-step="modell"><i>1</i><span>Modell</span></button></li>
       <li><button type="button" class="step" data-step="design"><i>2</i><span>Gestalten</span></button></li>
       <li><button type="button" class="step" data-step="menge"><i>3</i><span>Menge<em> &amp; Preis</em></span></button></li>
-      <li><button type="button" class="step" data-step="kasse"><i>4</i><span>Bestellen</span></button></li>
+      <li><button type="button" class="step" data-step="kasse"><i>4</i><span>Angebot</span></button></li>
     </ol>
   </nav>
 
@@ -52,7 +52,7 @@
     <div class="cfg-kopf__in">
       <span class="cfg-kopf__marken"><span class="eyebrow">Neu · Online gestalten</span><span class="demo-pill" id="demoPill" hidden><i></i>Staging-Prototyp · Zahlung nur simuliert</span></span>
       <h1>Badekappe <em>selbst gestalten.</em></h1>
-      <p>Erst Modell und Design, dann Menge und Preis. In vier Schritten zur eigenen Vereinskappe.</p>
+      <p>Erst Modell und Design, dann Menge und Preis. In vier Schritten zum Angebot für eure Vereinskappe.</p>
     </div>
   </section>
 
@@ -264,30 +264,25 @@
         <p class="hinweis" id="naechsteStufe" hidden></p>
 
         <h2 class="mg__h">Lieferung</h2>
-        <label class="option">
-          <input type="checkbox" id="express">
-          <span class="option__ui"></span>
-          <span class="option__t"><b>Express-Produktion <em id="expressPreis">+25 %</em></b><span>Für Wettkämpfe mit festem Termin. Fertig in ca. 3 Wochen.</span></span>
-        </label>
         <p class="liefer" id="lieferText"></p>
       </div>
 
       <aside class="mg__seite">
         <div class="preis" id="preis" aria-label="Preisübersicht">
           <div class="preis__kopf">
-            <span class="preis__titel">Euer Preis</span>
+            <span class="preis__titel">Euer Preisvorschlag</span>
             <div class="nb" role="group" aria-label="Preisanzeige"><button type="button" data-nb="netto" class="is-on">netto</button><button type="button" data-nb="brutto">brutto</button></div>
           </div>
           <div class="preis__haupt">
-            <div class="preis__betrag"><s id="pAlt"></s><b id="pGesamt">0,00 €</b></div>
-            <span class="preis__rabatt" id="pRabattBadge">−5 % Sofort-Rabatt</span>
+            <div class="preis__betrag"><b id="pGesamt">0,00 €</b></div>
           </div>
           <p class="preis__unter" id="pUnter"></p>
           <details class="preis__details"><summary>Preisdetails</summary><div id="pZeilen"></div></details>
           <p class="preis__liefer" id="pLiefer"></p>
-          <button type="button" class="btn btn--light btn--lg preis__cta" id="btnBestellen"><span class="btn__t"><span>Jetzt bestellen &amp; 5 % sparen</span><span>Jetzt bestellen &amp; 5 % sparen</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11 11 3M5 3h6v6"/></svg></button>
-          <button type="button" class="preis__weg" id="btnAngebot"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>Angebot als PDF</b><em>Für Vorstand und Kasse</em></span></button>
-          <p class="preis__trust"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Sicher bezahlen mit Stripe · Proof vor dem Druck · Produktion in Europa</p>
+          <button type="button" class="btn btn--light btn--lg preis__cta" id="btnAnfordern"><span class="btn__t"><span>Angebot anfordern</span><span>Angebot anfordern</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11 11 3M5 3h6v6"/></svg></button>
+          <button type="button" class="preis__weg" id="btnAngebot"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>Preisvorschlag als PDF</b><em>Für Vorstand und Kasse</em></span></button>
+          <p class="preis__vorbehalt"><b>Preisvorschlag, Änderungen vorbehalten.</b> Den endgültigen Preis bestätigen wir nach dem Druck-Check mit dem Angebot. Er kann sich ändern, wenn euer Logo andere Druckfarben braucht als erkannt oder für den Druck noch überarbeitet werden muss.</p>
+          <p class="preis__trust"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>Kostenlos und unverbindlich · Angebot innerhalb von 48 h</p>
         </div>
 
         <div class="mg__entwurf">
@@ -306,28 +301,30 @@
   <section class="cfg-info" id="cfgInfo">
     <div class="cfg-info__in">
       <div class="cfg-info__karten">
-        <article><svg viewBox="0 0 24 24"><path d="M12 3v18M7 7.5C7 5.6 9.2 4.5 12 4.5s5 1 5 3c0 4.5-10 3-10 8 0 2 2.2 3 5 3s5-1.1 5-3"/></svg><b>Klarer Preis, ohne Überraschung</b><p>Im dritten Schritt seht ihr den Preis mit allen Posten aufgeschlüsselt, inklusive Staffelrabatt. Was ihr seht, zahlt ihr.</p></article>
-        <article><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg><b>Druck-Check vor der Produktion</b><p>Wir prüfen jede Bestellung und schicken euch einen finalen Proof. Gedruckt wird erst nach eurer Freigabe.</p></article>
+        <article><svg viewBox="0 0 24 24"><path d="M12 3v18M7 7.5C7 5.6 9.2 4.5 12 4.5s5 1 5 3c0 4.5-10 3-10 8 0 2 2.2 3 5 3s5-1.1 5-3"/></svg><b>Preis vorab, ohne Rätselraten</b><p>Im dritten Schritt seht ihr einen Preisvorschlag mit allen Posten, inklusive Staffelrabatt. Das verbindliche Angebot kommt nach dem Druck-Check.</p></article>
+        <article><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg><b>Druck-Check vor der Produktion</b><p>Wir prüfen jede Anfrage und schicken euch einen finalen Proof. Gedruckt wird erst nach eurer Freigabe.</p></article>
         <article><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Der Verein muss erst zustimmen?</b><p>Lad euch das Angebot als PDF herunter. Euer Entwurf bleibt gespeichert, bis ihr bestellt.</p></article>
         <article><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 4.5-6 8-6s6.4 2 8 6"/></svg><b>Lieber persönlich?</b><p>Thomas baut euch kostenlos einen Entwurf, meist innerhalb von 48 Stunden. <a href="/#anfrage" data-open-modal>Entwurf anfragen</a></p></article>
       </div>
     </div>
   </section>
 
-  <!-- ===================== KASSE (Schritt 4) ===================== -->
+  <!-- ===================== ANGEBOT ANFORDERN (Schritt 4) ===================== -->
   <section class="kasse" id="kasse" hidden>
     <div class="kasse__in">
       <button type="button" class="zurueck" data-step-go="menge"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Zurück zu Menge &amp; Preis</button>
-      <h1 class="kasse__h">Bestellung abschließen</h1>
+      <h1 class="kasse__h">Angebot anfordern</h1>
+      <p class="kasse__lead">Wir prüfen euren Entwurf auf Druckbarkeit und schicken euch innerhalb von 48 Stunden das verbindliche Angebot. Bestellt ist damit noch nichts.</p>
 
       <div class="kasse__grid">
         <aside class="kasse__sum">
-          <button type="button" class="kasse__sumtoggle" id="kasseSumToggle" aria-expanded="false"><span>Bestellübersicht</span><b id="kasseSumMobil"></b><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+          <button type="button" class="kasse__sumtoggle" id="kasseSumToggle" aria-expanded="false"><span>Euer Entwurf</span><b id="kasseSumMobil"></b><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="kasse__suminhalt">
             <div class="kasse__mock" id="kasseMock"></div>
             <dl class="kasse__konfig" id="kasseKonfig"></dl>
             <p class="hinweis hinweis--warn" id="kasseWarn" hidden>Einzelne Elemente liegen am Rand des Druckbereichs. Wir prüfen das beim Druck-Check und melden uns.</p>
             <div class="kasse__zeilen" id="kasseZeilen"></div>
+            <p class="kasse__vorbehalt">Preisvorschlag, Änderungen vorbehalten. Der endgültige Preis hängt von der Druckvorlage ab.</p>
           </div>
         </aside>
 
@@ -335,7 +332,7 @@
           <fieldset>
             <legend><i>1</i>Kontakt</legend>
             <div class="reihe">
-              <div class="field"><label for="kVerein">Verein / Team / Schule</label><input id="kVerein" name="organization" autocomplete="organization" required placeholder="z. B. SV Delphin Leipzig"></div>
+              <div class="field"><label for="kVerein">Verein / Team (optional)</label><input id="kVerein" name="organization" autocomplete="organization" placeholder="z. B. SV Delphin Leipzig"></div>
               <div class="field"><label for="kName">Ansprechpartner</label><input id="kName" name="name" autocomplete="name" required placeholder="Vor- und Nachname"></div>
             </div>
             <div class="reihe">
@@ -345,43 +342,16 @@
           </fieldset>
 
           <fieldset>
-            <legend><i>2</i>Rechnungsadresse</legend>
-            <div class="field"><label for="kStrasse">Straße und Hausnummer</label><input id="kStrasse" name="street" autocomplete="address-line1" required></div>
-            <div class="reihe reihe--plz">
-              <div class="field"><label for="kPlz">PLZ</label><input id="kPlz" name="plz" autocomplete="postal-code" inputmode="numeric" required></div>
-              <div class="field"><label for="kOrt">Ort</label><input id="kOrt" name="city" autocomplete="address-level2" required></div>
-              <div class="field"><label for="kLand">Land</label><select id="kLand" name="country" autocomplete="country"><option>Deutschland</option><option>Österreich</option><option>Schweiz</option></select></div>
-            </div>
-            <label class="cb cb--zeile"><input type="checkbox" id="kLieferAbw"><span>Lieferadresse weicht ab</span></label>
-            <div id="lieferFelder" hidden>
-              <div class="field"><label for="kLName">Empfänger</label><input id="kLName" autocomplete="shipping name"></div>
-              <div class="field"><label for="kLStrasse">Straße und Hausnummer</label><input id="kLStrasse" autocomplete="shipping address-line1"></div>
-              <div class="reihe"><div class="field"><label for="kLPlz">PLZ</label><input id="kLPlz" autocomplete="shipping postal-code" inputmode="numeric"></div><div class="field"><label for="kLOrt">Ort</label><input id="kLOrt" autocomplete="shipping address-level2"></div></div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend><i>3</i>Termin und Hinweise</legend>
+            <legend><i>2</i>Termin und Hinweise</legend>
             <div class="field"><label for="kTermin">Wunsch-Liefertermin (optional)</label><input type="date" id="kTermin" name="termin"></div>
             <p class="mini" id="kTerminHinweis"></p>
-            <div class="field"><label for="kNotiz">Hinweise zur Bestellung (optional)</label><textarea id="kNotiz" rows="3" placeholder="z. B. Wettkampf am 14. März, Namensliste schicken wir nach"></textarea></div>
+            <div class="field"><label for="kNotiz">Hinweise zum Angebot (optional)</label><textarea id="kNotiz" rows="3" placeholder="z. B. Wettkampf am 14. März, Namensliste schicken wir nach"></textarea></div>
           </fieldset>
 
-          <fieldset>
-            <legend><i>4</i>Zahlungsart</legend>
-            <div class="zahlarten">
-              <label class="za"><input type="radio" name="zahlung" value="karte" checked><span class="za__k"><b>Kreditkarte</b><em>Visa, Mastercard, American Express</em></span><span class="za__r">−5 %</span></label>
-              <label class="za"><input type="radio" name="zahlung" value="sepa"><span class="za__k"><b>SEPA-Lastschrift</b><em>Direkt vom Vereinskonto</em></span><span class="za__r">−5 %</span></label>
-              <label class="za"><input type="radio" name="zahlung" value="paypal"><span class="za__k"><b>PayPal</b><em>Schnell mit dem PayPal-Konto</em></span><span class="za__r">−5 %</span></label>
-              <label class="za"><input type="radio" name="zahlung" value="wallet"><span class="za__k"><b>Apple Pay / Google Pay</b><em>Ein Tipp auf dem Handy</em></span><span class="za__r">−5 %</span></label>
-              <label class="za za--rechnung"><input type="radio" name="zahlung" value="rechnung"><span class="za__k"><b>Rechnung</b><em>Überweisung innerhalb von 14 Tagen, ohne Sofort-Rabatt</em></span></label>
-            </div>
-          </fieldset>
-
-          <label class="cb cb--agb"><input type="checkbox" name="agb" required><span>Ich habe die <a href="#" data-agb>AGB</a> und die <a href="/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a> gelesen und akzeptiere sie.</span></label>
-          <p class="kasse__proof"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>Vor dem Druck bekommt ihr einen finalen Proof. Gedruckt wird erst nach eurer Freigabe.</p>
-          <button type="submit" class="btn btn--primary btn--lg kasse__submit"><span class="btn__t"><span>Zahlungspflichtig bestellen</span><span>Zahlungspflichtig bestellen</span></span><b class="kasse__betrag" id="kasseSumme"></b></button>
-          <p class="kasse__stripe"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Sichere Zahlung über Stripe · SSL-verschlüsselt</p>
+          <label class="cb cb--agb"><input type="checkbox" name="dsgvo" required><span>Ich bin mit der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage einverstanden (<a href="/datenschutz" target="_blank" rel="noopener">Datenschutz</a>).</span></label>
+          <p class="kasse__proof"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>Vor dem Angebot prüfen wir Logo und Druckfarben. Gedruckt wird erst nach eurer Freigabe.</p>
+          <button type="submit" class="btn btn--primary btn--lg kasse__submit" id="kasseSenden"><span class="btn__t"><span>Angebot anfordern</span><span>Angebot anfordern</span></span><b class="kasse__betrag">kostenlos</b></button>
+          <p class="kasse__stripe">Unverbindlich · Antwort innerhalb von 48 Stunden</p>
         </form>
       </div>
     </div>
@@ -391,23 +361,23 @@
   <section class="fertig" id="fertig" hidden>
     <div class="fertig__in">
       <div class="fertig__haken" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
-      <span class="eyebrow">Bestellung eingegangen</span>
-      <h1>Danke, eure Kappen sind <em>bestellt.</em></h1>
-      <p class="fertig__lead">Bestellnummer <b id="bestNr"></b>. Die Bestätigung geht an <b id="bestMail"></b>.</p>
+      <span class="eyebrow">Anfrage eingegangen</span>
+      <h1>Danke, euer Angebot ist <em>in Arbeit.</em></h1>
+      <p class="fertig__lead">Wir prüfen euren Entwurf und schicken das verbindliche Angebot innerhalb von 48 Stunden an <b id="bestMail"></b>. Bestellt ist damit noch nichts.</p>
       <div class="fertig__grid">
         <div class="fertig__mock" id="fertigMock"></div>
         <ol class="timeline" id="timeline"></ol>
       </div>
       <div class="fertig__btns">
-        <button type="button" class="btn btn--ghost" id="btnBestPdf"><span class="btn__t"><span>Bestätigung als PDF</span><span>Bestätigung als PDF</span></span></button>
+        <button type="button" class="btn btn--ghost" id="btnFertigPdf"><span class="btn__t"><span>Preisvorschlag als PDF</span><span>Preisvorschlag als PDF</span></span></button>
         <a class="btn btn--primary" href="/"><span class="btn__t"><span>Zur Startseite</span><span>Zur Startseite</span></span></a>
       </div>
-      <p class="fertig__demo">Prototyp: Es wurde nichts bezahlt und keine echte Bestellung ausgelöst.</p>
+      <p class="fertig__demo" id="fertigDemo" hidden>Staging: Die Anfrage ging an das echte Anfrage-System und ist dort als Test markiert.</p>
     </div>
   </section>
 </main>
 
-<!-- Mobile Leiste: Schritt 1–2 Navigation, Schritt 3 Preis + Bestellen -->
+<!-- Mobile Leiste: Schritt 1 bis 2 Navigation, Schritt 3 Preis und Angebot -->
 <div class="mbar" id="mbar">
   <div class="mbar__nav">
     <button type="button" class="mbar__zurueck" id="mbarZurueck" aria-label="Zurück"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
@@ -415,11 +385,11 @@
   </div>
   <div class="mbar__kauf">
     <button type="button" class="mbar__preis" id="mbarPreis" aria-controls="preis">
-      <span class="mbar__l">Gesamt <i id="mbarRabatt">−5 %</i></span>
+      <span class="mbar__l">Preisvorschlag</span>
       <b id="mbarSumme">0,00 €</b>
       <span class="mbar__s" id="mbarStk"></span>
     </button>
-    <button type="button" class="btn mbar__cta" id="mbarBestellen"><span class="btn__t"><span>Bestellen</span><span>Bestellen</span></span></button>
+    <button type="button" class="btn mbar__cta" id="mbarAnfordern"><span class="btn__t"><span>Angebot anfordern</span><span>Angebot anfordern</span></span></button>
   </div>
 </div>
 
@@ -427,25 +397,14 @@
 <div class="dlg" id="dlgAngebot" role="dialog" aria-modal="true" aria-labelledby="dlgAngebotT" hidden>
   <form class="dlg__karte" id="formAngebot">
     <button type="button" class="dlg__zu" data-dlg-zu aria-label="Schließen">×</button>
-    <span class="eyebrow">Angebot als PDF</span>
-    <h2 id="dlgAngebotT">Für wen ist das Angebot?</h2>
-    <p>Wir setzen den Namen ins Angebot, damit es im Verein gleich zugeordnet werden kann. Beides ist optional.</p>
+    <span class="eyebrow">Preisvorschlag als PDF</span>
+    <h2 id="dlgAngebotT">Für wen ist der Preisvorschlag?</h2>
+    <p>Wir setzen den Namen ins PDF, damit es im Verein gleich zugeordnet werden kann. Beides ist optional.</p>
     <div class="field"><label for="aVerein">Verein / Team</label><input id="aVerein" autocomplete="organization" placeholder="z. B. SV Delphin Leipzig"></div>
     <div class="field"><label for="aName">Ansprechpartner</label><input id="aName" autocomplete="name" placeholder="Vor- und Nachname"></div>
     <button type="submit" class="btn btn--primary btn--lg"><span class="btn__t"><span>PDF erstellen</span><span>PDF erstellen</span></span></button>
     <p class="mini">Im Druckdialog »Als PDF sichern« wählen.</p>
   </form>
-</div>
-
-<!-- Dialog: Zahlung (simuliert) -->
-<div class="dlg dlg--zahlung" id="dlgZahlung" role="dialog" aria-modal="true" aria-label="Zahlung" hidden>
-  <div class="dlg__karte dlg__karte--zahlung">
-    <div class="zahl__kopf"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Sicher bezahlen mit <b>Stripe</b></div>
-    <div class="zahl__betrag" id="zBetrag"></div>
-    <div class="zahl__art" id="zArt"></div>
-    <div class="zahl__status"><span class="zahl__spinner"></span><span class="zahl__ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span id="zStatus"></span></div>
-    <p class="mini">Prototyp: Die Zahlung wird nur simuliert.</p>
-  </div>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

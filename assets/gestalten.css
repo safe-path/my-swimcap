@@ -640,3 +640,25 @@ body.route-kasse .mbar{display:none!important}
   .doc__schritte{font-size:9pt;padding-left:16px;line-height:1.55}
   .doc__fuss{margin-top:14px;padding-top:8px;border-top:.5px solid #ccc;font-size:7.5pt;color:#777}
 }
+
+/* ===================== Logo-Druckfarben (Inspektor) ===================== */
+.fz{padding:12px;border-radius:14px;background:var(--parchment)}
+.fz .ins__lbl{margin-bottom:6px}
+.fz__zeile{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1.35fr);align-items:center;gap:8px;padding:4px 0;cursor:pointer}
+.fz__punkt{display:block;width:18px;height:18px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(25,24,24,.22);flex:none}
+.fz__name{font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fz__pfeil{width:14px;height:14px;fill:none;stroke:var(--ink-45);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.fz__wahl{display:flex;align-items:center;gap:6px;min-width:0;padding:3px 6px 3px 8px;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1px var(--ink-12)}
+.fz__wahl:focus-within{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.fz__wahl select{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:13px;color:var(--ink);padding:4px 0;cursor:pointer}
+.fz__wahl select:focus{outline:none}
+.fz__hinweis{font-size:12px;color:var(--ink-60);line-height:1.45;margin-top:8px}
+.fz__hinweis b{color:var(--ink);font-weight:600}
+
+/* ===================== Preisvorschlag & Angebotsanfrage ===================== */
+.preis__vorbehalt{font-size:11.5px;line-height:1.45;color:var(--paper-55);margin-top:12px;padding-top:10px;border-top:1px solid rgba(247,247,242,.12)}
+.preis__vorbehalt b{color:var(--paper-80);font-weight:600}
+.kasse__lead{color:var(--ink-60);margin:-14px 0 26px;max-width:62ch;line-height:1.5}
+.kasse__vorbehalt{font-size:11.5px;color:var(--ink-45);margin-top:10px;line-height:1.45}
+.kasse__submit:disabled{opacity:.6;pointer-events:none}
+.kasse__form .reihe{align-items:end}
