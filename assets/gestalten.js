@@ -6,10 +6,10 @@
    2 Gestalten: Logo und Text frei platzieren (ziehen, skalieren, drehen,
      Bogentext). Die Rückseite übernimmt standardmäßig das Motiv von vorne.
      Individuelle Namen sitzen unter dem Logo, Liste auch als CSV.
-   3 Menge & Preis: Staffeln, Express, Preis erst hier
-   4 Bestellen (Sofort-Rabatt), alternativ Angebot als PDF oder
-     kostenloser Entwurf (klassischer Wizard der Startseite, vorbefüllt)
-   Die Zahlung ist hier nur simuliert. Stripe folgt im nächsten Schritt.
+   3 Menge & Preis: Staffeln, Preisvorschlag erst hier
+   4 Angebot anfordern (geht an den Make-Webhook des Anfrage-Wizards),
+     alternativ Preisvorschlag als PDF oder kostenloser Entwurf
+   Vorerst keine Bestellung und keine Zahlung (Thomas, 02.11.2026).
    ===================================================================== */
 (function () {
   'use strict';
@@ -90,19 +90,27 @@
     ['Silber', '#a7a9ac'], ['Gold', '#c7a35b']
   ];
 
-  /* Sport-Schriften lokal gehostet (OFL), siehe @font-face in gestalten.css */
+  /* Schriftauswahl nach Thomas (02.11.2026). Nur Schriften, deren Lizenz die
+     Auswahl in einem Gestaltungs-Tool erlaubt: OFL-Schriften lokal gehostet
+     (siehe @font-face in gestalten.css). Futura, Georgia und Palatino sind
+     Systemschriften der Geräte; wo sie fehlen, springt eine freie, ähnliche
+     Schrift ein (Jost, Gelasio). Panchang (Fontshare-Lizenz), Antique Olive
+     Nord (Adobe Fonts) und College Block (Sharkshock) verbieten bzw. brauchen
+     eine eigene Lizenz für so einen Einsatz. College läuft bis dahin mit Graduate. */
   const SCHRIFTEN = {
-    sport:     { label: 'Sport',      css: "'Oswald','IBM Plex Sans',sans-serif",          weight: 700, gross: true  },
-    block:     { label: 'Block',      css: "'Archivo Black','IBM Plex Sans',sans-serif",   weight: 400, gross: true  },
-    schmal:    { label: 'Schmal',     css: "'Bebas Neue','Oswald',sans-serif",              weight: 400, gross: true  },
-    college:   { label: 'College',    css: "'Graduate','IBM Plex Serif',serif",             weight: 400, gross: true  },
-    modern:    { label: 'Modern',     css: "'IBM Plex Sans',sans-serif",                   weight: 600, gross: false },
-    rund:      { label: 'Geometrisch', css: "'Montserrat','IBM Plex Sans',sans-serif",     weight: 800, gross: false },
-    klassisch: { label: 'Klassisch',  css: "'IBM Plex Serif',Georgia,serif",               weight: 500, gross: false },
-    schwung:   { label: 'Schwung',    css: "'Kaushan Script','IBM Plex Serif',cursive",    weight: 400, gross: false }
+    futura:    { label: 'Futura',           css: "Futura,'Futura PT','Jost',sans-serif",                            weight: 700, gross: true  },
+    oswald:    { label: 'Oswald',           css: "'Oswald',sans-serif",                                             weight: 700, gross: true  },
+    anton:     { label: 'Anton',            css: "'Anton','Oswald',sans-serif",                                     weight: 400, gross: true  },
+    college:   { label: 'College',          css: "'Graduate','IBM Plex Serif',serif",                               weight: 400, gross: true  },
+    sansation: { label: 'Sansation',        css: "'Sansation','Jost',sans-serif",                                   weight: 700, gross: false },
+    grotesk:   { label: 'Overused Grotesk', css: "'Overused Grotesk','IBM Plex Sans',sans-serif",                   weight: 600, gross: false },
+    georgia:   { label: 'Georgia',          css: "Georgia,'Gelasio',serif",                                         weight: 700, gross: false },
+    palatino:  { label: 'Palatino',         css: "Palatino,'Palatino Linotype','Book Antiqua','Gelasio',serif",     weight: 700, gross: false }
   };
-  const SCHRIFT_LADEN = ['700 44px Oswald', '400 44px "Archivo Black"', '400 44px "Bebas Neue"', '400 44px Graduate',
-    '600 44px "IBM Plex Sans"', '800 44px Montserrat', '500 44px "IBM Plex Serif"', '400 44px "Kaushan Script"'];
+  /* Gespeicherte Entwürfe mit der alten Schriftliste */
+  const SCHRIFT_ALT = { sport: 'oswald', block: 'anton', schmal: 'anton', modern: 'grotesk', rund: 'futura', klassisch: 'georgia', schwung: 'georgia' };
+  const SCHRIFT_LADEN = ['700 44px Oswald', '400 44px Anton', '400 44px Graduate', '700 44px Sansation', '600 44px "Overused Grotesk"',
+    '700 44px Jost', '700 44px Gelasio'];
 
   /* Silhouette der flach liegenden Kappe (viewBox 600 x 560), dieselbe Form
      wie im Loader und im Logo der Website. Nur absolute Befehle, damit
@@ -298,6 +306,7 @@
           const alt = JSON.parse(raw);
           /* Entwürfe von vor der Rückseiten-Wahl: eigene Rückseite behalten */
           if (!alt.rueckseite) alt.rueckseite = (alt.elemente && alt.elemente.hinten || []).some((e) => !e.name) ? 'eigen' : 'gleich';
+          ['vorne', 'hinten'].forEach((s) => ((alt.elemente && alt.elemente[s]) || []).forEach((e) => { if (SCHRIFT_ALT[e.schrift]) e.schrift = SCHRIFT_ALT[e.schrift]; }));
           st = Object.assign(neuerZustand(), alt, { auswahl: null, tab: 'modell' });
         }
       } catch (e) { st = neuerZustand(); }
@@ -608,7 +617,7 @@
   }
   function bogenRadius(b) { return 150 + (100 - Math.abs(b)) * 14; }
   function textInhalt(e) {
-    const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.sport;
+    const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald;
     let t = e.text || '';
     if (e.name) {
       const l = st.namen.liste;
@@ -626,7 +635,7 @@
       const img = el('image', { x: -w / 2, y: -h / 2, width: w, height: h, preserveAspectRatio: 'xMidYMid meet' }, g);
       setHref(img, c && c.view ? c.view : e.src);
     } else {
-      const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.sport;
+      const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald;
       const gr = 44, o = gr * 0.35;
       const attrs = { 'font-family': sch.css, 'font-weight': sch.weight, 'font-size': gr, fill: e.farbe, 'letter-spacing': (e.spacing || 0) * gr, 'text-anchor': 'middle' };
       const txt = textInhalt(e);
@@ -673,6 +682,9 @@
     const fk = el('filter', { id: p + 'korn', x: '0', y: '0', width: '100%', height: '100%' }, defs);
     el('feTurbulence', { type: 'fractalNoise', baseFrequency: fin === 'stoff' ? '1.3' : '.85', numOctaves: '2', seed: '4', stitchTiles: 'stitch' }, fk);
     el('feColorMatrix', { type: 'saturate', values: '0' }, fk);
+    /* Stoff: feines Köpergewebe, nur angedeutet */
+    if (fin === 'stoff') el('rect', { width: '3', height: '1.1', fill: '#000' },
+      el('pattern', { id: p + 'gewebe', width: '3', height: '3', patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(38)' }, defs));
     const bogenDefs = el('g', { 'class': 'bogen-defs' }, defs);
 
     el('ellipse', { cx: 300, cy: 492, rx: 218, ry: 15, fill: '#191818', opacity: '.24', filter: `url(#${p}schatten)`, 'class': 'kap-schatten' }, ziel);
@@ -680,8 +692,9 @@
     el('path', { d: geo.umriss, fill: hex, 'class': 'kap-flaeche' }, kap);
     const innen = el('g', { 'clip-path': `url(#${p}clip)` }, kap);
     const drucke = el('g', { 'class': 'drucke' }, innen);
-    const korn = el('rect', { width: 600, height: 560, filter: `url(#${p}korn)`, opacity: fin === 'stoff' ? '.24' : (fin === 'glanz' ? '.03' : '.08') }, innen);
+    const korn = el('rect', { width: 600, height: 560, filter: `url(#${p}korn)`, opacity: fin === 'stoff' ? '.18' : (fin === 'glanz' ? '.03' : '.08') }, innen);
     korn.style.mixBlendMode = 'multiply';
+    if (fin === 'stoff') el('rect', { width: 600, height: 560, fill: `url(#${p}gewebe)`, opacity: L > 0.8 ? '.04' : '.06' }, innen);
     const flaeche = (fill, opacity) => el('rect', { width: 600, height: 560, fill, opacity: opacity || '1' }, innen);
     flaeche(`url(#${p}licht)`);
     flaeche(`url(#${p}unten)`);
@@ -695,8 +708,9 @@
     if (fin === 'stoff') {
       el('path', { d: skaliere(geo.umriss, 0.955, 300, 290), fill: 'none', stroke: '#000', 'stroke-opacity': '.24', 'stroke-width': '1.6', 'stroke-dasharray': '5 5' }, innen);
     }
-    /* Glanz: Silikon matt-seidig, 3D glänzend, Stoff kaum */
-    const glanz = fin === 'glanz' ? '.42' : (fin === 'stoff' ? '.08' : (L > 0.8 ? '.30' : '.20'));
+    /* Glanz: 3D glänzend. Silikon, Langhaar und Stoff nur ein schwacher Fleck,
+       damit der Schein oben links gleichmäßig über den Rand läuft */
+    const glanz = fin === 'glanz' ? '.42' : '.08';
     el('ellipse', { cx: 196, cy: 178, rx: 118, ry: 62, fill: '#fff', opacity: glanz, filter: `url(#${p}weich)`, transform: 'rotate(-32 196 178)' }, innen);
     if (fin === 'glanz') el('ellipse', { cx: 478, cy: 290, rx: 20, ry: 110, fill: '#fff', opacity: '.18', filter: `url(#${p}weich)` }, innen);
     el('path', { d: geo.umriss, fill: 'none', stroke: '#191818', 'stroke-opacity': L > 0.85 ? '.26' : '.14', 'stroke-width': '1.2' }, kap);
@@ -954,14 +968,14 @@
   function neuerText(over) {
     return Object.assign({
       id: uid(), typ: 'text', x: 300, y: 236, s: 1, r: 0,
-      text: 'DEIN TEXT', schrift: 'sport', farbe: kontrastFarbe(kappeHex()), bogen: 0, spacing: 0.04, name: false
+      text: 'DEIN TEXT', schrift: 'oswald', farbe: kontrastFarbe(kappeHex()), bogen: 0, spacing: 0.04, name: false
     }, over || {});
   }
   function textHinzu(preset) {
     let e;
     if (preset === 'bogen') e = neuerText({ text: 'SV MUSTERSTADT', bogen: 72, y: 196, s: 0.92, spacing: 0.06 });
-    else if (preset === 'nummer') e = neuerText({ text: '23', schrift: 'block', s: 1.9, y: 300 });
-    else if (preset === 'slogan') e = neuerText({ text: 'Gemeinsam schneller', schrift: 'klassisch', s: 0.8, y: 360, spacing: 0 });
+    else if (preset === 'nummer') e = neuerText({ text: '23', schrift: 'anton', s: 1.9, y: 300 });
+    else if (preset === 'slogan') e = neuerText({ text: 'Gemeinsam schneller', schrift: 'georgia', s: 0.8, y: 360, spacing: 0 });
     else e = neuerText();
     fuegeHinzu(e);
     setTimeout(() => {
@@ -1047,7 +1061,7 @@
         neuerText({ text: 'SV MUSTERSTADT', bogen: 70, y: 194, s: 0.8, spacing: 0.06, farbe: txt }));
       st.elemente.hinten.push(
         neuerText({ text: 'MUSTERSTADT', y: 250, s: 0.86, spacing: 0.08, farbe: txt }),
-        neuerText({ text: 'SEIT 1923', schrift: 'modern', y: 300, s: 0.5, spacing: 0.22, farbe: txt }));
+        neuerText({ text: 'SEIT 1923', schrift: 'grotesk', y: 300, s: 0.5, spacing: 0.22, farbe: txt }));
       st.rueckseite = 'eigen';
       st.seite = 'vorne';
       st.auswahl = null;
@@ -1510,7 +1524,8 @@
       const n = farbenSeite(s).length;
       const farben = n ? ` · ${n} Druckfarbe${n > 1 ? 'n' : ''}` : '';
       if (s === 'hinten' && st.rueckseite === 'gleich') return 'wie Vorderseite' + farben;
-      const teile = els.map((e) => (e.typ === 'bild' ? 'Logo' : (e.name ? 'Namen' : `»${textInhalt(e)}«`)));
+      const schrift = (e) => ` (${(SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald).label})`;
+      const teile = els.map((e) => (e.typ === 'bild' ? 'Logo' : (e.name ? 'Namen' : `»${textInhalt(e)}«`) + schrift(e)));
       return teile.join(', ') + farben;
     };
     return [

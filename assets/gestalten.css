@@ -3,13 +3,14 @@
    Baut auf assets/site.css auf (Tokens, Buttons, Chips, Swatches, Felder).
    ===================================================================== */
 
-/* Sport-Schriften für den Kappendruck, lokal gehostet (OFL, kein Google-Request) */
+/* Schriften für den Kappendruck, lokal gehostet (OFL, kein Google-Request) */
 @font-face{font-family:'Oswald';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/oswald-700-latin.woff2') format('woff2')}
-@font-face{font-family:'Archivo Black';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/archivo-black-400-latin.woff2') format('woff2')}
-@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/bebas-neue-400-latin.woff2') format('woff2')}
+@font-face{font-family:'Anton';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/anton-400-latin.woff2') format('woff2')}
 @font-face{font-family:'Graduate';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/graduate-400-latin.woff2') format('woff2')}
-@font-face{font-family:'Montserrat';font-style:normal;font-weight:800;font-display:swap;src:url('../fonts/montserrat-800-latin.woff2') format('woff2')}
-@font-face{font-family:'Kaushan Script';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/kaushan-script-400-latin.woff2') format('woff2')}
+@font-face{font-family:'Sansation';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/sansation-700-latin.woff2') format('woff2')}
+@font-face{font-family:'Overused Grotesk';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/overused-grotesk-600-latin.woff2') format('woff2')}
+@font-face{font-family:'Jost';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/jost-700-latin.woff2') format('woff2')}
+@font-face{font-family:'Gelasio';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/gelasio-700-latin.woff2') format('woff2')}
 
 .seite-gestalten{--navh:70px;--steph:58px;--stageM:max(270px,44svh);background:var(--parchment)}
 .seite-gestalten [hidden]{display:none!important}
