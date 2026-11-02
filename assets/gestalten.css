@@ -213,7 +213,7 @@
 .regler input[type=range]:focus{outline:none}
 .regler input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:var(--ink-12)}
 .regler input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px var(--ink),0 2px 6px rgba(0,0,0,.18);margin-top:-9px}
-.regler input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 1.5px var(--ink),0 0 0 5px rgba(197,106,33,.35)}
+.regler input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 1.5px var(--ink),0 0 0 5px rgba(36,86,211,.35)}
 .regler input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--ink-12)}
 .regler input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:1.5px solid var(--ink)}
 .ins__logo{display:flex;gap:12px;align-items:center;padding:10px;border-radius:14px;background:var(--parchment);margin-bottom:10px}
@@ -300,9 +300,11 @@
 .staffel td:nth-child(3){color:#2e7d4f;font-weight:500}
 .staffel tr.is-on td{background:var(--ink);color:var(--parchment)}
 .staffel tr.is-on td:nth-child(3){color:#9fe0b6}
-.hinweis{margin-top:12px;font-size:13px;line-height:1.5;padding:12px 14px;border-radius:12px;background:#fff7ec;box-shadow:inset 0 0 0 1px rgba(197,106,33,.25);color:#5e3b12}
-.hinweis .linkbtn{color:#5e3b12;font-weight:600}
-.hinweis--warn{background:#fff4e5}
+.hinweis{margin-top:12px;font-size:13px;line-height:1.5;padding:12px 14px;border-radius:12px;background:#eef3fd;box-shadow:inset 0 0 0 1px rgba(36,86,211,.22);color:#1b3a8a}
+.hinweis .linkbtn{color:#1b3a8a;font-weight:600}
+/* Warnungen bleiben warm, unabhängig von der Akzentfarbe */
+.hinweis--warn{background:#fff4e5;box-shadow:inset 0 0 0 1px rgba(197,106,33,.3);color:#5e3b12}
+.hinweis--warn .linkbtn{color:#5e3b12}
 .option{display:flex;gap:12px;padding:14px;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--ink-08);cursor:pointer;position:relative;transition:box-shadow .2s}
 .option:hover{box-shadow:inset 0 0 0 1px var(--ink-45)}
 .option:has(input:checked){box-shadow:inset 0 0 0 2px var(--ink)}
@@ -502,8 +504,8 @@ label.cb.fehler{color:#b3261e}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);z-index:1400;background:var(--ink);color:var(--parchment);padding:12px 18px;border-radius:14px;font-size:13.5px;line-height:1.4;box-shadow:0 14px 30px -12px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .3s var(--e),transform .3s var(--e);max-width:min(460px,calc(100vw - 32px));text-align:center}
 .toast.an{opacity:1;transform:translate(-50%,0)}
 .cfg-kopf__marken{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.demo-pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;background:#fff7ec;color:#7a4a0c;padding:7px 12px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(197,106,33,.3)}
-.demo-pill i{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 3px rgba(197,106,33,.2);flex:none}
+.demo-pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;background:#eef3fd;color:#1b3a8a;padding:7px 12px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(36,86,211,.3)}
+.demo-pill i{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 3px rgba(36,86,211,.2);flex:none}
 
 /* Mobile Leiste (nur < 900 px): Schritt 1–2 Zurück/Weiter, Schritt 3 Preis + Bestellen */
 .mbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:1050;padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom));background:var(--ink);color:var(--parchment);box-shadow:0 -10px 30px -12px rgba(0,0,0,.35)}
@@ -665,11 +667,3 @@ body.route-kasse .mbar{display:none!important}
 .kasse__vorbehalt{font-size:11.5px;color:var(--ink-45);margin-top:10px;line-height:1.45}
 .kasse__submit:disabled{opacity:.6;pointer-events:none}
 .kasse__form .reihe{align-items:end}
-
-/* Nur Staging: Akzentfarbe testen */
-.akzent{position:fixed;left:16px;bottom:16px;z-index:1060;display:flex;align-items:center;gap:7px;padding:7px 10px 7px 14px;border-radius:999px;background:#fff;box-shadow:0 10px 28px -14px rgba(25,24,24,.45),inset 0 0 0 1px var(--ink-12);max-width:calc(100vw - 32px)}
-.akzent__t{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-60);margin-right:4px;white-space:nowrap}
-.akzent__t b{color:var(--amber);font-weight:500}
-.akzent button{width:22px;height:22px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);flex:none;cursor:pointer;transition:box-shadow .15s}
-.akzent button.is-on{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
-@media (max-width:899px){.akzent{bottom:calc(84px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%)}.akzent__t{display:none}}

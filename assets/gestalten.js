@@ -1382,30 +1382,6 @@
     return `<div class="regler"><label><span>${label}</span><output data-out="${key}">${anzeige}</output></label>
       <input type="range" data-regler="${key}" min="${min}" max="${max}" step="${step}" value="${wert}" aria-label="${label}"></div>`;
   }
-  /* Nur Staging: Akzentfarbe zum Durchschalten (Thomas, 02.11.2026).
-     Überschreibt --amber aus site.css, Wahl bleibt im Browser gespeichert. */
-  const AKZENTE = [
-    ['Bisher', '#c56a21'], ['Kobaltblau', '#2456d3'], ['Poolblau', '#0a7cad'], ['Marineblau', '#1e3f9e'],
-    ['Gold', '#c99a12'], ['Violett', '#6b46d6']
-  ];
-  function akzentWahl() {
-    const box = document.createElement('div');
-    box.className = 'akzent';
-    box.setAttribute('role', 'group');
-    box.setAttribute('aria-label', 'Akzentfarbe testen');
-    let wahl = 0;
-    try { wahl = Math.max(0, AKZENTE.findIndex((a) => a[1] === localStorage.getItem('sc_akzent'))); } catch (e) { /* ohne Speicher: Standard */ }
-    const setze = (i) => {
-      wahl = i;
-      document.documentElement.style.setProperty('--amber', AKZENTE[i][1]);
-      try { localStorage.setItem('sc_akzent', AKZENTE[i][1]); } catch (e) { /* egal */ }
-      box.innerHTML = `<span class="akzent__t">Akzent <b>${AKZENTE[i][0]}</b></span>` + AKZENTE.map((a, k) =>
-        `<button type="button" class="${k === i ? 'is-on' : ''}" style="--c:${a[1]}" data-akzent="${k}" title="${a[0]}" aria-label="${a[0]}" aria-pressed="${k === i}"></button>`).join('');
-    };
-    box.addEventListener('click', (ev) => { const b = ev.target.closest('[data-akzent]'); if (b) setze(+b.dataset.akzent); });
-    setze(wahl);
-    document.body.appendChild(box);
-  }
   function renderEbenen() {
     const box = $('#ebenen');
     if (st.modus !== 'selbst') { box.innerHTML = ''; return; }
@@ -2226,7 +2202,7 @@
         document.documentElement.classList.toggle('menu-open', o);
       });
     }
-    if (!ISTPROD) { $('#demoPill').hidden = false; akzentWahl(); }
+    if (!ISTPROD) $('#demoPill').hidden = false;
     navHoehe();
     laden();
     binde();

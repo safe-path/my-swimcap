@@ -9,7 +9,7 @@
   --ink:#191818; --obsidian:#1e1c1b; --walnut:#22201f;
   --ink-60:rgba(25,24,24,.6); --ink-45:rgba(25,24,24,.45); --ink-12:rgba(25,24,24,.12); --ink-08:rgba(25,24,24,.08);
   --paper-80:rgba(247,247,242,.8); --paper-55:rgba(247,247,242,.55); --paper-14:rgba(247,247,242,.14);
-  --amber:#c56a21;
+  --amber:#2456d3; /* Akzentfarbe Kobaltblau (Thomas, 02.11.2026), Name historisch */
   --serif:"IBM Plex Serif",Georgia,serif; --sans:"IBM Plex Sans",Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --r-btn:16px; --r-card:14px; --r-card-lg:18px; --r-input:9px; --r-pill:9999px;
   --e:cubic-bezier(.22,.61,.36,1); --e2:cubic-bezier(.76,0,.24,1);
