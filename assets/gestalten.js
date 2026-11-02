@@ -90,18 +90,20 @@
     ['Silber', '#a7a9ac'], ['Gold', '#c7a35b']
   ];
 
-  /* Schriftauswahl nach Thomas (02.11.2026). Nur Schriften, deren Lizenz die
-     Auswahl in einem Gestaltungs-Tool erlaubt: OFL-Schriften lokal gehostet
-     (siehe @font-face in gestalten.css). Futura, Georgia und Palatino sind
-     Systemschriften der Geräte; wo sie fehlen, springt eine freie, ähnliche
-     Schrift ein (Jost, Gelasio). Panchang (Fontshare-Lizenz), Antique Olive
-     Nord (Adobe Fonts) und College Block (Sharkshock) verbieten bzw. brauchen
-     eine eigene Lizenz für so einen Einsatz. College läuft bis dahin mit Graduate. */
+  /* Schriftauswahl nach Thomas (02.11.2026): nur freie Lizenzen, nichts kaufen.
+     OFL-Schriften lokal gehostet (siehe @font-face in gestalten.css). Futura,
+     Georgia und Palatino sind Systemschriften der Geräte; wo sie fehlen,
+     springt eine freie, ähnliche Schrift ein (Jost, Gelasio). Statt Panchang
+     (Fontshare-Lizenz verbietet Gestaltungs-Tools) Unbounded mit allen
+     Schnitten, statt Antique Olive Nord (Adobe Fonts) Dela Gothic One, statt
+     College Block (kostenpflichtig) Graduate. */
   const SCHRIFTEN = {
     futura:    { label: 'Futura',           css: "Futura,'Futura PT','Jost',sans-serif",                            weight: 700, gross: true  },
     oswald:    { label: 'Oswald',           css: "'Oswald',sans-serif",                                             weight: 700, gross: true  },
     anton:     { label: 'Anton',            css: "'Anton','Oswald',sans-serif",                                     weight: 400, gross: true  },
     college:   { label: 'College',          css: "'Graduate','IBM Plex Serif',serif",                               weight: 400, gross: true  },
+    unbounded: { label: 'Unbounded',        css: "'Unbounded','Jost',sans-serif",                                   weight: 700, gross: false, staerke: [300, 900] },
+    dela:      { label: 'Dela Gothic',      css: "'Dela Gothic One','Anton',sans-serif",                            weight: 400, gross: false },
     sansation: { label: 'Sansation',        css: "'Sansation','Jost',sans-serif",                                   weight: 700, gross: false },
     grotesk:   { label: 'Overused Grotesk', css: "'Overused Grotesk','IBM Plex Sans',sans-serif",                   weight: 600, gross: false },
     georgia:   { label: 'Georgia',          css: "Georgia,'Gelasio',serif",                                         weight: 700, gross: false },
@@ -109,8 +111,15 @@
   };
   /* Gespeicherte Entwürfe mit der alten Schriftliste */
   const SCHRIFT_ALT = { sport: 'oswald', block: 'anton', schmal: 'anton', modern: 'grotesk', rund: 'futura', klassisch: 'georgia', schwung: 'georgia' };
-  const SCHRIFT_LADEN = ['700 44px Oswald', '400 44px Anton', '400 44px Graduate', '700 44px Sansation', '600 44px "Overused Grotesk"',
-    '700 44px Jost', '700 44px Gelasio'];
+  const SCHRIFT_LADEN = ['700 44px Oswald', '400 44px Anton', '400 44px Graduate', '700 44px Unbounded', '400 44px "Dela Gothic One"',
+    '700 44px Sansation', '600 44px "Overused Grotesk"', '700 44px Jost', '700 44px Gelasio'];
+  const STAERKEN = { 300: 'Leicht', 400: 'Normal', 500: 'Medium', 600: 'Halbfett', 700: 'Fett', 800: 'Extrafett', 900: 'Black' };
+  /* Strichstärke: nur Schriften mit mehreren Schnitten (staerke = [min, max]) */
+  const staerke = (e, sch) => (sch.staerke ? clamp(e.staerke || sch.weight, sch.staerke[0], sch.staerke[1]) : sch.weight);
+  const schriftName = (e) => {
+    const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald;
+    return sch.label + (sch.staerke ? ' ' + STAERKEN[staerke(e, sch)] : '');
+  };
 
   /* Silhouette der flach liegenden Kappe (viewBox 600 x 560), dieselbe Form
      wie im Loader und im Logo der Website. Nur absolute Befehle, damit
@@ -616,14 +625,15 @@
     return { umriss, oben, rand, sicher, form: f };
   }
   function bogenRadius(b) { return 150 + (100 - Math.abs(b)) * 14; }
+  /* Großbuchstaben je Text; ältere Entwürfe ohne Angabe folgen der Schrift */
+  const istVersal = (e) => (e.versal !== undefined ? e.versal : !!(SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald).gross);
   function textInhalt(e) {
-    const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald;
     let t = e.text || '';
     if (e.name) {
       const l = st.namen.liste;
-      t = l.length ? l[clamp(st.namen.vorschau, 0, l.length - 1)] : 'VORNAME';
+      t = l.length ? l[clamp(st.namen.vorschau, 0, l.length - 1)] : 'Vorname';
     }
-    return sch.gross ? t.toLocaleUpperCase('de-DE') : t;
+    return istVersal(e) ? t.toLocaleUpperCase('de-DE') : t;
   }
   function druckKnoten(e, p, defs) {
     const g = document.createElementNS(NS, 'g');
@@ -637,7 +647,7 @@
     } else {
       const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald;
       const gr = 44, o = gr * 0.35;
-      const attrs = { 'font-family': sch.css, 'font-weight': sch.weight, 'font-size': gr, fill: e.farbe, 'letter-spacing': (e.spacing || 0) * gr, 'text-anchor': 'middle' };
+      const attrs = { 'font-family': sch.css, 'font-weight': staerke(e, sch), 'font-size': gr, fill: e.farbe, 'letter-spacing': (e.spacing || 0) * gr, 'text-anchor': 'middle' };
       const txt = textInhalt(e);
       if (!e.bogen) {
         const t = el('text', Object.assign({ x: 0, y: o }, attrs), g);
@@ -968,14 +978,14 @@
   function neuerText(over) {
     return Object.assign({
       id: uid(), typ: 'text', x: 300, y: 236, s: 1, r: 0,
-      text: 'DEIN TEXT', schrift: 'oswald', farbe: kontrastFarbe(kappeHex()), bogen: 0, spacing: 0.04, name: false
+      text: 'Dein Text', schrift: 'oswald', farbe: kontrastFarbe(kappeHex()), bogen: 0, spacing: -0.01, versal: true, name: false
     }, over || {});
   }
   function textHinzu(preset) {
     let e;
-    if (preset === 'bogen') e = neuerText({ text: 'SV MUSTERSTADT', bogen: 72, y: 196, s: 0.92, spacing: 0.06 });
+    if (preset === 'bogen') e = neuerText({ text: 'SV Musterstadt', bogen: 72, y: 196, s: 0.92 });
     else if (preset === 'nummer') e = neuerText({ text: '23', schrift: 'anton', s: 1.9, y: 300 });
-    else if (preset === 'slogan') e = neuerText({ text: 'Gemeinsam schneller', schrift: 'georgia', s: 0.8, y: 360, spacing: 0 });
+    else if (preset === 'slogan') e = neuerText({ text: 'Gemeinsam schneller', schrift: 'georgia', s: 0.8, y: 360 });
     else e = neuerText();
     fuegeHinzu(e);
     setTimeout(() => {
@@ -1058,10 +1068,10 @@
     verarbeite(logo).then(() => {
       logo.w = Math.round(logo.w * 0.8); logo.h = Math.round(logo.h * 0.8);
       st.elemente.vorne.push(logo,
-        neuerText({ text: 'SV MUSTERSTADT', bogen: 70, y: 194, s: 0.8, spacing: 0.06, farbe: txt }));
+        neuerText({ text: 'SV Musterstadt', bogen: 70, y: 194, s: 0.8, spacing: 0.06, farbe: txt }));
       st.elemente.hinten.push(
-        neuerText({ text: 'MUSTERSTADT', y: 250, s: 0.86, spacing: 0.08, farbe: txt }),
-        neuerText({ text: 'SEIT 1923', schrift: 'grotesk', y: 300, s: 0.5, spacing: 0.22, farbe: txt }));
+        neuerText({ text: 'Musterstadt', y: 250, s: 0.86, spacing: 0.08, farbe: txt }),
+        neuerText({ text: 'Seit 1923', schrift: 'grotesk', y: 300, s: 0.5, spacing: 0.22, farbe: txt }));
       st.rueckseite = 'eigen';
       st.seite = 'vorne';
       st.auswahl = null;
@@ -1186,7 +1196,7 @@
       if (platz < 15.5 * s) l.y = Math.round((l.y - (15.5 * s - platz)) * 10) / 10;
       y = Math.round((l.y + halb + abstand + 15.5 * s) * 10) / 10;
     }
-    return { seite, e: neuerText({ name: true, text: '', x, y, s, spacing: 0.06, farbe: kontrastFarbe(kappeHex()) }) };
+    return { seite, e: neuerText({ name: true, text: '', x, y, s, farbe: kontrastFarbe(kappeHex()) }) };
   }
   /* Namensliste aus CSV/TXT: Spalte »Name«, »Aufdruck« oder »Vorname«, sonst
      die erste Spalte. Excel speichert CSV mit Semikolon. */
@@ -1330,10 +1340,13 @@
         ? `<p class="mini">Platzhalter für die Namen. Die Namensliste pflegst du unten bei »Individuelle Namen«.</p>`
         : `<div class="field"><label for="insText">Text</label><input id="insText" value="${esc(e.text)}" maxlength="40" autocomplete="off"></div>`;
       mitte += `<div class="ins__zeile"><span class="ins__lbl">Schrift</span><div class="schriften">${Object.keys(SCHRIFTEN).map((k) =>
-        `<button type="button" class="schrift${e.schrift === k ? ' is-on' : ''}" data-schrift="${k}" style="font-family:${SCHRIFTEN[k].css};font-weight:${SCHRIFTEN[k].weight}">${SCHRIFTEN[k].gross ? 'AA' : 'Aa'}<small>${SCHRIFTEN[k].label}</small></button>`).join('')}</div></div>`;
+        `<button type="button" class="schrift${e.schrift === k ? ' is-on' : ''}" data-schrift="${k}" style="font-family:${SCHRIFTEN[k].css};font-weight:${SCHRIFTEN[k].weight}">${istVersal(e) ? 'AA' : 'Aa'}<small>${SCHRIFTEN[k].label}</small></button>`).join('')}</div></div>`;
+      const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald;
+      if (sch.staerke) mitte += regler('Stärke', 'staerke', staerke(e, sch), sch.staerke[0], sch.staerke[1], 100, STAERKEN[staerke(e, sch)]);
+      mitte += `<label class="toggle"><input type="checkbox" data-ins-cb="versal"${istVersal(e) ? ' checked' : ''}><span class="toggle__ui"></span><span class="toggle__t"><b>Großbuchstaben</b><em>Aus: normale Schreibweise</em></span></label>`;
       mitte += `<div class="ins__zeile"><span class="ins__lbl">Druckfarbe <em>${druckName(e.farbe)}</em></span><div class="dots">${farbPunkte(e.farbe, 'data-tfarbe')}</div></div>`;
       mitte += regler('Bogen', 'bogen', e.bogen, -100, 100, 1, e.bogen === 0 ? 'gerade' : (e.bogen > 0 ? 'nach oben' : 'nach unten'));
-      mitte += regler('Zeichenabstand', 'spacing', Math.round((e.spacing || 0) * 100), 0, 40, 1, Math.round((e.spacing || 0) * 100) + ' %');
+      mitte += regler('Zeichenabstand', 'spacing', Math.round((e.spacing || 0) * 100), -30, 30, 1, Math.round((e.spacing || 0) * 100) + ' %');
     } else {
       const c = cache[e.id] || { palette: [], erkannt: [] };
       const farben = e.mono ? [druckName(e.mono)] : c.palette;
@@ -1368,6 +1381,30 @@
   function regler(label, key, wert, min, max, step, anzeige) {
     return `<div class="regler"><label><span>${label}</span><output data-out="${key}">${anzeige}</output></label>
       <input type="range" data-regler="${key}" min="${min}" max="${max}" step="${step}" value="${wert}" aria-label="${label}"></div>`;
+  }
+  /* Nur Staging: Akzentfarbe zum Durchschalten (Thomas, 02.11.2026).
+     Überschreibt --amber aus site.css, Wahl bleibt im Browser gespeichert. */
+  const AKZENTE = [
+    ['Bisher', '#c56a21'], ['Kobaltblau', '#2456d3'], ['Poolblau', '#0a7cad'], ['Marineblau', '#1e3f9e'],
+    ['Gold', '#c99a12'], ['Violett', '#6b46d6']
+  ];
+  function akzentWahl() {
+    const box = document.createElement('div');
+    box.className = 'akzent';
+    box.setAttribute('role', 'group');
+    box.setAttribute('aria-label', 'Akzentfarbe testen');
+    let wahl = 0;
+    try { wahl = Math.max(0, AKZENTE.findIndex((a) => a[1] === localStorage.getItem('sc_akzent'))); } catch (e) { /* ohne Speicher: Standard */ }
+    const setze = (i) => {
+      wahl = i;
+      document.documentElement.style.setProperty('--amber', AKZENTE[i][1]);
+      try { localStorage.setItem('sc_akzent', AKZENTE[i][1]); } catch (e) { /* egal */ }
+      box.innerHTML = `<span class="akzent__t">Akzent <b>${AKZENTE[i][0]}</b></span>` + AKZENTE.map((a, k) =>
+        `<button type="button" class="${k === i ? 'is-on' : ''}" style="--c:${a[1]}" data-akzent="${k}" title="${a[0]}" aria-label="${a[0]}" aria-pressed="${k === i}"></button>`).join('');
+    };
+    box.addEventListener('click', (ev) => { const b = ev.target.closest('[data-akzent]'); if (b) setze(+b.dataset.akzent); });
+    setze(wahl);
+    document.body.appendChild(box);
   }
   function renderEbenen() {
     const box = $('#ebenen');
@@ -1524,7 +1561,7 @@
       const n = farbenSeite(s).length;
       const farben = n ? ` · ${n} Druckfarbe${n > 1 ? 'n' : ''}` : '';
       if (s === 'hinten' && st.rueckseite === 'gleich') return 'wie Vorderseite' + farben;
-      const schrift = (e) => ` (${(SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald).label})`;
+      const schrift = (e) => ` (${schriftName(e)})`;
       const teile = els.map((e) => (e.typ === 'bild' ? 'Logo' : (e.name ? 'Namen' : `»${textInhalt(e)}«`) + schrift(e)));
       return teile.join(', ') + farben;
     };
@@ -1975,9 +2012,10 @@
       if (k === 'r') e.r = v;
       if (k === 'bogen') e.bogen = Math.abs(v) < 4 ? 0 : v;
       if (k === 'spacing') e.spacing = v / 100;
+      if (k === 'staerke') e.staerke = v;
       const out = $(`[data-out="${k}"]`, $('#inspektor'));
-      if (out) out.textContent = k === 's' ? v + ' %' : k === 'r' ? v + '°' : k === 'spacing' ? v + ' %' : (e.bogen === 0 ? 'gerade' : (e.bogen > 0 ? 'nach oben' : 'nach unten'));
-      if (k === 'bogen' || k === 'spacing') renderDrucke(); else aktualisiereElement(e);
+      if (out) out.textContent = k === 's' ? v + ' %' : k === 'r' ? v + '°' : k === 'spacing' ? v + ' %' : k === 'staerke' ? STAERKEN[v] : (e.bogen === 0 ? 'gerade' : (e.bogen > 0 ? 'nach oben' : 'nach unten'));
+      if (k === 'bogen' || k === 'spacing' || k === 'staerke') renderDrucke(); else aktualisiereElement(e);
     });
     $('#inspektor').addEventListener('change', (ev) => {
       const e = finde(st.auswahl);
@@ -1991,6 +2029,7 @@
         return;
       }
       const cb = ev.target.dataset.insCb;
+      if (cb === 'versal') { e.versal = ev.target.checked; renderDrucke(); renderInspektor(); renderEbenen(); commit(); return; }
       if (cb === 'ohneHg') { e.ohneHg = ev.target.checked; verarbeite(e).then(() => { renderDrucke(); renderInspektor(); renderPreis(); commit(); }); return; }
       if (cb === 'mono') {
         e.mono = ev.target.checked ? (luminanz(kappeHex()) < 0.56 ? '#ffffff' : '#14254f') : null;
@@ -2187,7 +2226,7 @@
         document.documentElement.classList.toggle('menu-open', o);
       });
     }
-    if (!ISTPROD) $('#demoPill').hidden = false;
+    if (!ISTPROD) { $('#demoPill').hidden = false; akzentWahl(); }
     navHoehe();
     laden();
     binde();
