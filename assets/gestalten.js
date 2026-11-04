@@ -1729,9 +1729,16 @@
   const WEITER = { modell: 'Weiter: Kappenfarbe', farbe: 'Weiter: Gestalten', design: 'Weiter: Menge & Preis' };
   const VORHER = { farbe: 'modell', design: 'farbe' };
   const NACH_DESIGN = ['menge', 'kasse']; // brauchen ein Motiv
+  const SCHRITT_NAME = { modell: 'Modell', farbe: 'Farbe', design: 'Gestalten', menge: 'Menge & Preis' };
+  /* Analytics meldet sich wie im Wizard per CustomEvent, abgefangen in analytics.js */
+  const melde = (name, detail) => document.dispatchEvent(new CustomEvent(name, { detail }));
   function geheZu(ziel, ohneVerlauf) {
     if (NACH_DESIGN.indexOf(ziel) >= 0 && !designOk()) return;
     const war = st.tab;
+    /* Analytics: geschaffter Schritt (anonym, nur Nummer + Name). Nicht beim
+       Laden und nicht bei Browser-Zurück, nur wenn es wirklich vorwärts geht. */
+    const warNr = SCHRITTE.indexOf(war);
+    if (!ohneVerlauf && warNr >= 0 && SCHRITTE.indexOf(ziel) > warNr) melde('sc:step-completed', { step: warNr + 1, name: SCHRITT_NAME[war] });
     const istApp = ziel === 'modell' || ziel === 'farbe' || ziel === 'design';
     /* Druckbereich messen, solange die Bühne noch sichtbar ist */
     if (!istApp && !$('#app').hidden) {
@@ -1868,6 +1875,15 @@
     }).then(() => fetch(ANFRAGE_HOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(daten) })).then((r) => {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       zuruecksetzen();
+      /* Analytics: Value Moment, erst nach erfolgreichem Versand. BEWUSST nur
+         Auswahlwerte: keine Kontaktdaten, Notizen, Namensliste oder Dateinamen. */
+      const heute = new Date();
+      heute.setHours(0, 0, 0, 0);
+      melde('sc:request-submitted', {
+        model: daten.modell, cap_colour: daten.kappenfarbe, quantity_band: daten.menge, colors: daten.farben,
+        names_option: daten.namen, has_logo: !!daten.logo_url, language: daten.sprache, design_mode: st.modus,
+        lead_time_days: daten.termin ? Math.round((new Date(daten.termin + 'T00:00:00') - heute) / 864e5) : null
+      });
       fertigZeigen(daten);
     }).catch(() => {
       zuruecksetzen();

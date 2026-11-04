@@ -107,20 +107,21 @@ Datenbank-Eintrag, niemals mit der E-Mail-Adresse als ID.
 |---|---|---|---|
 | `page_viewed` | Nach erteilter Einwilligung, einmal pro Seitenaufruf | `page_path`, `referrer_domain` | `assets/analytics.js` |
 | `request_modal_opened` | Anfrage-Modal geht auf | `source` (`nav`, `hero`, `footer`, `cta_final`, `mobilmenue`, `unterseite`) | `index.html` → `open()` |
-| `request_step_completed` | Wizard-Schritt geschafft | `step_number` (1–4), `step_name` | `index.html` → `next.onclick` |
-| **`request_submitted`** | **Value Moment** — Anfrage raus | `model`, `quantity_band`, `colors`, `names_option`, `has_logo`, `lead_time_days`, `language` | `index.html` → `submit()` |
+| `request_step_completed` | Schritt geschafft, im Wizard oder im Konfigurator | `step_number` (1–4), `step_name` | `index.html` → `next.onclick`, `assets/gestalten.js` → `geheZu()` |
+| **`request_submitted`** | **Value Moment** — Anfrage raus, aus Wizard oder Konfigurator | `model`, `cap_colour`, `quantity_band`, `colors`, `names_option`, `has_logo`, `lead_time_days`, `language`; nur Konfigurator: `design_mode` (`selbst`, `service`) | `index.html` → `submit()`, `assets/gestalten.js` → `anfrageSenden()` |
 | `request_abandoned` | Modal zu, ohne abzuschicken | `last_step` | `index.html` → `close()` |
 | `faq_opened` | FAQ-Eintrag aufgeklappt | `question` | `assets/analytics.js` |
 | `cta_clicked` | Klick auf einen Button außerhalb des Modals | `cta_label`, `cta_location` | `assets/analytics.js` |
 | `language_switched` | DE/EN umgeschaltet | `to_language` | `assets/analytics.js` |
 
-Die Ereignisse aus `index.html` kommen als `CustomEvent` (`sc:modal-opened`,
+Die Ereignisse aus `index.html` und `assets/gestalten.js` kommen als `CustomEvent` (`sc:modal-opened`,
 `sc:step-completed`, `sc:request-submitted`, `sc:modal-abandoned`) und werden in
 `analytics.js` abgefangen. So bleibt der Wizard frei von Analytics-Code.
 
 ### Die wichtigste Auswertung
 
-`request_step_completed` → `request_submitted` als Funnel. Sie beantwortet die
+`request_step_completed` → `request_submitted` als Funnel, getrennt nach Wizard und
+Konfigurator über die Super Property `page_type` (`konfigurator` = /gestalten). Sie beantwortet die
 Frage, die Geld bringt: **In welchem Schritt springen Vereine ab?**
 `request_abandoned.last_step` zeigt dieselbe Stelle direkt.
 
