@@ -9,7 +9,8 @@
     <path d="M10 132 C42 118 70 146 100 132 C130 118 158 146 190 132 L190 158 C158 172 130 144 100 158 C70 172 42 144 10 158 Z" fill="#c8202f"/>
     <path d="M14 184 C44 172 72 196 100 184 C128 172 156 196 186 184" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
   </g>
-  <circle cx="132" cy="84" r="13" fill="#ffffff"/>
+  <!-- Kopf unter dem Armbogen: Mitte zwischen Arm (Unterkante y 77,5) und Körperlinie (Oberkante y 107) -->
+  <circle cx="126" cy="92" r="11" fill="#ffffff"/>
   <path d="M56 112 C74 80 108 66 146 74" fill="none" stroke="#ffffff" stroke-width="11" stroke-linecap="round"/>
   <path d="M66 122 C92 110 122 108 150 114" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
   <g fill="#ffffff">
