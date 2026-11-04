@@ -28,9 +28,10 @@
   <nav class="stepbar" id="stepbar" aria-label="Schritte">
     <ol class="stepbar__in">
       <li><button type="button" class="step" data-step="modell"><i>1</i><span>Modell</span></button></li>
-      <li><button type="button" class="step" data-step="design"><i>2</i><span>Gestalten</span></button></li>
-      <li><button type="button" class="step" data-step="menge"><i>3</i><span>Menge<em> &amp; Preis</em></span></button></li>
-      <li><button type="button" class="step" data-step="kasse"><i>4</i><span>Angebot</span></button></li>
+      <li><button type="button" class="step" data-step="farbe"><i>2</i><span>Farbe</span></button></li>
+      <li><button type="button" class="step" data-step="design"><i>3</i><span>Gestalten</span></button></li>
+      <li><button type="button" class="step" data-step="menge"><i>4</i><span>Menge<em> &amp; Preis</em></span></button></li>
+      <li><button type="button" class="step" data-step="kasse"><i>5</i><span>Angebot</span></button></li>
     </ol>
   </nav>
 
@@ -39,7 +40,7 @@
     <div class="cfg-kopf__in">
       <span class="cfg-kopf__marken"><span class="eyebrow">Neu · Online gestalten</span><span class="demo-pill" id="demoPill" hidden><i></i>Staging-Prototyp · Anfragen als Test markiert</span></span>
       <h1>Badekappe <em>selbst gestalten.</em></h1>
-      <p>Erst Modell und Design, dann Menge und Preis. In vier Schritten zum Angebot für eure Vereinskappe.</p>
+      <p>Erst Modell, Farbe und Design, dann Menge und Preis. In fünf Schritten zum Angebot für eure Vereinskappe.</p>
     </div>
   </section>
 
@@ -78,11 +79,6 @@
         </div>
         <!-- Rückseite: unter der Kappe, damit nichts vom Motiv verdeckt wird -->
         <div class="rs" id="rsLeiste" hidden>
-          <div class="rs__seg" role="radiogroup" aria-label="Was kommt auf die Rückseite?">
-            <button type="button" role="radio" data-rs="gleich">Wie vorne</button>
-            <button type="button" role="radio" data-rs="eigen">Eigenes Motiv</button>
-            <button type="button" role="radio" data-rs="leer">Unbedruckt</button>
-          </div>
           <p class="rs__info" id="rsInfo"></p>
         </div>
         <div class="buehne__drop" aria-hidden="true">Logo hier ablegen</div>
@@ -102,10 +98,6 @@
         <h3 class="pt">Modell</h3>
         <div class="modelle" id="modelle"></div>
 
-        <h3 class="pt">Kappenfarbe <span class="pt__wert" id="farbName"></span></h3>
-        <div class="swatches cfg-sw" id="farben"></div>
-        <p class="mini" id="farbZahl"></p>
-
         <h3 class="pt">Größe</h3>
         <div class="seg" id="groesse" role="group" aria-label="Größe">
           <button type="button" data-g="erwachsene" class="is-on">Erwachsene</button>
@@ -118,8 +110,35 @@
         </div>
       </div>
 
-      <!-- 2 · Gestalten -->
+      <!-- 2 · Farbe -->
+      <div class="tab" data-pane="farbe" role="region" aria-label="Kappenfarbe">
+        <h3 class="pt">Kappenfarbe <span class="pt__wert" id="farbName"></span></h3>
+        <div class="swatches cfg-sw" id="farben"></div>
+        <p class="mini" id="farbZahl"></p>
+      </div>
+
+      <!-- 3 · Gestalten -->
       <div class="tab" data-pane="design" role="region" aria-label="Gestalten">
+        <div class="mk" role="radiogroup" aria-label="Wer gestaltet?">
+          <span class="mk__l">Wer gestaltet?</span>
+          <div class="mk__seg">
+            <button type="button" class="mk__btn is-on" role="radio" aria-checked="true" data-modus="service"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 4.5-6 8-6s6.4 2 8 6"/></svg><span><b>Ihr gestaltet für uns</b><em>Kostenlos · Entwurf in 48 h</em></span></button>
+            <button type="button" class="mk__btn" role="radio" aria-checked="false" data-modus="selbst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span><b>Ich gestalte selbst</b><em>Ausprobieren, Preis sofort</em></span></button>
+          </div>
+        </div>
+
+        <div class="rsk" id="rsk">
+          <label class="toggle">
+            <input type="checkbox" id="rsAnders">
+            <span class="toggle__ui"></span>
+            <span class="toggle__t"><b>Rückseite anders gestalten</b><em>Aus: Vorder- und Rückseite gleich</em></span>
+          </label>
+          <div class="rsk__wahl" id="rsWahl" role="radiogroup" aria-label="Was kommt auf die Rückseite?" hidden>
+            <button type="button" role="radio" data-rs="eigen">Eigenes Motiv</button>
+            <button type="button" role="radio" data-rs="leer">Unbedruckt</button>
+          </div>
+        </div>
+
         <div id="designSelbst">
           <div class="inspektor" id="inspektor" hidden></div>
 
@@ -153,23 +172,24 @@
             <span class="add__ic"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/></svg></span>
             <span><b>Logo oder Datei hochladen</b><em>Alle Formate, auch AI, PSD oder PDF</em></span>
           </button>
+          <p class="mini svc-tipp">Am besten ohne Hintergrund, als PNG, SVG oder PDF. Sonst stellt unsere Software den Hintergrund für die Vorschau automatisch frei. Das klappt nicht bei jedem Logo exakt. Bei uns kommt euer Logo im Original an, und im Entwurf setzen wir es sauber um.</p>
           <div class="svc-datei" id="svcDatei" hidden></div>
           <div class="field">
             <label for="svcNotiz">Was soll auf die Kappe?</label>
             <textarea id="svcNotiz" rows="4" placeholder="z. B. Logo vorne mittig, hinten unser Vereinsname. Farben wie auf unserer Website."></textarea>
           </div>
-          <h3 class="pt">Bedruckte Seiten und Druckfarben</h3>
+          <h3 class="pt">Druckfarben</h3>
           <p class="mini">Schätzung reicht, wir prüfen das beim Entwurf und melden uns, falls sich am Preis etwas ändert.</p>
           <div class="svc-seiten">
             <div class="svc-row" data-svc-row="vorne">
-              <label class="cb"><input type="checkbox" data-svc-seite="vorne" checked><span>Vorderseite</span></label>
+              <span class="svc-row__l">Vorderseite</span>
               <div class="stepper"><button type="button" data-svc-minus="vorne" aria-label="Weniger Farben vorne">−</button><span data-svc-zahl="vorne">2</span><button type="button" data-svc-plus="vorne" aria-label="Mehr Farben vorne">+</button></div>
               <span class="mini">Farben</span>
             </div>
-            <div class="svc-row aus" data-svc-row="hinten">
-              <label class="cb"><input type="checkbox" data-svc-seite="hinten"><span>Rückseite</span></label>
+            <div class="svc-row" data-svc-row="hinten">
+              <span class="svc-row__l">Rückseite</span>
               <div class="stepper"><button type="button" data-svc-minus="hinten" aria-label="Weniger Farben hinten">−</button><span data-svc-zahl="hinten">1</span><button type="button" data-svc-plus="hinten" aria-label="Mehr Farben hinten">+</button></div>
-              <span class="mini">Farben</span>
+              <span class="mini" data-svc-info="hinten">Farben</span>
             </div>
           </div>
         </div>
@@ -202,18 +222,11 @@
       </div>
       </div>
 
-      <!-- Fuß: Wer gestaltet? + Navigation -->
+      <!-- Fuß: Navigation -->
       <div class="panel__fuss">
-        <div class="mk" role="radiogroup" aria-label="Wer gestaltet?">
-          <span class="mk__l">Wer gestaltet?</span>
-          <div class="mk__seg">
-            <button type="button" class="mk__btn is-on" role="radio" aria-checked="true" data-modus="selbst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Ich gestalte selbst</button>
-            <button type="button" class="mk__btn" role="radio" aria-checked="false" data-modus="service"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 4.5-6 8-6s6.4 2 8 6"/></svg>Ihr für uns <em>kostenlos</em></button>
-          </div>
-        </div>
         <div class="pnav">
           <button type="button" class="pnav__zurueck" id="btnZurueck"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Zurück</button>
-          <button type="button" class="btn btn--primary pnav__weiter" id="btnWeiter"><span class="btn__t"><span>Weiter: Gestalten</span><span>Weiter: Gestalten</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <button type="button" class="btn btn--primary pnav__weiter" id="btnWeiter"><span class="btn__t"><span>Weiter: Kappenfarbe</span><span>Weiter: Kappenfarbe</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
         </div>
       </div>
     </div>
@@ -368,7 +381,7 @@
 <div class="mbar" id="mbar">
   <div class="mbar__nav">
     <button type="button" class="mbar__zurueck" id="mbarZurueck" aria-label="Zurück"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-    <button type="button" class="btn mbar__weiter" id="mbarWeiter"><span class="btn__t"><span>Weiter: Gestalten</span><span>Weiter: Gestalten</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <button type="button" class="btn mbar__weiter" id="mbarWeiter"><span class="btn__t"><span>Weiter: Kappenfarbe</span><span>Weiter: Kappenfarbe</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
   </div>
   <div class="mbar__kauf">
     <button type="button" class="mbar__preis" id="mbarPreis" aria-controls="preis">

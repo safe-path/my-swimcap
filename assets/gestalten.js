@@ -244,7 +244,7 @@
      ================================================================= */
   function neuerZustand() {
     return {
-      v: 2, modus: 'selbst', modell: 'silikon', farbe: '71', seite: 'vorne',
+      v: 2, modus: 'service', modell: 'silikon', farbe: '71', seite: 'vorne',
       elemente: { vorne: [], hinten: [] }, auswahl: null,
       rueckseite: 'gleich', // gleich = Motiv von vorne, eigen = eigenes Motiv, leer = unbedruckt
       menge: 100, groesse: 'erwachsene', kinder: 0,
@@ -343,7 +343,7 @@
   }
   /* Im Service-Modus zeigt die Kappe nur das hochgeladene Motiv. Das selbst
      gebaute Design bleibt erhalten und ist beim Zurückwechseln wieder da. */
-  const sichtbare = (seite) => (st.modus === 'service' ? st.elemente[seite].filter((e) => e.serviceLogo) : druckElemente(seite));
+  const sichtbare = (seite) => (st.modus === 'service' ? druckElemente(seite).filter((e) => e.serviceLogo) : druckElemente(seite));
   /* Rückseite »wie vorne« oder »unbedruckt«: dort wird nichts direkt bearbeitet */
   const rueckGesperrt = () => st.modus === 'selbst' && st.seite === 'hinten' && st.rueckseite !== 'eigen';
   const alleBilder = () => alleElemente().filter((e) => e.typ === 'bild');
@@ -373,10 +373,13 @@
     }
     return [0, 1, 2].map((k) => Math.round(c.reduce((a, v) => a + v[k], 0) / 4));
   }
-  function entferneHg(d) {
+  /* Schwellenwert fürs Freistellen: Regler 0–100 %, Standard 30 % (Farbabstand 52) */
+  const HG_STANDARD = 30;
+  const hgAbstand = (e) => 7 + 1.5 * (e.hgTol === undefined ? HG_STANDARD : e.hgTol);
+  function entferneHg(d, abstand) {
     const ref = eckFarbe(d);
     if (!ref) return false;
-    const w = d.width, h = d.height, px = d.data, tol = 52 * 52;
+    const w = d.width, h = d.height, px = d.data, tol = abstand * abstand, weich = Math.max(96, abstand * 1.85);
     const seen = new Uint8Array(w * h), stack = new Int32Array(w * h + 4);
     let sp = 0;
     const nah = (i) => {
@@ -408,7 +411,7 @@
       if (!nb) continue;
       const o = i * 4;
       const dr = px[o] - ref[0], dg = px[o + 1] - ref[1], db = px[o + 2] - ref[2];
-      const s = Math.sqrt(dr * dr + dg * dg + db * db) / 96;
+      const s = Math.sqrt(dr * dr + dg * dg + db * db) / weich;
       if (s < 1) px[o + 3] = Math.round(px[o + 3] * s);
     }
     return true;
@@ -470,7 +473,7 @@
   }
   /* Kennung der Bildeinstellungen: ändert sie sich (z. B. durch Rückgängig),
      muss das Bild neu aufbereitet werden */
-  const bildSig = (e) => JSON.stringify([e.src.length, !!e.ohneHg, e.mono || null, e.farbMap || null]);
+  const bildSig = (e) => JSON.stringify([e.src.length, !!e.ohneHg, e.hgTol, e.mono || null, e.farbMap || null]);
   function faerbe(d, hex) {
     const [r, g, b] = hexRgb(hex), px = d.data;
     for (let i = 0; i < px.length; i += 4) {
@@ -502,7 +505,7 @@
       x.drawImage(img, 0, 0, cw, ch);
       const d = x.getImageData(0, 0, cw, ch);
       if (e.hgErkannt === undefined) e.hgErkannt = !!eckFarbe(d);
-      if (e.ohneHg) entferneHg(d);
+      if (e.ohneHg) entferneHg(d, hgAbstand(e));
       let info = analysiere(d);
       const erkannt = info.namen;
       if (e.mono) { faerbe(d, e.mono); info = { namen: [druckName(e.mono)], viele: false }; }
@@ -560,10 +563,17 @@
     PREIS.staffeln.forEach((s, k) => { if (m >= s) i = k; });
     return i;
   }
-  function farbenSeite(seite) {
-    if (st.modus === 'service') {
-      return st.service.seiten[seite] ? Array.from({ length: st.service.farben[seite] }, (_, i) => 'F' + i) : [];
+  /* Service: geschätzte Druckfarben je Seite. Die Rückseite folgt derselben
+     Wahl wie beim Selbstgestalten (wie vorne, eigenes Motiv, unbedruckt). */
+  function svcFarben(seite) {
+    if (seite === 'hinten') {
+      if (st.rueckseite === 'leer') return 0;
+      if (st.rueckseite === 'gleich') return st.service.farben.vorne;
     }
+    return st.service.farben[seite];
+  }
+  function farbenSeite(seite) {
+    if (st.modus === 'service') return Array.from({ length: svcFarben(seite) }, (_, i) => 'F' + i);
     const set = new Set();
     druckElemente(seite).forEach((e) => {
       if (e.name) return; // Namen sind im Namenspreis enthalten (Einzeldruck)
@@ -1129,7 +1139,7 @@
     if (wert === st.rueckseite) return;
     if (wert === 'eigen') {
       const vorher = st.rueckseite;
-      rueckEigen(vorher === 'gleich');
+      rueckEigen(vorher === 'gleich' && st.modus === 'selbst');
       if (vorher === 'leer' && !st.elemente.hinten.length) toast('Eigene Rückseite: Lad ein Logo hoch oder setz einen Text.');
     } else {
       st.rueckseite = wert;
@@ -1139,6 +1149,7 @@
     renderKappe();
     renderInspektor();
     renderEbenen();
+    renderService();
     renderPreis();
     commit();
   }
@@ -1153,15 +1164,18 @@
     return r2(mit - ohne);
   }
   function renderRueckseite() {
-    const leiste = $('#rsLeiste');
-    const an = st.modus === 'selbst' && st.seite === 'hinten';
-    leiste.hidden = !an;
-    if (!an) return;
-    $$('[data-rs]', leiste).forEach((b) => {
+    const anders = st.rueckseite !== 'gleich';
+    $('#rsAnders').checked = anders;
+    $('#rsWahl').hidden = !anders;
+    $$('[data-rs]', $('#rsWahl')).forEach((b) => {
       const on = b.dataset.rs === st.rueckseite;
       b.classList.toggle('is-on', on);
       b.setAttribute('aria-checked', on ? 'true' : 'false');
     });
+    const leiste = $('#rsLeiste');
+    const an = st.modus === 'selbst' && st.seite === 'hinten';
+    leiste.hidden = !an;
+    if (!an) return;
     const vorneLeer = !st.elemente.vorne.some((e) => !e.name);
     let t;
     if (st.rueckseite === 'leer') {
@@ -1294,7 +1308,7 @@
       const on = b.dataset.seite === st.seite;
       b.classList.toggle('is-on', on);
       b.setAttribute('aria-selected', on ? 'true' : 'false');
-      b.classList.toggle('hat', (st.modus === 'service' ? st.service.seiten[b.dataset.seite] : druckElemente(b.dataset.seite).length > 0));
+      b.classList.toggle('hat', (st.modus === 'service' ? svcFarben(b.dataset.seite) > 0 : druckElemente(b.dataset.seite).length > 0));
       /* Rückseite »wie vorne«: Tab ausgegraut, sie hat kein eigenes Motiv */
       const grau = b.dataset.seite === 'hinten' && st.modus === 'selbst' && st.rueckseite === 'gleich';
       b.classList.toggle('grau', grau);
@@ -1367,6 +1381,11 @@
       if (c.viele) mitte += `<p class="hinweis hinweis--warn">Mehr als 6 Farben oder Verläufe erkannt. Wir prüfen das beim Druck-Check und schlagen euch eine Lösung vor (meist einfarbig oder Digitaldruck).</p>`;
       if (e.hgErkannt || e.ohneHg) {
         mitte += `<label class="toggle"><input type="checkbox" data-ins-cb="ohneHg"${e.ohneHg ? ' checked' : ''}><span class="toggle__ui"></span><span class="toggle__t"><b>Hintergrund entfernen</b><em>Für Logos mit weißem Kasten</em></span></label>`;
+        if (e.ohneHg) {
+          const tol = e.hgTol === undefined ? HG_STANDARD : e.hgTol;
+          mitte += regler('Schwellenwert', 'hgTol', tol, 0, 100, 1, tol + ' %');
+          mitte += `<p class="mini ins__tipp">Bleibt ein heller Rand stehen, Wert erhöhen. Fehlen Teile vom Logo, Wert senken.</p>`;
+        }
       }
       mitte += `<label class="toggle"><input type="checkbox" data-ins-cb="mono"${e.mono ? ' checked' : ''}><span class="toggle__ui"></span><span class="toggle__t"><b>Einfarbig drucken</b><em>Günstiger: nur eine Druckfarbe</em></span></label>`;
       if (e.mono) mitte += `<div class="dots dots--einzug">${farbPunkte(e.mono, 'data-mfarbe')}</div>`;
@@ -1375,6 +1394,21 @@
     mitte += regler('Drehung', 'r', e.r, -180, 180, 1, e.r + '°');
     mitte += `<div class="ins__fuss"><button type="button" class="linkbtn" data-ins="mitte">Horizontal zentrieren</button></div>`;
     box.innerHTML = kopf + mitte;
+  }
+  /* Schwellenwert live anwenden. Beim Ziehen läuft höchstens eine Aufbereitung
+     gleichzeitig, der Regler wird erst nach dem Loslassen neu gebaut. */
+  let freiLauf = null, freiNochmal = false, freiFertig = false;
+  function freistellenBald(e, fertig) {
+    if (fertig) freiFertig = true;
+    if (freiLauf) { freiNochmal = true; return; }
+    freiLauf = verarbeite(e).then(() => {
+      freiLauf = null;
+      renderDrucke();
+      const bild = $('.ins__thumb img', $('#inspektor'));
+      if (bild && cache[e.id]) bild.src = cache[e.id].view;
+      if (freiNochmal) { freiNochmal = false; freistellenBald(e); return; }
+      if (freiFertig) { freiFertig = false; renderInspektor(); renderPreis(); commit(); }
+    });
   }
   function regler(label, key, wert, min, max, step, anzeige) {
     return `<div class="regler"><label><span>${label}</span><output data-out="${key}">${anzeige}</output></label>
@@ -1391,9 +1425,7 @@
     };
     const v = st.elemente.vorne.map((e) => zeile(e, 'vorne')).join('');
     const h = st.rueckseite === 'eigen' ? st.elemente.hinten.map((e) => zeile(e, 'hinten')).join('') : '';
-    const hinweis = v && st.rueckseite !== 'eigen'
-      ? `<p class="ebenen__rs">Rückseite: ${st.rueckseite === 'gleich' ? 'wie vorne' : 'unbedruckt'} · <button type="button" class="linkbtn" data-seite-go="hinten">ändern</button></p>` : '';
-    box.innerHTML = (v || h) ? `<div class="pt pt--klein">Elemente</div>${v}${h}${hinweis}` : '';
+    box.innerHTML = (v || h) ? `<div class="pt pt--klein">Elemente</div>${v}${h}` : '';
   }
   function renderNamen() {
     const n = st.namen;
@@ -1414,11 +1446,11 @@
     $('#svcNotiz').value === s.notiz || ($('#svcNotiz').value = s.notiz);
     $('#svcDatei').hidden = !s.datei;
     $('#svcDatei').innerHTML = s.datei ? `<svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><b>${esc(s.datei)}</b><button type="button" class="linkbtn" data-aktion="svc-weg">Entfernen</button>` : '';
-    ['vorne', 'hinten'].forEach((k) => {
-      $(`[data-svc-seite="${k}"]`).checked = s.seiten[k];
-      $(`[data-svc-zahl="${k}"]`).textContent = s.farben[k];
-      $(`[data-svc-row="${k}"]`).classList.toggle('aus', !s.seiten[k]);
-    });
+    ['vorne', 'hinten'].forEach((k) => { $(`[data-svc-zahl="${k}"]`).textContent = s.farben[k]; });
+    /* Rückseite: eigener Zähler nur bei eigenem Motiv */
+    const eigen = st.rueckseite === 'eigen';
+    $('[data-svc-row="hinten"]').classList.toggle('fest', !eigen);
+    $('[data-svc-info="hinten"]').textContent = eigen ? 'Farben' : (st.rueckseite === 'gleich' ? 'wie vorne' : 'unbedruckt');
   }
   function renderModus() {
     $$('.mk__btn').forEach((b) => {
@@ -1480,7 +1512,6 @@
     $('#mbarSumme').textContent = euro(basis);
     $('#mbarStk').textContent = `${euro(proStk)} / Kappe · ${st.netto ? 'netto' : 'brutto'}`;
     if (st.modus !== 'service') $('#infoFarben').textContent = `Druckfarben: vorne ${p.fv}, hinten ${p.fh}`;
-    if (!$('#rsLeiste').hidden) renderRueckseite();
   }
   function renderVerlaufBtns() {
     $('#btnUndo').disabled = verlauf.length < 2;
@@ -1516,7 +1547,7 @@
       return true;
     }
     if (!druckElemente('vorne').concat(druckElemente('hinten')).some((e) => !e.name) && !st.namen.aktiv) {
-      return nein('Füg zuerst ein Logo oder einen Text hinzu. Oder wähl unten »Ihr für uns«.');
+      return nein('Füg zuerst ein Logo oder einen Text hinzu. Oder wähl oben »Ihr gestaltet für uns«.');
     }
     return true;
   }
@@ -1527,7 +1558,11 @@
       ? `Gemischt (${st.menge - (st.kinder || 0)} Erwachsene, ${st.kinder || 0} Kinder)`
       : (st.groesse === 'kinder' ? 'Kinder' : 'Erwachsene');
     const seite = (s) => {
-      if (st.modus === 'service') return st.service.seiten[s] ? `${st.service.farben[s]} Druckfarbe${st.service.farben[s] > 1 ? 'n' : ''} (geschätzt)` : 'unbedruckt';
+      if (st.modus === 'service') {
+        const n = svcFarben(s);
+        if (!n) return 'unbedruckt';
+        return (s === 'hinten' && st.rueckseite === 'gleich' ? 'wie Vorderseite · ' : '') + `${n} Druckfarbe${n > 1 ? 'n' : ''} (geschätzt)`;
+      }
       const els = druckElemente(s);
       if (!els.length) return 'unbedruckt';
       const n = farbenSeite(s).length;
@@ -1591,14 +1626,15 @@
     return res;
   }
 
-  /* ---------- Schritte: 1 Modell · 2 Gestalten · 3 Menge & Preis · 4 Bestellen ---------- */
-  const SCHRITTE = ['modell', 'design', 'menge', 'kasse'];
-  const HASH = { modell: '', design: '#gestalten', menge: '#menge', kasse: '#kasse', fertig: '#fertig' };
-  const WEITER = { modell: 'Weiter: Gestalten', design: 'Weiter: Menge & Preis' };
+  /* ---------- Schritte: 1 Modell · 2 Farbe · 3 Gestalten · 4 Menge & Preis · 5 Angebot ---------- */
+  const SCHRITTE = ['modell', 'farbe', 'design', 'menge', 'kasse'];
+  const HASH = { modell: '', farbe: '#farbe', design: '#gestalten', menge: '#menge', kasse: '#kasse', fertig: '#fertig' };
+  const WEITER = { modell: 'Weiter: Kappenfarbe', farbe: 'Weiter: Gestalten', design: 'Weiter: Menge & Preis' };
+  const VORHER = { farbe: 'modell', design: 'farbe' };
   function geheZu(ziel, ohneVerlauf) {
     if ((ziel === 'menge' || ziel === 'kasse') && !designOk()) return;
     const war = st.tab;
-    const istApp = ziel === 'modell' || ziel === 'design';
+    const istApp = ziel === 'modell' || ziel === 'farbe' || ziel === 'design';
     /* Druckbereich messen, solange die Bühne noch sichtbar ist */
     if (!istApp && !$('#app').hidden) {
       const w = bereichBeideSeiten();
@@ -1635,10 +1671,11 @@
     });
     const weiter = WEITER[st.tab];
     if (weiter) { setBtnText($('#btnWeiter'), weiter); setBtnText($('#mbarWeiter'), weiter); }
-    $('#btnZurueck').hidden = st.tab !== 'design';
-    $('#mbarZurueck').hidden = st.tab !== 'design';
+    $('#btnZurueck').hidden = !VORHER[st.tab];
+    $('#mbarZurueck').hidden = !VORHER[st.tab];
   }
-  function schrittWeiter() { geheZu(st.tab === 'modell' ? 'design' : 'menge'); }
+  function schrittWeiter() { geheZu(SCHRITTE[SCHRITTE.indexOf(st.tab) + 1] || 'menge'); }
+  const schrittZurueck = () => geheZu(VORHER[st.tab] || 'modell');
   function zurKasse() { geheZu('kasse'); }
   function renderMengeSeite() {
     const mock = $('#mgMock');
@@ -1894,7 +1931,7 @@
   const kappeAlsBild = (seite, px) => kappeAlsCanvas(seite, px).then((c) => c.toDataURL('image/jpeg', 0.88));
   /* Das fertige Design für die Bestätigungsmail: bedruckte Seiten nebeneinander */
   function designBild() {
-    const hinten = st.modus === 'service' ? st.service.seiten.hinten : st.rueckseite !== 'leer';
+    const hinten = st.rueckseite !== 'leer';
     const px = 520, luft = 20, grund = '#f7f7f2';
     return Promise.all((hinten ? ['vorne', 'hinten'] : ['vorne']).map((s) => kappeAlsCanvas(s, px, grund))).then((bilder) => {
       const c = document.createElement('canvas');
@@ -1988,7 +2025,7 @@
       /* Jedes Druckelement einzeln */
       if (st.modus === 'service') {
         abschnitt('Gestaltung durch MySwimcap');
-        zeile('Seiten', ['vorne', 'hinten'].filter((s) => st.service.seiten[s]).map((s) => `${s} (${st.service.farben[s]} Farben geschätzt)`).join(', '));
+        zeile('Seiten', ['vorne', 'hinten'].filter((s) => svcFarben(s)).map((s) => `${s} (${s === 'hinten' && st.rueckseite === 'gleich' ? 'wie vorne, ' : ''}${svcFarben(s)} Farben geschätzt)`).join(', '));
         zeile('Wünsche', st.service.notiz || '(keine)');
         zeile('Datei', st.service.datei || (daten.logo_url ? 'siehe Logo-Link' : '(keine)'));
       } else {
@@ -2050,13 +2087,15 @@
       location.href = '/?' + q.toString() + '#anfrage';
     });
   }
-  /* Eigenes Logo (Original, sonst die aufbereitete Ansicht) in den Bucket
-     laden. Liefert die öffentliche URL oder '' (kein Logo, Upload fehlgeschlagen). */
+  /* Eigenes Logo unverändert in den Bucket laden: die Originaldatei dieser
+     Sitzung, sonst das gespeicherte Bild ohne Freistellen und Umfärben.
+     Liefert die öffentliche URL oder '' (kein Logo, Upload fehlgeschlagen). */
   function logoHochladen() {
-    const logoEl = alleBilder().find((e) => !e.beispiel);
-    const datei = (logoEl && dateien[logoEl.id]) || dateien.service;
+    const svc = st.modus === 'service';
+    const logoEl = alleBilder().find((e) => !e.beispiel && (!svc || e.serviceLogo)) || alleBilder().find((e) => !e.beispiel);
+    const datei = svc ? (dateien.service || (logoEl && dateien[logoEl.id])) : ((logoEl && dateien[logoEl.id]) || dateien.service);
     if (!datei && !logoEl) return Promise.resolve('');
-    const blobP = datei ? Promise.resolve(datei) : fetch(cache[logoEl.id] ? cache[logoEl.id].view : logoEl.src).then((r) => r.blob());
+    const blobP = datei ? Promise.resolve(datei) : fetch(logoEl.src).then((r) => r.blob());
     return blobP.then((b) => hochladen(b, datei ? datei.name : 'logo-konfigurator.png')).catch(() => '');
   }
 
@@ -2204,6 +2243,7 @@
       if (k === 'spacing') e.spacing = v / 100;
       if (k === 'staerke') e.staerke = v;
       const out = $(`[data-out="${k}"]`, $('#inspektor'));
+      if (k === 'hgTol') { e.hgTol = v; if (out) out.textContent = v + ' %'; freistellenBald(e); return; }
       if (out) out.textContent = k === 's' ? v + ' %' : k === 'r' ? v + '°' : k === 'spacing' ? v + ' %' : k === 'staerke' ? STAERKEN[v] : (e.bogen === 0 ? 'gerade' : (e.bogen > 0 ? 'nach oben' : 'nach unten'));
       if (k === 'bogen' || k === 'spacing' || k === 'staerke') renderDrucke(); else aktualisiereElement(e);
     });
@@ -2218,6 +2258,7 @@
         verarbeite(e).then(() => { renderDrucke(); renderInspektor(); renderPreis(); commit(); });
         return;
       }
+      if (ev.target.dataset.regler === 'hgTol') { freistellenBald(e, true); return; }
       const cb = ev.target.dataset.insCb;
       if (cb === 'versal') { e.versal = ev.target.checked; renderDrucke(); renderInspektor(); renderEbenen(); commit(); return; }
       if (cb === 'ohneHg') { e.ohneHg = ev.target.checked; verarbeite(e).then(() => { renderDrucke(); renderInspektor(); renderPreis(); commit(); }); return; }
@@ -2270,11 +2311,8 @@
     /* Service-Modus */
     $('#svcNotiz').addEventListener('input', (ev) => { st.service.notiz = ev.target.value; speichernBald(); });
     $('#svcNotiz').addEventListener('change', commit);
-    $$('[data-svc-seite]').forEach((cb) => cb.addEventListener('change', () => {
-      st.service.seiten[cb.dataset.svcSeite] = cb.checked;
-      if (!st.service.seiten.vorne && !st.service.seiten.hinten) { st.service.seiten.vorne = true; }
-      renderService(); renderSeiten(); renderPreis(); commit();
-    }));
+    /* Rückseite: Hebel aus = wie vorne, an = eigenes Motiv (oder unbedruckt) */
+    $('#rsAnders').addEventListener('change', (ev) => setRueckseite(ev.target.checked ? 'eigen' : 'gleich'));
 
     /* Größe gemischt */
     $('#kinderZahl').addEventListener('input', (ev) => { st.kinder = clamp(+ev.target.value || 0, 0, st.menge); speichernBald(); });
@@ -2302,8 +2340,8 @@
     /* Schritt-Navigation */
     $('#btnWeiter').addEventListener('click', schrittWeiter);
     $('#mbarWeiter').addEventListener('click', schrittWeiter);
-    $('#btnZurueck').addEventListener('click', () => geheZu('modell'));
-    $('#mbarZurueck').addEventListener('click', () => geheZu('modell'));
+    $('#btnZurueck').addEventListener('click', schrittZurueck);
+    $('#mbarZurueck').addEventListener('click', schrittZurueck);
 
     /* Preis-CTAs */
     $('#btnAnfordern').addEventListener('click', zurKasse);
