@@ -22,7 +22,7 @@
 
 /* ===================== Schrittleiste ===================== */
 .stepbar{position:sticky;top:var(--navh);z-index:40;background:rgba(247,247,242,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 1px 0 var(--ink-08)}
-.stepbar__in{list-style:none;max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.stepbar__in{list-style:none;max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
 .step{position:relative;width:100%;height:var(--steph);display:flex;align-items:center;gap:10px;padding:0 4px;font-size:14.5px;font-weight:500;color:var(--ink-45);text-align:left;transition:color .2s}
 .step::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--ink-08);transition:background .3s var(--e)}
 .step i{font-style:normal;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:11.5px;box-shadow:inset 0 0 0 1.5px var(--ink-12);flex:none;transition:background .25s,color .25s,box-shadow .25s}
@@ -251,10 +251,17 @@
 .ebene__t{flex:1;min-width:0;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ebene__s{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-45);flex:none}
 
-.namen{margin-top:22px;padding:4px 16px 8px;border-radius:16px;background:#fff;box-shadow:inset 0 0 0 1px var(--ink-08)}
-.namen__inhalt{padding-bottom:8px}
-.namen__inhalt .mini{margin-top:0}
-.namen__inhalt .field{margin:12px 0 8px}
+.nz{margin-top:16px}
+.nz > .mini:first-child{margin-top:0}
+.nz .field{margin:18px 0 8px}
+.nz__summe{margin:10px 2px 0;font-size:13px;color:var(--ink-60)}
+.nz__summe b{color:var(--ink);font-weight:600}
+.nz__hinweis{margin-top:10px}
+.nz__hinweis .linkbtn{font-size:12.5px}
+.stepper--feld input{width:52px;height:30px;border:0;background:transparent;text-align:center;font:inherit;font-weight:600;font-size:14px;color:var(--ink);-moz-appearance:textfield;appearance:textfield}
+.stepper--feld input::-webkit-outer-spin-button,.stepper--feld input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stepper--feld input:focus{outline:2px solid var(--amber);outline-offset:0;border-radius:8px;background:#fff}
+.menge__chips .chip:disabled{opacity:.35;cursor:not-allowed}
 .namen__csv{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;margin-bottom:12px;border-radius:12px;background:var(--parchment);box-shadow:inset 0 0 0 1px var(--ink-08);transition:box-shadow .2s}
 .namen__csv:hover{box-shadow:inset 0 0 0 1px var(--ink-45)}
 .namen__csv svg{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
