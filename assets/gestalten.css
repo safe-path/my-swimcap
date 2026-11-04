@@ -573,7 +573,6 @@ body.route-kasse .mbar{display:none!important}
   .mg__konfig div{flex-direction:column;gap:0;padding:3px 0}
   .mg__konfig dt{width:auto;font-size:11px}
   .mg__mock{grid-template-columns:1fr;gap:6px}
-  .mg__mock figure:last-child{display:none}
   .mg__h{margin:28px 0 12px}
   .mg__seite{position:static;margin-top:26px}
   .cfg-info__in{padding-top:12px;padding-bottom:30px}

@@ -98,7 +98,7 @@
     futura:    { label: 'Futura',           css: "Futura,'Futura PT','Jost',sans-serif",                            weight: 700, gross: true  },
     oswald:    { label: 'Oswald',           css: "'Oswald',sans-serif",                                             weight: 700, gross: true  },
     anton:     { label: 'Anton',            css: "'Anton','Oswald',sans-serif",                                     weight: 400, gross: true  },
-    college:   { label: 'College',          css: "'Graduate','IBM Plex Serif',serif",                               weight: 400, gross: true  },
+    college:   { label: 'College',          css: "'Graduate','IBM Plex Serif',serif",                               weight: 400, gross: true, fett: [0, 2.6, 4.6] },
     unbounded: { label: 'Unbounded',        css: "'Unbounded','Jost',sans-serif",                                   weight: 700, gross: false, staerke: [300, 900] },
     dela:      { label: 'Dela Gothic',      css: "'Dela Gothic One','Anton',sans-serif",                            weight: 400, gross: false },
     sansation: { label: 'Sansation',        css: "'Sansation','Jost',sans-serif",                                   weight: 700, gross: false },
@@ -113,9 +113,12 @@
   const STAERKEN = { 300: 'Leicht', 400: 'Normal', 500: 'Medium', 600: 'Halbfett', 700: 'Fett', 800: 'Extrafett', 900: 'Black' };
   /* Strichstärke: nur Schriften mit mehreren Schnitten (staerke = [min, max]) */
   const staerke = (e, sch) => (sch.staerke ? clamp(e.staerke || sch.weight, sch.staerke[0], sch.staerke[1]) : sch.weight);
+  /* Schriften mit nur einem Schnitt (fett = Konturbreiten): dicker per Kontur in Schriftfarbe */
+  const FETT_NAMEN = ['Normal', 'Fett', 'Extrafett'];
+  const fett = (e, sch) => (sch.fett ? clamp(e.fett || 0, 0, sch.fett.length - 1) : 0);
   const schriftName = (e) => {
     const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald;
-    return sch.label + (sch.staerke ? ' ' + STAERKEN[staerke(e, sch)] : '');
+    return sch.label + (sch.staerke ? ' ' + STAERKEN[staerke(e, sch)] : '') + (fett(e, sch) ? ' ' + FETT_NAMEN[fett(e, sch)] : '');
   };
 
   /* Silhouette der flach liegenden Kappe (viewBox 600 x 560), dieselbe Form
@@ -640,6 +643,23 @@
     }
     return istVersal(e) ? t.toLocaleUpperCase('de-DE') : t;
   }
+  /* Mitte jeder Letter, gemessen vom Textanfang, zentriert um 0.
+     Gemessen wird der wachsende Text, damit die Unterschneidung stimmt. */
+  let messCtx = null;
+  function letterMitten(txt, font, abstand) {
+    messCtx = messCtx || document.createElement('canvas').getContext('2d');
+    messCtx.font = font;
+    const z = Array.from(txt), mitten = [];
+    let vor = 0;
+    z.forEach((c, i) => {
+      const bis = messCtx.measureText(z.slice(0, i + 1).join('')).width;
+      mitten.push((vor + bis) / 2 + i * abstand);
+      vor = bis;
+    });
+    const gesamt = vor + Math.max(0, z.length - 1) * abstand;
+    return { z, mitten: mitten.map((m) => m - gesamt / 2) };
+  }
+  const r1 = (n) => Math.round(n * 10) / 10;
   function druckKnoten(e, p, defs) {
     const g = document.createElementNS(NS, 'g');
     g.setAttribute('transform', `translate(${e.x} ${e.y}) rotate(${e.r}) scale(${e.s})`);
@@ -652,9 +672,23 @@
     } else {
       const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald;
       const gr = 44, o = gr * 0.35;
-      const attrs = { 'font-family': sch.css, 'font-weight': staerke(e, sch), 'font-size': gr, fill: e.farbe, 'letter-spacing': (e.spacing || 0) * gr, 'text-anchor': 'middle' };
+      const kontur = sch.fett ? sch.fett[fett(e, sch)] : 0;
+      const attrs = { 'font-family': sch.css, 'font-weight': staerke(e, sch), 'font-size': gr, fill: e.farbe, 'letter-spacing': (e.spacing || 0) * gr + kontur, 'text-anchor': 'middle' };
+      if (kontur) Object.assign(attrs, { stroke: e.farbe, 'stroke-width': kontur, 'stroke-linejoin': 'miter', 'paint-order': 'stroke' });
       const txt = textInhalt(e);
-      if (!e.bogen) {
+      if (e.bogen && e.gerade) {
+        /* Buchstaben gerade (wie ein Torbogen): jede Letter sitzt auf dem Bogen,
+           senkrechte Striche bleiben senkrecht, Grund- und Oberlinie folgen der Kurve */
+        const R = bogenRadius(e.bogen), oben = e.bogen > 0;
+        const m = letterMitten(txt, `${attrs['font-weight']} ${gr}px ${sch.css}`, attrs['letter-spacing']);
+        const gg = el('g', {}, g);
+        m.z.forEach((c, i) => {
+          const w = m.mitten[i] / R;
+          const x = R * Math.sin(w), y = oben ? R + o - R * Math.cos(w) : -R + o + R * Math.cos(w);
+          const t = el('text', Object.assign({}, attrs, { 'letter-spacing': 0, transform: `translate(${r1(x)} ${r1(y)}) skewY(${r1((oben ? w : -w) * 180 / Math.PI)})` }), gg);
+          t.textContent = c;
+        });
+      } else if (!e.bogen) {
         const t = el('text', Object.assign({ x: 0, y: o }, attrs), g);
         t.textContent = txt;
       } else {
@@ -904,7 +938,7 @@
     } else {
       if (st.auswahl) waehle(null);
       if (rueckGesperrt() && st.rueckseite === 'gleich' && sichtbare('hinten').length && imBereich(p)) {
-        toast('Die Rückseite übernimmt das Motiv von vorne. Für Änderungen »Eigenes Motiv« wählen.');
+        toast('Die Rückseite zeigt automatisch dasselbe wie vorne. Gestaltet wird auf der Vorderseite.');
       }
       return;
     }
@@ -967,10 +1001,11 @@
   }
   function fuegeHinzu(e, seite) {
     seite = seite || st.seite;
+    /* Ohne »Rückseite anders gestalten« wird nur vorne gestaltet, die Rückseite
+       folgt. Auf »eigen« schaltet ausschließlich der Hebel (Thomas, 04.11.2026:
+       die meisten Vereine wollen beide Seiten gleich). */
+    if (seite === 'hinten' && st.rueckseite !== 'eigen') seite = 'vorne';
     if (seite !== st.seite) { st.seite = seite; renderSeiten(); }
-    /* Neues Element auf der Rückseite: ab jetzt hat sie ein eigenes Motiv.
-       War sie »wie vorne«, bleibt das sichtbare Motiv als Startpunkt stehen. */
-    if (seite === 'hinten' && st.modus === 'selbst' && st.rueckseite !== 'eigen') rueckEigen(st.rueckseite === 'gleich');
     st.elemente[seite].push(e);
     st.auswahl = e.id;
     renderKappe();
@@ -1072,15 +1107,13 @@
     st.elemente.vorne = st.elemente.vorne.filter((e) => e.name);
     st.elemente.hinten = st.elemente.hinten.filter((e) => e.name);
     if (farbListe(st.modell).indexOf('71') >= 0 && luminanz(kappeHex()) > 0.6) st.farbe = '71';
-    const logo = { id: uid(), typ: 'bild', x: 300, y: 300, s: 1, r: 0, src: '/Bilder/beispiel-logo.svg', ohneHg: false, mono: null, datei: 'beispiel-logo.svg', beispiel: true };
+    /* Wappen ganz unter dem Bogen: Oberkante tiefer als die Enden des Schriftbogens */
+    const logo = { id: uid(), typ: 'bild', x: 300, y: 314, s: 1, r: 0, src: '/Bilder/beispiel-logo.svg', ohneHg: false, mono: null, datei: 'beispiel-logo.svg', beispiel: true };
     verarbeite(logo).then(() => {
       logo.w = Math.round(logo.w * 0.8); logo.h = Math.round(logo.h * 0.8);
       st.elemente.vorne.push(logo,
-        neuerText({ text: 'SV Musterstadt', bogen: 70, y: 194, s: 0.8, spacing: 0.06, farbe: txt }));
-      st.elemente.hinten.push(
-        neuerText({ text: 'Musterstadt', y: 250, s: 0.86, spacing: 0.08, farbe: txt }),
-        neuerText({ text: 'Seit 1923', schrift: 'grotesk', y: 300, s: 0.5, spacing: 0.22, farbe: txt }));
-      st.rueckseite = 'eigen';
+        neuerText({ text: 'SV Musterstadt', bogen: 70, y: 186, s: 0.8, spacing: 0.06, farbe: txt }));
+      st.rueckseite = 'gleich';
       st.seite = 'vorne';
       st.auswahl = null;
       renderAlles();
@@ -1340,7 +1373,7 @@
         <span class="ins__typ">${e.typ === 'bild' ? 'Logo' : (e.name ? 'Namen' : 'Text')} <em>${s === 'vorne' ? 'Vorderseite' : 'Rückseite'}</em></span>
         <span class="ins__aktionen">
           ${e.name ? '' : `<button type="button" class="ib" data-ins="dup" title="Duplizieren" aria-label="Duplizieren"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>`}
-          ${e.name ? '' : `<button type="button" class="ib" data-ins="seite" title="Auf ${andere}" aria-label="Auf ${andere} verschieben"><svg viewBox="0 0 24 24"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg></button>`}
+          ${e.name || st.rueckseite !== 'eigen' ? '' : `<button type="button" class="ib" data-ins="seite" title="Auf ${andere}" aria-label="Auf ${andere} verschieben"><svg viewBox="0 0 24 24"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg></button>`}
           <button type="button" class="ib" data-ins="hoch" title="Nach vorne" aria-label="Eine Ebene nach vorne"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
           <button type="button" class="ib" data-ins="runter" title="Nach hinten" aria-label="Eine Ebene nach hinten"><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
           <button type="button" class="ib ib--weg" data-ins="weg" title="Entfernen" aria-label="Entfernen"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg></button>
@@ -1355,9 +1388,11 @@
         `<button type="button" class="schrift${e.schrift === k ? ' is-on' : ''}" data-schrift="${k}" style="font-family:${SCHRIFTEN[k].css};font-weight:${SCHRIFTEN[k].weight}">${istVersal(e) ? 'AA' : 'Aa'}<small>${SCHRIFTEN[k].label}</small></button>`).join('')}</div></div>`;
       const sch = SCHRIFTEN[e.schrift] || SCHRIFTEN.oswald;
       if (sch.staerke) mitte += regler('Stärke', 'staerke', staerke(e, sch), sch.staerke[0], sch.staerke[1], 100, STAERKEN[staerke(e, sch)]);
+      if (sch.fett) mitte += regler('Stärke', 'fett', fett(e, sch), 0, sch.fett.length - 1, 1, FETT_NAMEN[fett(e, sch)]);
       mitte += `<label class="toggle"><input type="checkbox" data-ins-cb="versal"${istVersal(e) ? ' checked' : ''}><span class="toggle__ui"></span><span class="toggle__t"><b>Großbuchstaben</b><em>Aus: normale Schreibweise</em></span></label>`;
       mitte += `<div class="ins__zeile"><span class="ins__lbl">Druckfarbe <em>${druckName(e.farbe)}</em></span><div class="dots">${farbPunkte(e.farbe, 'data-tfarbe')}</div></div>`;
       mitte += regler('Bogen', 'bogen', e.bogen, -100, 100, 1, e.bogen === 0 ? 'gerade' : (e.bogen > 0 ? 'nach oben' : 'nach unten'));
+      mitte += `<label class="toggle"><input type="checkbox" data-ins-cb="gerade"${e.gerade ? ' checked' : ''}><span class="toggle__ui"></span><span class="toggle__t"><b>Buchstaben gerade</b><em>Im Bogen bleiben die Buchstaben aufrecht. Aus: sie drehen sich mit</em></span></label>`;
       mitte += regler('Zeichenabstand', 'spacing', Math.round((e.spacing || 0) * 100), -30, 30, 1, Math.round((e.spacing || 0) * 100) + ' %');
     } else {
       const c = cache[e.id] || { palette: [], erkannt: [] };
@@ -1958,7 +1993,7 @@
     }
     return [e.name ? 'Namen (auf jeder Kappe ein Name aus der Liste)' : `Text »${textInhalt(e)}«`, [
       `Schrift ${schriftName(e)}`, `Druckfarbe ${druckName(e.farbe)}`, istVersal(e) ? 'Großbuchstaben' : 'normale Schreibweise', gr,
-      e.bogen ? `Bogen ${e.bogen > 0 ? '+' : ''}${e.bogen}` : '', `Zeichenabstand ${Math.round((e.spacing || 0) * 100)}\u00a0%`, dreh
+      e.bogen ? `Bogen ${e.bogen > 0 ? '+' : ''}${e.bogen}${e.gerade ? ', Buchstaben gerade' : ''}` : '', `Zeichenabstand ${Math.round((e.spacing || 0) * 100)}\u00a0%`, dreh
     ].filter(Boolean).join(' · ')];
   }
   function teamPdf(daten, nr) {
@@ -2242,10 +2277,11 @@
       if (k === 'bogen') e.bogen = Math.abs(v) < 4 ? 0 : v;
       if (k === 'spacing') e.spacing = v / 100;
       if (k === 'staerke') e.staerke = v;
+      if (k === 'fett') e.fett = v;
       const out = $(`[data-out="${k}"]`, $('#inspektor'));
       if (k === 'hgTol') { e.hgTol = v; if (out) out.textContent = v + ' %'; freistellenBald(e); return; }
-      if (out) out.textContent = k === 's' ? v + ' %' : k === 'r' ? v + '°' : k === 'spacing' ? v + ' %' : k === 'staerke' ? STAERKEN[v] : (e.bogen === 0 ? 'gerade' : (e.bogen > 0 ? 'nach oben' : 'nach unten'));
-      if (k === 'bogen' || k === 'spacing' || k === 'staerke') renderDrucke(); else aktualisiereElement(e);
+      if (out) out.textContent = k === 's' ? v + ' %' : k === 'r' ? v + '°' : k === 'spacing' ? v + ' %' : k === 'staerke' ? STAERKEN[v] : k === 'fett' ? FETT_NAMEN[v] : (e.bogen === 0 ? 'gerade' : (e.bogen > 0 ? 'nach oben' : 'nach unten'));
+      if (k === 'bogen' || k === 'spacing' || k === 'staerke' || k === 'fett') renderDrucke(); else aktualisiereElement(e);
     });
     $('#inspektor').addEventListener('change', (ev) => {
       const e = finde(st.auswahl);
@@ -2261,6 +2297,7 @@
       if (ev.target.dataset.regler === 'hgTol') { freistellenBald(e, true); return; }
       const cb = ev.target.dataset.insCb;
       if (cb === 'versal') { e.versal = ev.target.checked; renderDrucke(); renderInspektor(); renderEbenen(); commit(); return; }
+      if (cb === 'gerade') { e.gerade = ev.target.checked; renderDrucke(); commit(); return; }
       if (cb === 'ohneHg') { e.ohneHg = ev.target.checked; verarbeite(e).then(() => { renderDrucke(); renderInspektor(); renderPreis(); commit(); }); return; }
       if (cb === 'mono') {
         e.mono = ev.target.checked ? (luminanz(kappeHex()) < 0.56 ? '#ffffff' : '#14254f') : null;
@@ -2437,7 +2474,9 @@
   }
   function navHoehe() {
     const n = $('#nav');
-    if (n) document.documentElement.style.setProperty('--navh', n.offsetHeight + 'px');
+    /* Am body setzen: .seite-gestalten gibt dort einen Startwert vor, der den
+       Wert vom html-Element sonst überdeckt (mobil 4 px Spalt über der Kappe) */
+    if (n) document.body.style.setProperty('--navh', Math.floor(n.getBoundingClientRect().height) + 'px');
   }
 
   /* =================================================================
