@@ -2555,6 +2555,13 @@
         document.documentElement.classList.toggle('menu-open', o);
       });
     }
+    /* Logo-Lächeln: beim Hover einmal als Lade-Ring drehen, wie auf der Startseite */
+    $$('.brand').forEach((b) => {
+      const s = b.querySelector('.logo-smile');
+      if (!s) return;
+      b.addEventListener('mouseenter', () => s.classList.add('is-spinning'));
+      s.addEventListener('animationend', () => s.classList.remove('is-spinning'));
+    });
     if (!ISTPROD) $('#demoPill').hidden = false;
     navHoehe();
     laden();

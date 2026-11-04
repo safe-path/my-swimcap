@@ -25,7 +25,7 @@ const footer = spoke.slice(fStart, fEnd);
    CTA führt auf den klassischen Weg (kostenloser Entwurf). */
 nav = nav
   .replace('<header class="nav" id="nav">', '<header class="nav scrolled" id="nav">')
-  .replace(/(<nav class="nav__links">\s*)/, '$1<a href="/gestalten" class="is-current" aria-current="page">Selbst gestalten</a>')
+  .replace(/(<nav class="nav__links">\s*)/, '$1<a href="/gestalten" class="nav__neu is-current" aria-current="page">Selbst gestalten</a>')
   .replace(/(<div class="mmenu" id="mmenu">\s*)/, '$1<a href="/gestalten" aria-current="page">Selbst gestalten</a>')
   .replace(/Badekappen bestellen/g, 'Kostenlos anfragen')
   .replace(/data-en="Order swim caps"/g, 'data-en="Free mockup"');

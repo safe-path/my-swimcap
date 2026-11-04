@@ -17,7 +17,9 @@
 .seite-gestalten{--navh:70px;--steph:58px;--stageM:max(270px,44svh);background:var(--parchment)}
 .seite-gestalten [hidden]{display:none!important}
 .cfg{padding-top:var(--navh)}
-.nav__links a.is-current{color:var(--ink)!important;box-shadow:inset 0 -1.5px 0 var(--amber)}
+/* Aktuelle Seite: derselbe Strich wie beim Hover, sonst liegen beim Hover zwei Linien übereinander */
+.nav__links a.is-current{color:var(--ink)!important}
+.nav__links a.is-current::after{width:100%}
 .mmenu a[aria-current]{color:var(--amber)}
 
 /* ===================== Schrittleiste ===================== */

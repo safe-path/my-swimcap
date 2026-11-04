@@ -42,6 +42,13 @@
     });
   }
 
+  /* Logo-Lächeln: beim Hover einmal als Lade-Ring drehen — identisch zur Startseite */
+  document.querySelectorAll('.brand').forEach(function (b) {
+    var s = b.querySelector('.logo-smile'); if (!s) return;
+    b.addEventListener('mouseenter', function () { s.classList.add('is-spinning'); });
+    s.addEventListener('animationend', function () { s.classList.remove('is-spinning'); });
+  });
+
   /* Sticky-Ablauf — identisch zur Startseite */
   (function () {
     var fill = document.getElementById('railFill'),
