@@ -164,8 +164,8 @@
     el.innerHTML =
       '<div class="cc__in">' +
         '<p class="cc__t">' + (en
-          ? 'We would like to measure which pages are used, where requests break off, and whether a request came from a Google ad. Nothing is loaded or transmitted until you agree. After you agree we set cookies for statistics (Google Analytics) and for measuring ad results (Google Ads). No personalised advertising, no data sale.'
-          : 'Wir würden gern messen, welche Seiten genutzt werden, wo Anfragen abbrechen und ob eine Anfrage aus einer Google-Anzeige kam. Vor deiner Zustimmung wird nichts geladen und nichts übertragen. Nach deiner Zustimmung setzen wir Cookies für Statistik (Google Analytics) und für die Erfolgsmessung von Anzeigen (Google Ads). Keine personalisierte Werbung, kein Datenverkauf.') +
+          ? 'We would like to measure which pages are used, where requests break off, and whether a request came from a Google ad. Nothing is loaded or transmitted until you agree. After you agree we use Mixpanel and Google Analytics for statistics and Google Ads for measuring ad results, which stores cookies and an identifier on your device. No personalised advertising, no data sale.'
+          : 'Wir würden gern messen, welche Seiten genutzt werden, wo Anfragen abbrechen und ob eine Anfrage aus einer Google-Anzeige kam. Vor deiner Zustimmung wird nichts geladen und nichts übertragen. Nach deiner Zustimmung nutzen wir Mixpanel und Google Analytics für die Statistik und Google Ads für die Erfolgsmessung von Anzeigen. Dafür werden Cookies und eine Kennung auf deinem Gerät gespeichert. Keine personalisierte Werbung, kein Datenverkauf.') +
           ' <a href="/datenschutz">' + (en ? 'Privacy policy' : 'Datenschutzerklärung') + '</a></p>' +
         '<div class="cc__btns">' +
           '<button type="button" class="cc__b" data-cc="denied">'  + (en ? 'Decline'  : 'Ablehnen') + '</button>' +
