@@ -1708,6 +1708,7 @@
       logo: '(keins)', sprache: 'de', logo_url: '',
       /* Zusätzlich für das Konfigurator-Szenario in Make */
       quelle: 'konfigurator', telefon: tel, hinweise: hinweis, stueck: p.m,
+      termin_text: $('#kTermin').value ? datumKurz(new Date($('#kTermin').value + 'T12:00')) : 'kein fester Termin',
       preis: `${euro(p.brutto)} brutto · ${euro(p.stueck)} je Kappe · ${p.m.toLocaleString('de-DE')} Stück · ${p.zeile}-farbig${p.ueber || p.namen ? ' · Rest im Angebot' : ''}`
     };
   }
@@ -1726,8 +1727,11 @@
     const zuruecksetzen = () => { btn.disabled = false; setBtnText(btn, 'Angebot anfordern'); };
     logoHochladen().then((url) => {
       if (url) { daten.logo = url; daten.logo_url = url; }
-      /* Ohne PDF geht die Anfrage trotzdem raus, Make nimmt dann den Weg ohne Anhang */
-      return teamPdf(daten, daten.anfrage_nr).then((pdf) => { daten.pdf_base64 = pdf.base64; daten.pdf_name = pdf.name; }, () => {});
+      /* Ohne PDF oder Bild geht die Anfrage trotzdem raus, Make nimmt dann den Weg ohne Anhang */
+      return Promise.all([
+        teamPdf(daten, daten.anfrage_nr).then((pdf) => { daten.pdf_base64 = pdf.base64; daten.pdf_name = pdf.name; }, () => {}),
+        designBild().then((b) => { daten.bild_base64 = b; daten.bild_name = 'kappe-design.jpg'; }, () => {})
+      ]);
     }).then(() => fetch(ANFRAGE_HOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(daten) })).then((r) => {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       zuruecksetzen();
@@ -1844,9 +1848,9 @@
     fr.onload = () => ok(fr.result);
     fr.readAsDataURL(b);
   }));
-  /* Kappe als JPEG. Ein SVG als Bild darf nichts nachladen, deshalb werden
+  /* Kappe als Canvas. Ein SVG als Bild darf nichts nachladen, deshalb werden
      Logos und Schriften vorher als data:-URL eingebettet. */
-  function kappeAlsBild(seite, px) {
+  function kappeAlsCanvas(seite, px, grund) {
     const s = statischeKappe(seite, 'kappe-doc');
     const h = Math.round(px * 560 / 600);
     s.setAttribute('xmlns', NS);
@@ -1877,14 +1881,30 @@
           c.width = px;
           c.height = h;
           const x = c.getContext('2d');
-          x.fillStyle = '#ffffff';
+          x.fillStyle = grund || '#ffffff';
           x.fillRect(0, 0, px, h);
           /* Schriften im SVG-Bild brauchen einen Moment, sonst fehlt der Text */
-          setTimeout(() => { x.drawImage(img, 0, 0, px, h); ok(c.toDataURL('image/jpeg', 0.88)); }, 60);
+          setTimeout(() => { x.drawImage(img, 0, 0, px, h); ok(c); }, 60);
         };
         img.onerror = () => fail(new Error('Kappenbild'));
         img.src = url;
       });
+    });
+  }
+  const kappeAlsBild = (seite, px) => kappeAlsCanvas(seite, px).then((c) => c.toDataURL('image/jpeg', 0.88));
+  /* Das fertige Design für die Bestätigungsmail: bedruckte Seiten nebeneinander */
+  function designBild() {
+    const hinten = st.modus === 'service' ? st.service.seiten.hinten : st.rueckseite !== 'leer';
+    const px = 520, luft = 20, grund = '#f7f7f2';
+    return Promise.all((hinten ? ['vorne', 'hinten'] : ['vorne']).map((s) => kappeAlsCanvas(s, px, grund))).then((bilder) => {
+      const c = document.createElement('canvas');
+      c.width = bilder.length * px + (bilder.length - 1) * luft;
+      c.height = bilder[0].height;
+      const x = c.getContext('2d');
+      x.fillStyle = grund;
+      x.fillRect(0, 0, c.width, c.height);
+      bilder.forEach((b, i) => x.drawImage(b, i * (px + luft), 0));
+      return c.toDataURL('image/jpeg', 0.86).split(',')[1];
     });
   }
   function elementBeschreibung(e) {
