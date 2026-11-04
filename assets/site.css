@@ -290,7 +290,7 @@ section{position:relative}
 .pgrid-more svg{width:14px;height:14px;opacity:.7}
 @media(max-width:520px){.pgrid-more{bottom:40px;font-size:11px;padding:12px 20px}}
 /* CTA-Band (ehem. Bigband) */
-.ctaband{position:relative;border-radius:var(--r-card-lg);overflow:hidden;min-height:380px;aspect-ratio:2.4/1;margin-top:72px;display:flex;align-items:center}
+.ctaband{position:relative;width:100%;border-radius:var(--r-card-lg);overflow:hidden;min-height:380px;aspect-ratio:2.4/1;margin-top:72px;display:flex;align-items:center}
 @media(max-width:760px){.ctaband{aspect-ratio:4/5}}
 .ctaband img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:58% 42%}
 .ctaband::after{content:"";position:absolute;inset:0;background:linear-gradient(95deg,rgba(12,12,11,.74) 0%,rgba(12,12,11,.32) 58%,rgba(12,12,11,.2) 100%)}
@@ -320,6 +320,7 @@ section{position:relative}
 .faq-list .hl{color:var(--amber);font-weight:600}
 /* FAQ-Kappen rechts: gefächert (zu) → rutschen zusammen (offen) */
 #faq{position:relative;overflow:hidden}
+#faq .wrap{position:relative;z-index:1}
 .faq-caps{position:absolute;top:50%;right:-330px;transform:translateY(-50%);width:min(50vw,640px);aspect-ratio:768/676;z-index:0;pointer-events:none}
 .faq-cap{position:absolute;inset:0;width:100%;height:100%;overflow:visible;transform-origin:52% 93%;transition:transform 1.05s cubic-bezier(.22,.61,.36,1)}
 .faq-cap path{fill:none;stroke:var(--ink);opacity:.17;stroke-width:1.1;vector-effect:non-scaling-stroke;stroke-linejoin:round}
