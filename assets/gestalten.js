@@ -1,15 +1,15 @@
 /* =====================================================================
    MySwimcap · Selbst gestalten (Staging-Prototyp)
    ---------------------------------------------------------------------
-   Konfigurator für bedruckte Badekappen in sechs Schritten:
+   Konfigurator für bedruckte Badekappen in fünf Schritten:
    1 Modell und Größe
    2 Kappenfarbe (Paletten 1:1 aus dem Anfrage-Wizard)
    3 Gestalten: Logo und Text frei platzieren (ziehen, skalieren, drehen,
      Bogentext). Die Rückseite übernimmt standardmäßig das Motiv von vorne.
-   4 Namen: ab 25 Kappen, jede mit eigenem Namen unter dem Logo, Liste auch
-     als CSV. Wie viele Kappen Namen bekommen und wie viele ohne, ist wählbar.
-   5 Menge & Preis: Staffeln, Preisvorschlag erst hier
-   6 Angebot anfordern (eigenes Make-Szenario),
+     Individuelle Namen nur auf Wunsch (Standard aus), Liste auch als CSV.
+   4 Menge & Preis: Staffeln, Preisvorschlag erst hier. Mit Namen zusätzlich:
+     wie viele Kappen Namen bekommen (ab 25), der Rest bleibt ohne.
+   5 Angebot anfordern (eigenes Make-Szenario),
      alternativ Preisvorschlag als PDF oder kostenloser Entwurf
    Vorerst keine Bestellung und keine Zahlung (Thomas, 02.11.2026).
    ===================================================================== */
@@ -37,8 +37,9 @@
     mwst:      0.19,
     mindest:   50,
     maxFarben: 6,
-    /* Namensdruck ab 25 Kappen, jede mit eigenem Namen. Gemischte Bestellungen
-       (z. B. 25 mit, 25 ohne Namen) werden ausdrücklich aufgeteilt (Thomas, 04.11.2026). */
+    /* Namensdruck ab 25 Kappen, jede mit eigenem Namen. Gemischt (z. B. 25 mit,
+       25 ohne Namen) nur, wenn bei »Menge & Preis« ausdrücklich so gewählt.
+       Namen sind Mehraufwand: nur auf Wunsch, Standard aus (Thomas, 04.11.2026). */
     namenMin:  25
   };
 
@@ -609,9 +610,8 @@
     const netto = r2(brutto / (1 + PREIS.mwst));
     return { m, t, fv, fh, farben, zeile, ueber: farben > PREIS.maxFarben, namen: st.namen.aktiv, nz: namenAnzahl(), stueck, brutto, netto, mwst: r2(brutto - netto) };
   }
-  /* Kappen mit Namen (0 ohne Namen). Ältere Entwürfe ohne Anzahl: alle Kappen. */
-  const namenAnzahl = () => (st.namen.aktiv ? clamp(st.namen.anzahl || st.menge, PREIS.namenMin, Math.max(st.menge, PREIS.namenMin)) : 0);
-  const mengeMin = () => Math.max(PREIS.mindest, namenAnzahl());
+  /* Kappen mit Namen (0 ohne Namen). anzahl 0 heißt: alle Kappen der Bestellung. */
+  const namenAnzahl = () => (st.namen.aktiv ? clamp(st.namen.anzahl || st.menge, PREIS.namenMin, st.menge) : 0);
   /* Stückpreis bei gleicher Menge, aber anderer Farbzahl (für Spar-Hinweise) */
   const preisBei = (p, farben) => PREIS.tabelle[st.modell][clamp(farben, 1, PREIS.maxFarben) - 1][p.t];
   const zeig = (p, wert) => (st.netto ? r2(wert / (1 + PREIS.mwst)) : wert); // Listenpreise sind brutto
@@ -825,7 +825,7 @@
       try { bb = n.getBBox(); } catch (x) { bb = null; }
       if (!bb || !bb.width) bb = { x: -40, y: -18, width: 80, height: 36 };
       boxen[e.id] = { x: bb.x, y: bb.y, width: bb.width, height: bb.height };
-      if (gesperrt || (st.tab === 'namen' && !e.name)) return;
+      if (gesperrt) return;
       const pad = 8 / (k * e.s);
       el('rect', {
         'class': 'hit', 'data-id': e.id, x: bb.x - pad, y: bb.y - pad,
@@ -1007,7 +1007,7 @@
     zeichneAuswahl();
     renderInspektor();
     renderEbenen();
-    if (id && st.tab !== 'design' && !(st.tab === 'namen' && (finde(id) || {}).name)) zeigeTab('design');
+    if (id && st.tab !== 'design') zeigeTab('design');
     else if (id) panelInSicht(true);
   }
   function fuegeHinzu(e, seite) {
@@ -1280,18 +1280,18 @@
       st.namen.vorschau = 0;
       renderDrucke();
       const mehr = liste.length > namenAnzahl();
-      if (mehr) setNamenAufteilung(liste.length, st.menge - namenAnzahl());
+      if (mehr) setNamenAnzahl(liste.length);
       else { renderNamen(); commit(); }
       toast(`${liste.length} Namen übernommen.${mehr ? ` ${liste.length} Kappen mit Namen.` : ''}`);
     }).catch(() => toast('Die Datei konnte nicht gelesen werden. Speicher sie als CSV oder TXT.'));
   }
-  /* Aufteilung: Kappen mit Namen (ab 25) plus Kappen ohne Namen = Gesamtmenge.
-     Unter 50 Stück füllen Kappen ohne Namen auf. */
-  function setNamenAufteilung(mit, ohne) {
+  /* Kappen mit Namen festlegen (ab 25). Die Menge bleibt, der Rest ist ohne
+     Namen. Sollen mehr Kappen Namen bekommen als bestellt, wächst die Menge mit.
+     Alle mit Namen (anzahl 0) folgt jeder späteren Mengenänderung. */
+  function setNamenAnzahl(mit) {
     mit = clamp(Math.round(mit) || PREIS.namenMin, PREIS.namenMin, 20000);
-    ohne = Math.max(0, Math.round(ohne) || 0);
-    st.namen.anzahl = mit;
-    st.menge = clamp(mit + ohne, PREIS.mindest, 20000);
+    st.menge = clamp(Math.max(st.menge, mit), PREIS.mindest, 20000);
+    st.namen.anzahl = mit >= st.menge ? 0 : mit;
     if (st.kinder > st.menge) st.kinder = st.menge;
     renderNamen(); renderMenge(); renderPreis(); renderGroesse();
     commit();
@@ -1300,8 +1300,7 @@
     st.namen.aktiv = an;
     if (an) {
       /* Standard: alle Kappen mit Namen. Eine frühere Aufteilung bleibt erhalten. */
-      if (!st.namen.anzahl) st.namen.anzahl = Math.max(st.menge, PREIS.namenMin, st.namen.liste.length);
-      st.menge = Math.max(st.menge, st.namen.anzahl);
+      st.menge = clamp(Math.max(st.menge, st.namen.anzahl, st.namen.liste.length), PREIS.mindest, 20000);
       if (!alleElemente().some((e) => e.name)) {
         const n = namenElement();
         st.elemente[n.seite].push(n.e);
@@ -1424,7 +1423,7 @@
     let mitte = '';
     if (e.typ === 'text') {
       mitte += e.name
-        ? `<p class="mini">Platzhalter für die Namen. Namensliste und Anzahl legst du im Schritt »Namen« fest.</p>`
+        ? `<p class="mini">Platzhalter für die Namen. Die Liste pflegst du unten bei »Individuelle Namen«, die Anzahl bei »Menge &amp; Preis«.</p>`
         : `<div class="field"><label for="insText">Text</label><input id="insText" value="${esc(e.text)}" maxlength="40" autocomplete="off"></div>`;
       mitte += `<div class="ins__zeile"><span class="ins__lbl">Schrift</span><div class="schriften">${Object.keys(SCHRIFTEN).map((k) =>
         `<button type="button" class="schrift${e.schrift === k ? ' is-on' : ''}" data-schrift="${k}" style="font-family:${SCHRIFTEN[k].css};font-weight:${SCHRIFTEN[k].weight}">${istVersal(e) ? 'AA' : 'Aa'}<small>${SCHRIFTEN[k].label}</small></button>`).join('')}</div></div>`;
@@ -1506,32 +1505,34 @@
   }
   function renderNamen() {
     const n = st.namen;
-    $$('[data-namen]').forEach((b) => {
-      const on = (b.dataset.namen === 'ja') === n.aktiv;
-      b.classList.toggle('is-on', on);
-      b.setAttribute('aria-checked', on ? 'true' : 'false');
-    });
+    $('#namenAn').checked = n.aktiv;
     $('#namenInhalt').hidden = !n.aktiv;
-    const mit = namenAnzahl(), ohne = st.menge - mit;
-    const im = $('#nzMit'), io = $('#nzOhne');
-    if (document.activeElement !== im) im.value = mit;
-    if (document.activeElement !== io) io.value = ohne;
-    $('#nzSumme').innerHTML = `= <b>${st.menge.toLocaleString('de-DE')} Kappen</b> gesamt${mit + ohne <= PREIS.mindest && ohne ? ' · mindestens 50 pro Bestellung' : ''}`;
     const ta = $('#namenListe');
     if (document.activeElement !== ta) ta.value = n.liste.join('\n');
     const z = n.liste.length;
-    $('#namenZahl').textContent = `${z} von ${mit} Namen`;
-    let h = '';
-    if (!z) h = 'Die Liste könnt ihr auch später nachreichen.';
-    else if (z < mit) {
-      h = `Noch ${mit - z} Name${mit - z === 1 ? '' : 'n'} offen, die könnt ihr nachreichen.`;
-      if (z >= PREIS.namenMin) h += ` <button type="button" class="linkbtn" data-nz-liste>Nur ${z} Kappen mit Namen</button>`;
-    } else if (z > mit) h = 'Mehr Namen als Kappen mit Namen.';
-    $('#namenHinweis').innerHTML = h;
+    $('#namenZahl').textContent = `${z} Name${z === 1 ? '' : 'n'}`;
+    $('#namenHinweis').textContent = z ? '' : 'Die Liste könnt ihr auch später nachreichen.';
     $('#namenStil').innerHTML = st.modus === 'selbst'
       ? 'Zieh den Namen auf der Kappe an die richtige Stelle. <button type="button" class="linkbtn" data-aktion="namen-stil">Schrift und Größe ändern</button>'
       : 'Wo der Name genau sitzt, stimmen wir im Entwurf mit euch ab.';
     $('#nAkt').textContent = z ? n.liste[clamp(n.vorschau, 0, z - 1)] : 'Vorschau';
+    /* Menge & Preis: wie viele Kappen mit Namen, der Rest ohne */
+    $('#mengeNamen').hidden = !n.aktiv;
+    if (!n.aktiv) return;
+    const mit = namenAnzahl(), ohne = st.menge - mit, fmt = (x) => x.toLocaleString('de-DE');
+    const im = $('#nzMit');
+    if (document.activeElement !== im) im.value = mit;
+    $('#nzSumme').innerHTML = ohne
+      ? `<b>${fmt(mit)} mit Namen</b> und <b>${fmt(ohne)} ohne Namen</b>, zusammen ${fmt(st.menge)} Kappen. <button type="button" class="linkbtn" data-nz-alle>Alle mit Namen</button>`
+      : `Alle <b>${fmt(st.menge)} Kappen</b> bekommen einen Namen.`;
+    let h;
+    if (!z) h = 'Die Namensliste könnt ihr auch später nachreichen.';
+    else if (z < mit) {
+      h = `${fmt(z)} Namen in der Liste, ${fmt(mit - z)} fehlen noch. Die könnt ihr nachreichen.`;
+      if (z >= PREIS.namenMin) h += ` <button type="button" class="linkbtn" data-nz-liste>Nur ${fmt(z)} Kappen mit Namen</button>`;
+    } else if (z > mit) h = `${fmt(z)} Namen in der Liste, aber nur ${fmt(mit)} Kappen mit Namen. <button type="button" class="linkbtn" data-nz-liste>${fmt(z)} Kappen mit Namen</button>`;
+    else h = `${fmt(z)} Namen in der Liste, passt.`;
+    $('#nzListe').innerHTML = `${h}${h.endsWith('</button>') ? ' · ' : ' '}<button type="button" class="linkbtn" data-aktion="namen-liste">Liste bearbeiten</button>`;
   }
   function renderService() {
     const s = st.service;
@@ -1565,11 +1566,10 @@
     const m = st.menge;
     const inp = $('#menge');
     if (document.activeElement !== inp) inp.value = m;
-    inp.min = mengeMin();
-    $$('#mengeChips .chip').forEach((c) => { c.classList.toggle('sel', +c.dataset.m === m); c.disabled = +c.dataset.m < mengeMin(); });
-    const mit = namenAnzahl(), mn = $('#mengeNamen');
-    mn.hidden = !mit;
-    if (mit) mn.innerHTML = `Davon <b>${mit}</b> mit Namen und <b>${m - mit}</b> ohne Namen. <button type="button" class="linkbtn" data-step-go="namen">Aufteilung ändern</button>`;
+    $$('#mengeChips .chip').forEach((c) => c.classList.toggle('sel', +c.dataset.m === m));
+    /* Design-Zusammenfassung oben, die Namen-Zeile hängt an der Menge */
+    const z = konfigZeilen().filter((r) => ['Vorderseite', 'Rückseite', 'Namen', 'Gestaltung'].indexOf(r[0]) >= 0);
+    $('#mgKonfig').innerHTML = z.map((r) => `<div><dt>${r[0]}</dt><dd>${esc(r[1])}</dd></div>`).join('');
     const p = rechne();
     $('#staffel').innerHTML = `<table><thead><tr><th>Menge</th><th>pro Kappe</th><th>Ersparnis</th></tr></thead><tbody>${PREIS.staffeln.map((s, i) => {
       const q = rechne({ menge: s });
@@ -1723,16 +1723,16 @@
     return res;
   }
 
-  /* ---------- Schritte: 1 Modell · 2 Farbe · 3 Gestalten · 4 Namen · 5 Menge & Preis · 6 Angebot ---------- */
-  const SCHRITTE = ['modell', 'farbe', 'design', 'namen', 'menge', 'kasse'];
-  const HASH = { modell: '', farbe: '#farbe', design: '#gestalten', namen: '#namen', menge: '#menge', kasse: '#kasse', fertig: '#fertig' };
-  const WEITER = { modell: 'Weiter: Kappenfarbe', farbe: 'Weiter: Gestalten', design: 'Weiter: Namen', namen: 'Weiter: Menge & Preis' };
-  const VORHER = { farbe: 'modell', design: 'farbe', namen: 'design' };
-  const NACH_DESIGN = ['namen', 'menge', 'kasse']; // brauchen ein Motiv
+  /* ---------- Schritte: 1 Modell · 2 Farbe · 3 Gestalten · 4 Menge & Preis · 5 Angebot ---------- */
+  const SCHRITTE = ['modell', 'farbe', 'design', 'menge', 'kasse'];
+  const HASH = { modell: '', farbe: '#farbe', design: '#gestalten', menge: '#menge', kasse: '#kasse', fertig: '#fertig' };
+  const WEITER = { modell: 'Weiter: Kappenfarbe', farbe: 'Weiter: Gestalten', design: 'Weiter: Menge & Preis' };
+  const VORHER = { farbe: 'modell', design: 'farbe' };
+  const NACH_DESIGN = ['menge', 'kasse']; // brauchen ein Motiv
   function geheZu(ziel, ohneVerlauf) {
     if (NACH_DESIGN.indexOf(ziel) >= 0 && !designOk()) return;
     const war = st.tab;
-    const istApp = ziel === 'modell' || ziel === 'farbe' || ziel === 'design' || ziel === 'namen';
+    const istApp = ziel === 'modell' || ziel === 'farbe' || ziel === 'design';
     /* Druckbereich messen, solange die Bühne noch sichtbar ist */
     if (!istApp && !$('#app').hidden) {
       const w = bereichBeideSeiten();
@@ -1788,8 +1788,6 @@
     });
     const f = FARBTON[st.farbe];
     $('#mgTitel').textContent = `${MODELLE[st.modell].name} · ${f ? f[0] : ''}`;
-    const z = konfigZeilen().filter((r) => ['Vorderseite', 'Rückseite', 'Namen', 'Gestaltung'].indexOf(r[0]) >= 0);
-    $('#mgKonfig').innerHTML = z.map((r) => `<div><dt>${r[0]}</dt><dd>${esc(r[1])}</dd></div>`).join('');
     const svc = st.modus === 'service';
     $('#mgEntwurfT').textContent = svc ? 'Erst nur den Entwurf sehen?' : 'Lieber gestalten lassen?';
     $('#mgEntwurfS').textContent = svc
@@ -2220,6 +2218,7 @@
         if (k === 'text') textHinzu();
         if (k === 'beispiel') beispielLaden();
         if (k === 'namen-datei') $('#namenDatei').click();
+        if (k === 'namen-liste') { geheZu('design'); requestAnimationFrame(() => { $('#namenBox').scrollIntoView({ block: 'center' }); $('#namenListe').focus({ preventScroll: true }); }); }
         if (k === 'namen-stil') { const ne = alleElemente().find((e) => e.name); geheZu('design'); if (ne) waehle(ne.id); }
         if (k === 'svc-weg') {
           st.service.datei = '';
@@ -2374,25 +2373,20 @@
     });
 
     /* Namen */
-    $$('[data-namen]').forEach((b) => b.addEventListener('click', () => {
-      const an = b.dataset.namen === 'ja';
-      if (an !== st.namen.aktiv) setNamenAktiv(an);
-    }));
+    $('#namenAn').addEventListener('change', (ev) => setNamenAktiv(ev.target.checked));
     $$('[data-nz]').forEach((b) => b.addEventListener('click', () => {
-      const mit = namenAnzahl(), ohne = st.menge - mit, d = +b.dataset.d;
-      if (b.dataset.nz === 'mit') {
-        if (mit + d < PREIS.namenMin) { toast('Namensdruck geht ab 25 Kappen.'); return; }
-        setNamenAufteilung(mit + d, ohne);
-      } else setNamenAufteilung(mit, ohne + d);
+      const mit = namenAnzahl() + +b.dataset.nz;
+      if (mit < PREIS.namenMin) { toast('Namensdruck geht ab 25 Kappen.'); return; }
+      setNamenAnzahl(mit);
     }));
     $('#nzMit').addEventListener('change', (ev) => {
       const v = parseInt(ev.target.value, 10) || 0;
       if (v < PREIS.namenMin) toast('Namensdruck geht ab 25 Kappen.');
-      setNamenAufteilung(v, st.menge - namenAnzahl());
+      setNamenAnzahl(v);
     });
-    $('#nzOhne').addEventListener('change', (ev) => setNamenAufteilung(namenAnzahl(), parseInt(ev.target.value, 10) || 0));
-    $('#namenInhalt').addEventListener('click', (ev) => {
-      if (ev.target.closest('[data-nz-liste]')) setNamenAufteilung(st.namen.liste.length, st.menge - namenAnzahl());
+    $('#mengeNamen').addEventListener('click', (ev) => {
+      if (ev.target.closest('[data-nz-liste]')) setNamenAnzahl(st.namen.liste.length);
+      if (ev.target.closest('[data-nz-alle]')) setNamenAnzahl(st.menge);
     });
     $('#namenListe').addEventListener('input', (ev) => {
       st.namen.liste = ev.target.value.split('\n').map((s) => s.trim()).filter(Boolean).slice(0, 2000);
@@ -2403,7 +2397,7 @@
     $('#namenListe').addEventListener('change', () => {
       const z = st.namen.liste.length;
       if (z > namenAnzahl()) {
-        setNamenAufteilung(z, st.menge - namenAnzahl());
+        setNamenAnzahl(z);
         toast(`Ein Name pro Kappe: ${z} Kappen mit Namen.`);
         return;
       }
@@ -2425,7 +2419,7 @@
     const mi = $('#menge');
     mi.addEventListener('input', () => {
       const v = parseInt(mi.value, 10);
-      if (v >= mengeMin()) { st.menge = Math.min(v, 20000); renderPreis(); renderMengeTeil(); }
+      if (v >= PREIS.mindest) { st.menge = Math.min(v, 20000); renderPreis(); renderMengeTeil(); renderNamen(); }
     });
     mi.addEventListener('change', () => setMenge(parseInt(mi.value, 10) || PREIS.mindest));
     $('#mMinus').addEventListener('click', () => setMenge(st.menge - (st.menge > 100 ? 10 : 5)));
@@ -2531,7 +2525,8 @@
     return NACH_DESIGN.indexOf(s) >= 0 && !designOk(true) ? 'design' : s;
   }
   function setMenge(v) {
-    st.menge = clamp(Math.round(v) || PREIS.mindest, mengeMin(), 20000); // mit Namen: nie unter die Kappen mit Namen
+    st.menge = clamp(Math.round(v) || PREIS.mindest, PREIS.mindest, 20000);
+    if (st.namen.anzahl >= st.menge) st.namen.anzahl = 0; // weniger Kappen als mit Namen geplant: dann alle mit Namen
     if (st.kinder > st.menge) st.kinder = st.menge;
     renderMenge(); renderPreis(); renderNamen(); renderGroesse();
     commit();

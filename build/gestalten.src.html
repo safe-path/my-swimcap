@@ -30,9 +30,8 @@
       <li><button type="button" class="step" data-step="modell"><i>1</i><span>Modell</span></button></li>
       <li><button type="button" class="step" data-step="farbe"><i>2</i><span>Farbe</span></button></li>
       <li><button type="button" class="step" data-step="design"><i>3</i><span>Gestalten</span></button></li>
-      <li><button type="button" class="step" data-step="namen"><i>4</i><span>Namen</span></button></li>
-      <li><button type="button" class="step" data-step="menge"><i>5</i><span>Menge<em> &amp; Preis</em></span></button></li>
-      <li><button type="button" class="step" data-step="kasse"><i>6</i><span>Angebot</span></button></li>
+      <li><button type="button" class="step" data-step="menge"><i>4</i><span>Menge<em> &amp; Preis</em></span></button></li>
+      <li><button type="button" class="step" data-step="kasse"><i>5</i><span>Angebot</span></button></li>
     </ol>
   </nav>
 
@@ -41,11 +40,11 @@
     <div class="cfg-kopf__in">
       <span class="cfg-kopf__marken"><span class="eyebrow">Neu · Online gestalten</span><span class="demo-pill" id="demoPill" hidden><i></i>Staging-Prototyp · Anfragen als Test markiert</span></span>
       <h1>Badekappe <em>gestalten.</em></h1>
-      <p>Erst Modell, Farbe und Design, dann Menge und Preis. In sechs Schritten zum Angebot für eure Vereinskappe.</p>
+      <p>Erst Modell, Farbe und Design, dann Menge und Preis. In fünf Schritten zum Angebot für eure Vereinskappe.</p>
     </div>
   </section>
 
-  <!-- ===================== APP (Schritt 1 bis 4) ===================== -->
+  <!-- ===================== APP (Schritt 1 bis 3) ===================== -->
   <section class="cfg-app" id="app">
 
     <!-- Bühne -->
@@ -195,49 +194,33 @@
           </div>
         </div>
 
+        <!-- Namen: Standard aus. Wie viele Kappen Namen bekommen, steht bei »Menge & Preis«. -->
+        <div class="namen" id="namenBox">
+          <label class="toggle">
+            <input type="checkbox" id="namenAn">
+            <span class="toggle__ui"></span>
+            <span class="toggle__t"><b>Individuelle Namen</b><em>Ab 25 Kappen · Preis im Angebot</em></span>
+          </label>
+          <div class="nz" id="namenInhalt" hidden>
+            <p class="mini">Jede Kappe mit Namen bekommt einen eigenen Namen, direkt unter eurem Logo. Wie viele Kappen Namen bekommen, legt ihr bei »Menge &amp; Preis« fest.</p>
+            <div class="field">
+              <label for="namenListe">Namensliste, ein Name pro Zeile</label>
+              <textarea id="namenListe" rows="5" placeholder="Lena&#10;Jonas&#10;Mia"></textarea>
+            </div>
+            <button type="button" class="namen__csv" data-aktion="namen-datei">
+              <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+              <span><b>Liste hochladen</b><em>CSV aus Excel oder Textdatei, ein Name pro Zeile</em></span>
+            </button>
+            <div class="namen__fuss">
+              <span id="namenZahl">0 Namen</span>
+              <span class="namen__vor"><button type="button" id="nVor" aria-label="Vorheriger Name">‹</button><span id="nAkt">Vorschau</span><button type="button" id="nNach" aria-label="Nächster Name">›</button></span>
+            </div>
+            <p class="mini nz__hinweis" id="namenHinweis"></p>
+            <p class="mini" id="namenStil"></p>
+          </div>
+        </div>
+
         <input type="file" id="dateiInput" accept="image/png,image/jpeg,image/webp,image/svg+xml,.ai,.eps,.pdf,.psd" hidden>
-      </div>
-
-      <!-- 4 · Namen: ab 25 Kappen, jede mit eigenem Namen; der Rest bleibt ohne -->
-      <div class="tab" data-pane="namen" role="region" aria-label="Namen">
-        <div class="mk" role="radiogroup" aria-label="Namen auf den Kappen">
-          <span class="mk__l">Namen auf den Kappen?</span>
-          <div class="mk__seg">
-            <button type="button" class="mk__btn is-on" role="radio" aria-checked="true" data-namen="nein"><span><b>Ohne Namen</b><em>Alle Kappen gleich</em></span></button>
-            <button type="button" class="mk__btn" role="radio" aria-checked="false" data-namen="ja"><span><b>Mit Namen</b><em>Ab 25 Kappen · Preis im Angebot</em></span></button>
-          </div>
-        </div>
-
-        <div class="nz" id="namenInhalt" hidden>
-          <p class="mini">Jede Kappe mit Namen bekommt einen eigenen Namen, direkt unter eurem Logo. Namensdruck geht ab 25 Kappen.</p>
-          <h3 class="pt pt--klein">Wie viele Kappen mit Namen?</h3>
-          <div class="svc-seiten">
-            <div class="svc-row">
-              <span class="svc-row__l">Mit Namen</span>
-              <div class="stepper stepper--feld"><button type="button" data-nz="mit" data-d="-1" aria-label="Eine Kappe mit Namen weniger">−</button><input type="number" id="nzMit" min="25" step="1" inputmode="numeric" aria-label="Kappen mit Namen"><button type="button" data-nz="mit" data-d="1" aria-label="Eine Kappe mit Namen mehr">+</button></div>
-            </div>
-            <div class="svc-row">
-              <span class="svc-row__l">Ohne Namen</span>
-              <div class="stepper stepper--feld"><button type="button" data-nz="ohne" data-d="-5" aria-label="Weniger Kappen ohne Namen">−</button><input type="number" id="nzOhne" min="0" step="1" inputmode="numeric" aria-label="Kappen ohne Namen"><button type="button" data-nz="ohne" data-d="5" aria-label="Mehr Kappen ohne Namen">+</button></div>
-            </div>
-          </div>
-          <p class="nz__summe" id="nzSumme"></p>
-
-          <div class="field">
-            <label for="namenListe">Namensliste, ein Name pro Zeile</label>
-            <textarea id="namenListe" rows="5" placeholder="Lena&#10;Jonas&#10;Mia"></textarea>
-          </div>
-          <button type="button" class="namen__csv" data-aktion="namen-datei">
-            <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
-            <span><b>Liste hochladen</b><em>CSV aus Excel oder Textdatei, ein Name pro Zeile</em></span>
-          </button>
-          <div class="namen__fuss">
-            <span id="namenZahl">0 Namen</span>
-            <span class="namen__vor"><button type="button" id="nVor" aria-label="Vorheriger Name">‹</button><span id="nAkt">Vorschau</span><button type="button" id="nNach" aria-label="Nächster Name">›</button></span>
-          </div>
-          <p class="mini nz__hinweis" id="namenHinweis"></p>
-          <p class="mini" id="namenStil"></p>
-        </div>
         <input type="file" id="namenDatei" accept=".csv,.txt,text/csv,text/plain" hidden>
       </div>
       </div>
@@ -252,7 +235,7 @@
     </div>
   </section>
 
-  <!-- ===================== MENGE & PREIS (Schritt 5) ===================== -->
+  <!-- ===================== MENGE & PREIS (Schritt 4) ===================== -->
   <section class="mg" id="mengeSeite" hidden>
     <div class="mg__in">
       <div class="mg__haupt">
@@ -280,9 +263,19 @@
           <button type="button" class="chip" data-m="1000">1.000</button>
         </div>
         <p class="mini">Mindestens 50 Stück pro Bestellung.</p>
-        <p class="hinweis" id="mengeNamen" hidden></p>
         <div class="staffel" id="staffel"></div>
         <p class="hinweis" id="naechsteStufe" hidden></p>
+
+        <div class="nz nz--menge" id="mengeNamen" hidden>
+          <h2 class="mg__h">Wie viele davon mit Namen?</h2>
+          <p class="mini">Jede Kappe mit Namen bekommt einen eigenen Namen. Namensdruck geht ab 25 Kappen, die übrigen Kappen bleiben ohne Namen.</p>
+          <div class="svc-row">
+            <span class="svc-row__l">Kappen mit Namen</span>
+            <div class="stepper stepper--feld"><button type="button" data-nz="-1" aria-label="Eine Kappe mit Namen weniger">−</button><input type="number" id="nzMit" min="25" step="1" inputmode="numeric" aria-label="Kappen mit Namen"><button type="button" data-nz="1" aria-label="Eine Kappe mit Namen mehr">+</button></div>
+          </div>
+          <p class="nz__summe" id="nzSumme"></p>
+          <p class="mini nz__hinweis" id="nzListe"></p>
+        </div>
 
         <h2 class="mg__h">Lieferung</h2>
         <p class="liefer" id="lieferText"></p>
@@ -322,7 +315,7 @@
   <section class="cfg-info" id="cfgInfo">
     <div class="cfg-info__in">
       <div class="cfg-info__karten">
-        <article><svg viewBox="0 0 24 24"><path d="M12 3v18M7 7.5C7 5.6 9.2 4.5 12 4.5s5 1 5 3c0 4.5-10 3-10 8 0 2 2.2 3 5 3s5-1.1 5-3"/></svg><b>Preis vorab, ohne Rätselraten</b><p>Im Schritt »Menge &amp; Preis« seht ihr einen Preisvorschlag mit allen Posten, inklusive Staffelrabatt. Das verbindliche Angebot kommt nach dem Druck-Check.</p></article>
+        <article><svg viewBox="0 0 24 24"><path d="M18 6.5A7 7 0 1 0 18 17.5M4.5 10h9M4.5 14h9"/></svg><b>Preis vorab, ohne Rätselraten</b><p>Im Schritt »Menge &amp; Preis« seht ihr einen Preisvorschlag mit allen Posten, inklusive Staffelrabatt. Das verbindliche Angebot kommt nach dem Druck-Check.</p></article>
         <article><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg><b>Druck-Check vor der Produktion</b><p>Wir prüfen jede Anfrage und schicken euch einen finalen Proof. Gedruckt wird erst nach eurer Freigabe.</p></article>
         <article><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Der Verein muss erst zustimmen?</b><p>Lad euch das Angebot als PDF herunter. Euer Entwurf bleibt gespeichert, bis ihr bestellt.</p></article>
         <article><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 4.5-6 8-6s6.4 2 8 6"/></svg><b>Lieber persönlich?</b><p>Thomas baut euch kostenlos einen Entwurf, meist innerhalb von 48 Stunden. <a href="/#anfrage" data-open-modal>Entwurf anfragen</a></p></article>
@@ -330,7 +323,7 @@
     </div>
   </section>
 
-  <!-- ===================== ANGEBOT ANFORDERN (Schritt 6) ===================== -->
+  <!-- ===================== ANGEBOT ANFORDERN (Schritt 5) ===================== -->
   <section class="kasse" id="kasse" hidden>
     <div class="kasse__in">
       <button type="button" class="zurueck" data-step-go="menge"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Zurück zu Menge &amp; Preis</button>
@@ -398,7 +391,7 @@
   </section>
 </main>
 
-<!-- Mobile Leiste: Schritt 1 bis 4 Navigation, Schritt 5 Preis und Angebot -->
+<!-- Mobile Leiste: Schritt 1 bis 3 Navigation, Schritt 4 Preis und Angebot -->
 <div class="mbar" id="mbar">
   <div class="mbar__nav">
     <button type="button" class="mbar__zurueck" id="mbarZurueck" aria-label="Zurück"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
