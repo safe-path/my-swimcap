@@ -142,8 +142,11 @@
   });
   /* Gewellte Unterkante (Öffnung): hier wird es dunkler, ohne hellen Rand */
   const RAND = 'M495 458.8' + UNTEN + ECKE_LINKS;
-  /* Druckbereich: nur die Kuppel, nicht Ohrlaschen und Rand */
-  const SICHER = 'M118 410C100 376 94 344 94 300C94 186 186 104 300 104C414 104 506 186 506 300C506 344 500 376 482 410C400 424 200 424 118 410Z';
+  /* Druckbereich: Kuppel bis kurz über die Öffnung. Die Unterkante folgt der
+     Welle (UNTEN, 18 Einheiten höher), an den Ohrlaschen 18 Einheiten Abstand
+     zum Rand. Thomas, 04.11.2026: theoretisch geht auch vollflächig. */
+  const SICHER = 'M118 410C100 376 94 344 94 300C94 186 186 104 300 104C414 104 506 186 506 300C506 344 500 376 482 410'
+    + 'C477 422 476 444 476.7 456.5C389.5 438.9 368.1 461.5 298.5 464.3C232.7 467 220.1 437 121.6 457.1C120 442 118 426 118 410Z';
 
   const SB_URL = 'https://nkaznfwfkazfxjofpfcy.supabase.co';
   const SB_ANON = 'sb_publishable_ciub5YQ7vI-BT5zOtXkezQ_0xjk4Llr'; // öffentlicher Key (Frontend)
@@ -1231,9 +1234,10 @@
       .sort((a, b) => (b.w || 190) * (b.h || 190) * b.s * b.s - (a.w || 190) * (a.h || 190) * a.s * a.s);
     let x = 300, y = 340, s = 0.82;
     if (logos.length) {
-      /* Name: Versalhöhe ca. 31 × s, Mitte liegt auf y. Unterkante max. 418
-         (Druckbereich). Reicht der Platz nicht, rückt das Logo etwas hoch. */
-      const l = logos[0], halb = (l.h || 190) * l.s / 2, abstand = 10, maxY = 402;
+      /* Name: Versalhöhe ca. 31 × s, Mitte liegt auf y. Unterkante max. 448
+         (Druckbereich endet in der Mitte bei 464). Reicht der Platz nicht,
+         rückt das Logo etwas hoch. */
+      const l = logos[0], halb = (l.h || 190) * l.s / 2, abstand = 10, maxY = 432;
       x = l.x;
       s = clamp(((l.w || 190) * l.s) / 170, 0.6, 1);
       const platz = maxY - (l.y + halb) - abstand;
