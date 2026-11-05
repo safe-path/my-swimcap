@@ -35,8 +35,9 @@
       '3d':     [[14.20, 12.30, 11.00, 9.69], [16.00, 13.40, 11.90, 10.49], [17.70, 14.40, 12.15, 11.00], [20.30, 15.50, 13.20, 11.70], [21.50, 18.50, 15.20, 13.30], [24.30, 20.50, 16.20, 14.20]]
     },
     /* Namensdruck 2026 (TF_2026_Badekappenpreise_Namensdruck.xlsx, Thomas 05.11.2026):
-       Endpreis je Kappe MIT Namen, gleicher Aufbau wie tabelle. Die Staffel
-       richtet sich nach der ganzen Bestellung, nicht nach der Zahl der Namen. */
+       Endpreis je Kappe MIT Namen, gleicher Aufbau wie tabelle. Jede Kategorie hat
+       ihre eigene Staffel: 50 mit + 50 ohne Namen heißt beide »ab 50«, nicht »ab 100«.
+       Unter 50 gilt die erste Stufe (20 mit + 30 ohne Namen). */
     tabelleNamen: {
       silikon:  [[15.90, 12.50, 11.30, 9.49], [17.70, 13.90, 12.20, 10.29], [19.40, 14.90, 12.45, 10.80], [22.00, 16.00, 13.50, 11.50], [23.20, 19.00, 15.50, 13.10], [26.00, 21.00, 16.50, 14.00]],
       stoff:    [[14.60, 11.50, 10.30, 8.49], [16.40, 12.90, 11.20, 9.29], [18.10, 13.90, 11.45, 9.80], [20.70, 15.00, 12.50, 10.50], [21.90, 18.00, 14.50, 12.10], [24.70, 20.00, 15.50, 13.00]],
@@ -609,17 +610,17 @@
   function rechne(opt) {
     opt = opt || {};
     const m = Math.max(PREIS.mindest, Math.round(opt.menge || st.menge) || PREIS.mindest);
-    const t = stufe(m);
+    const nz = namenBei(m);
+    const t = stufe(m - nz || m), tn = stufe(nz || m); // Staffel ohne und mit Namen
     const fv = farbenSeite('vorne').length;
     const fh = farbenSeite('hinten').length; // »wie vorne« liefert die Farben der Vorderseite
     const farben = fv + fh;
     const zeile = clamp(farben, 1, PREIS.maxFarben);
     const stueck = PREIS.tabelle[st.modell][zeile - 1][t];
-    const stueckNamen = PREIS.tabelleNamen[st.modell][zeile - 1][t];
-    const nz = namenBei(m);
+    const stueckNamen = PREIS.tabelleNamen[st.modell][zeile - 1][tn];
     const brutto = r2(stueck * (m - nz) + stueckNamen * nz);
     const netto = r2(brutto / (1 + PREIS.mwst));
-    return { m, t, fv, fh, farben, zeile, ueber: farben > PREIS.maxFarben, namen: st.namen.aktiv, nz, stueck, stueckNamen, brutto, netto, mwst: r2(brutto - netto) };
+    return { m, t, tn, fv, fh, farben, zeile, ueber: farben > PREIS.maxFarben, namen: st.namen.aktiv, nz, stueck, stueckNamen, brutto, netto, mwst: r2(brutto - netto) };
   }
   /* Kappen mit Namen bei Gesamtmenge m (0 ohne Namen). anzahl 0 heißt: alle Kappen der Bestellung. */
   const namenBei = (m) => (st.namen.aktiv ? clamp(st.namen.anzahl || m, PREIS.namenMin, m) : 0);
@@ -1540,9 +1541,10 @@
     const mit = namenAnzahl(), ohne = st.menge - mit, fmt = (x) => x.toLocaleString('de-DE');
     const im = $('#nzMit');
     if (document.activeElement !== im) im.value = mit;
+    const p = rechne();
     $('#nzSumme').innerHTML = ohne
-      ? `<b>${fmt(mit)} mit Namen</b> und <b>${fmt(ohne)} ohne Namen</b>, zusammen ${fmt(st.menge)} Kappen. <button type="button" class="linkbtn" data-nz-alle>Alle mit Namen</button>`
-      : `Alle <b>${fmt(st.menge)} Kappen</b> bekommen einen Namen.`;
+      ? `<b>${fmt(mit)} mit Namen</b> je ${euro(zeig(p, p.stueckNamen))} und <b>${fmt(ohne)} ohne Namen</b> je ${euro(zeig(p, p.stueck))}, zusammen ${fmt(st.menge)} Kappen. <button type="button" class="linkbtn" data-nz-alle>Alle mit Namen</button>`
+      : `Alle <b>${fmt(st.menge)} Kappen</b> bekommen einen Namen, je ${euro(zeig(p, p.stueckNamen))}.`;
     let h;
     if (!z) h = 'Die Namensliste könnt ihr auch später nachreichen.';
     else if (z < mit) {
@@ -1589,21 +1591,23 @@
     const z = konfigZeilen().filter((r) => ['Vorderseite', 'Rückseite', 'Namen', 'Gestaltung'].indexOf(r[0]) >= 0);
     $('#mgKonfig').innerHTML = z.map((r) => `<div><dt>${r[0]}</dt><dd>${esc(r[1])}</dd></div>`).join('');
     const p = rechne();
-    /* Staffel: Listenpreise, mit Namen als eigene Spalte oder bei »alle mit Namen« allein */
+    /* Staffel: Listenpreise der Tabellen. Gemischt zeigt jede Spalte ihre eigene Stufe. */
     const nurNamen = p.nz === p.m, beide = p.nz > 0 && !nurNamen;
-    const listenpreis = (q) => (nurNamen ? q.stueckNamen : q.stueck);
+    const liste = (tab, i) => tab[st.modell][p.zeile - 1][i];
+    const listenpreis = (i) => liste(nurNamen ? PREIS.tabelleNamen : PREIS.tabelle, i);
     const kopf = nurNamen ? 'mit Namen' : (beide ? 'ohne Namen' : 'pro Kappe');
-    $('#staffel').innerHTML = `<table><thead><tr><th>Menge</th><th>${kopf}</th>${beide ? '<th>mit Namen</th>' : ''}<th>Ersparnis</th></tr></thead><tbody>${PREIS.staffeln.map((s, i) => {
-      const q = rechne({ menge: s });
-      const spar = i === 0 ? '' : Math.round((1 - listenpreis(q) / listenpreis(rechne({ menge: PREIS.staffeln[0] }))) * 100) + ' %';
-      return `<tr class="${p.t === i ? 'is-on' : ''}"><td>ab ${s.toLocaleString('de-DE')}</td><td>${euro(zeig(null, listenpreis(q)))}</td>${beide ? `<td>${euro(zeig(null, q.stueckNamen))}</td>` : ''}<td>${spar ? '−' + spar : ''}</td></tr>`;
+    const zelle = (on, wert) => `<td${on ? ' class="is-on"' : ''}>${euro(zeig(null, wert))}</td>`;
+    $('#staffel').innerHTML = `<table><thead><tr><th>Menge</th><th>${kopf}</th><th>${beide ? 'mit Namen' : 'Ersparnis'}</th></tr></thead><tbody>${PREIS.staffeln.map((s, i) => {
+      const ab = `<td>ab ${s.toLocaleString('de-DE')}</td>`;
+      if (beide) return `<tr>${ab}${zelle(p.t === i, liste(PREIS.tabelle, i))}${zelle(p.tn === i, liste(PREIS.tabelleNamen, i))}</tr>`;
+      const spar = i === 0 ? '' : Math.round((1 - listenpreis(i) / listenpreis(0)) * 100) + ' %';
+      return `<tr class="${p.t === i ? 'is-on' : ''}">${ab}<td>${euro(zeig(null, listenpreis(i)))}</td><td class="spar">${spar ? '−' + spar : ''}</td></tr>`;
     }).join('')}</tbody></table>`;
     const nx = PREIS.staffeln[p.t + 1];
     const hin = $('#naechsteStufe');
-    if (nx) {
-      const q = rechne({ menge: nx });
+    if (nx && !beide) {
       hin.hidden = false;
-      hin.innerHTML = `Noch <b>${nx - m}</b> Kappen bis zum nächsten Staffelpreis: dann <b>${euro(zeig(null, listenpreis(q)))}</b> statt ${euro(zeig(null, listenpreis(p)))} pro Kappe${beide ? `, mit Namen <b>${euro(zeig(null, q.stueckNamen))}</b> statt ${euro(zeig(null, p.stueckNamen))}` : ''}. <button type="button" class="linkbtn" data-menge-setzen="${nx}">Auf ${nx} erhöhen</button>`;
+      hin.innerHTML = `Noch <b>${nx - m}</b> Kappen bis zum nächsten Staffelpreis: dann <b>${euro(zeig(null, listenpreis(p.t + 1)))}</b> statt ${euro(zeig(null, listenpreis(p.t)))} pro Kappe. <button type="button" class="linkbtn" data-menge-setzen="${nx}">Auf ${nx} erhöhen</button>`;
     } else hin.hidden = true;
     const l = lieferung();
     $('#lieferText').innerHTML = `Fertig in <b>${l.text}</b> nach eurer Freigabe. Voraussichtlich bei euch bis <b>KW ${kw(l.datum)}</b> (${datumLang(l.datum)}). Ihr braucht die Kappen früher? Schreibt es in die Hinweise zum Angebot.`;
@@ -1615,6 +1619,7 @@
     const proStk = basis / p.m;
     $('#pUnter').textContent = `${euro(proStk)} pro Kappe · ${p.m.toLocaleString('de-DE')} Stück · ${st.netto ? 'zzgl. 19 % MwSt.' : 'inkl. 19 % MwSt.'}`;
     $$('.nb button').forEach((b) => b.classList.toggle('is-on', (b.dataset.nb === 'netto') === st.netto));
+    $('#namenPreis').textContent = `Ab ${PREIS.namenMin} Kappen · ${euro(zeig(p, p.stueckNamen))} pro Kappe`;
     const seiten = p.fh ? `vorne ${p.fv}, hinten ${p.fh}` : 'nur vorne';
     const alleNamen = p.nz === p.m;
     let html = `<div class="pz pz--klein"><span>Pro Kappe</span><span></span></div>`;
