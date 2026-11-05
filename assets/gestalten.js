@@ -24,7 +24,7 @@
      Endpreise je Kappe inkl. 19 % MwSt. Zeile = Anzahl Druckfarben (1 bis 6),
      Spalte = Staffel ab 50 / 100 / 250 / 500 Stück. Eine bedruckte Rückseite
      zählt ihre Farben dazu, auch »wie vorne« (vorne 3 + hinten 3 = 6-farbig).
-     Mehr als 6 Farben, individuelle Namen und Versand: Preis im Angebot.
+     Mehr als 6 Farben und Versand: Preis im Angebot.
      Vorerst nur Preisvorschlag + Angebotsanfrage, keine Online-Zahlung. */
   const PREIS = {
     staffeln: [50, 100, 250, 500],
@@ -33,6 +33,15 @@
       stoff:    [[5.60, 4.50, 3.80, 3.19], [7.40, 5.90, 4.70, 3.99], [9.10, 6.90, 4.95, 4.50], [11.70, 8.00, 6.00, 5.20], [12.90, 11.00, 8.00, 6.80], [15.70, 13.00, 9.00, 7.70]],
       langhaar: [[7.60, 6.20, 5.50, 4.89], [9.40, 7.60, 6.40, 5.69], [11.10, 8.60, 6.65, 6.20], [13.70, 9.70, 7.70, 6.90], [14.90, 12.70, 9.70, 8.50], [17.70, 14.70, 10.70, 9.40]],
       '3d':     [[14.20, 12.30, 11.00, 9.69], [16.00, 13.40, 11.90, 10.49], [17.70, 14.40, 12.15, 11.00], [20.30, 15.50, 13.20, 11.70], [21.50, 18.50, 15.20, 13.30], [24.30, 20.50, 16.20, 14.20]]
+    },
+    /* Namensdruck 2026 (TF_2026_Badekappenpreise_Namensdruck.xlsx, Thomas 05.11.2026):
+       Endpreis je Kappe MIT Namen, gleicher Aufbau wie tabelle. Die Staffel
+       richtet sich nach der ganzen Bestellung, nicht nach der Zahl der Namen. */
+    tabelleNamen: {
+      silikon:  [[15.90, 12.50, 11.30, 9.49], [17.70, 13.90, 12.20, 10.29], [19.40, 14.90, 12.45, 10.80], [22.00, 16.00, 13.50, 11.50], [23.20, 19.00, 15.50, 13.10], [26.00, 21.00, 16.50, 14.00]],
+      stoff:    [[14.60, 11.50, 10.30, 8.49], [16.40, 12.90, 11.20, 9.29], [18.10, 13.90, 11.45, 9.80], [20.70, 15.00, 12.50, 10.50], [21.90, 18.00, 14.50, 12.10], [24.70, 20.00, 15.50, 13.00]],
+      langhaar: [[16.80, 13.20, 12.00, 10.19], [18.60, 14.60, 12.90, 10.99], [20.30, 15.60, 13.15, 11.50], [22.90, 16.70, 14.20, 12.20], [24.10, 19.70, 16.20, 13.80], [26.90, 21.70, 17.20, 14.70]],
+      '3d':     [[24.90, 19.30, 17.50, 16.49], [26.70, 20.40, 18.40, 17.29], [28.40, 21.40, 18.65, 17.80], [31.00, 22.50, 19.70, 18.50], [32.20, 25.50, 21.70, 20.10], [35.00, 27.50, 22.70, 21.00]]
     },
     mwst:      0.19,
     mindest:   50,
@@ -606,12 +615,21 @@
     const farben = fv + fh;
     const zeile = clamp(farben, 1, PREIS.maxFarben);
     const stueck = PREIS.tabelle[st.modell][zeile - 1][t];
-    const brutto = r2(stueck * m);
+    const stueckNamen = PREIS.tabelleNamen[st.modell][zeile - 1][t];
+    const nz = namenBei(m);
+    const brutto = r2(stueck * (m - nz) + stueckNamen * nz);
     const netto = r2(brutto / (1 + PREIS.mwst));
-    return { m, t, fv, fh, farben, zeile, ueber: farben > PREIS.maxFarben, namen: st.namen.aktiv, nz: namenAnzahl(), stueck, brutto, netto, mwst: r2(brutto - netto) };
+    return { m, t, fv, fh, farben, zeile, ueber: farben > PREIS.maxFarben, namen: st.namen.aktiv, nz, stueck, stueckNamen, brutto, netto, mwst: r2(brutto - netto) };
   }
-  /* Kappen mit Namen (0 ohne Namen). anzahl 0 heißt: alle Kappen der Bestellung. */
-  const namenAnzahl = () => (st.namen.aktiv ? clamp(st.namen.anzahl || st.menge, PREIS.namenMin, st.menge) : 0);
+  /* Kappen mit Namen bei Gesamtmenge m (0 ohne Namen). anzahl 0 heißt: alle Kappen der Bestellung. */
+  const namenBei = (m) => (st.namen.aktiv ? clamp(st.namen.anzahl || m, PREIS.namenMin, m) : 0);
+  const namenAnzahl = () => namenBei(st.menge);
+  /* Preisposten: Kappen ohne und mit Namen getrennt */
+  const posten = (p) => [
+    { n: p.m - p.nz, stk: p.stueck, zusatz: p.nz ? ' ohne Namen' : '' },
+    { n: p.nz, stk: p.stueckNamen, zusatz: ' mit Namen' }
+  ].filter((x) => x.n > 0);
+  const postenText = (p) => posten(p).map((x) => `${x.n.toLocaleString('de-DE')} Stück${x.zusatz} je ${euro(x.stk)}`).join(' + ');
   /* Stückpreis bei gleicher Menge, aber anderer Farbzahl (für Spar-Hinweise) */
   const preisBei = (p, farben) => PREIS.tabelle[st.modell][clamp(farben, 1, PREIS.maxFarben) - 1][p.t];
   const zeig = (p, wert) => (st.netto ? r2(wert / (1 + PREIS.mwst)) : wert); // Listenpreise sind brutto
@@ -1571,17 +1589,21 @@
     const z = konfigZeilen().filter((r) => ['Vorderseite', 'Rückseite', 'Namen', 'Gestaltung'].indexOf(r[0]) >= 0);
     $('#mgKonfig').innerHTML = z.map((r) => `<div><dt>${r[0]}</dt><dd>${esc(r[1])}</dd></div>`).join('');
     const p = rechne();
-    $('#staffel').innerHTML = `<table><thead><tr><th>Menge</th><th>pro Kappe</th><th>Ersparnis</th></tr></thead><tbody>${PREIS.staffeln.map((s, i) => {
+    /* Staffel: Listenpreise, mit Namen als eigene Spalte oder bei »alle mit Namen« allein */
+    const nurNamen = p.nz === p.m, beide = p.nz > 0 && !nurNamen;
+    const listenpreis = (q) => (nurNamen ? q.stueckNamen : q.stueck);
+    const kopf = nurNamen ? 'mit Namen' : (beide ? 'ohne Namen' : 'pro Kappe');
+    $('#staffel').innerHTML = `<table><thead><tr><th>Menge</th><th>${kopf}</th>${beide ? '<th>mit Namen</th>' : ''}<th>Ersparnis</th></tr></thead><tbody>${PREIS.staffeln.map((s, i) => {
       const q = rechne({ menge: s });
-      const spar = i === 0 ? '' : Math.round((1 - q.stueck / rechne({ menge: PREIS.staffeln[0] }).stueck) * 100) + ' %';
-      return `<tr class="${p.t === i ? 'is-on' : ''}"><td>ab ${s.toLocaleString('de-DE')}</td><td>${euro(zeig(null, q.stueck))}</td><td>${spar ? '−' + spar : ''}</td></tr>`;
+      const spar = i === 0 ? '' : Math.round((1 - listenpreis(q) / listenpreis(rechne({ menge: PREIS.staffeln[0] }))) * 100) + ' %';
+      return `<tr class="${p.t === i ? 'is-on' : ''}"><td>ab ${s.toLocaleString('de-DE')}</td><td>${euro(zeig(null, listenpreis(q)))}</td>${beide ? `<td>${euro(zeig(null, q.stueckNamen))}</td>` : ''}<td>${spar ? '−' + spar : ''}</td></tr>`;
     }).join('')}</tbody></table>`;
     const nx = PREIS.staffeln[p.t + 1];
     const hin = $('#naechsteStufe');
     if (nx) {
       const q = rechne({ menge: nx });
       hin.hidden = false;
-      hin.innerHTML = `Noch <b>${nx - m}</b> Kappen bis zum nächsten Staffelpreis: dann <b>${euro(zeig(null, q.stueck))}</b> statt ${euro(zeig(null, p.stueck))} pro Kappe. <button type="button" class="linkbtn" data-menge-setzen="${nx}">Auf ${nx} erhöhen</button>`;
+      hin.innerHTML = `Noch <b>${nx - m}</b> Kappen bis zum nächsten Staffelpreis: dann <b>${euro(zeig(null, listenpreis(q)))}</b> statt ${euro(zeig(null, listenpreis(p)))} pro Kappe${beide ? `, mit Namen <b>${euro(zeig(null, q.stueckNamen))}</b> statt ${euro(zeig(null, p.stueckNamen))}` : ''}. <button type="button" class="linkbtn" data-menge-setzen="${nx}">Auf ${nx} erhöhen</button>`;
     } else hin.hidden = true;
     const l = lieferung();
     $('#lieferText').innerHTML = `Fertig in <b>${l.text}</b> nach eurer Freigabe. Voraussichtlich bei euch bis <b>KW ${kw(l.datum)}</b> (${datumLang(l.datum)}). Ihr braucht die Kappen früher? Schreibt es in die Hinweise zum Angebot.`;
@@ -1594,11 +1616,14 @@
     $('#pUnter').textContent = `${euro(proStk)} pro Kappe · ${p.m.toLocaleString('de-DE')} Stück · ${st.netto ? 'zzgl. 19 % MwSt.' : 'inkl. 19 % MwSt.'}`;
     $$('.nb button').forEach((b) => b.classList.toggle('is-on', (b.dataset.nb === 'netto') === st.netto));
     const seiten = p.fh ? `vorne ${p.fv}, hinten ${p.fh}` : 'nur vorne';
+    const alleNamen = p.nz === p.m;
     let html = `<div class="pz pz--klein"><span>Pro Kappe</span><span></span></div>`;
-    html += `<div class="pz"><span>${MODELLE[st.modell].name}, ${p.zeile}-farbiger Druck (${seiten})</span><span>${euro(zeig(p, p.stueck))}</span></div>`;
+    html += `<div class="pz"><span>${MODELLE[st.modell].name}, ${p.zeile}-farbiger Druck (${seiten})${alleNamen ? ', mit Namen' : ''}</span><span>${euro(zeig(p, alleNamen ? p.stueckNamen : p.stueck))}</span></div>`;
     if (p.ueber) html += `<div class="pz"><span>Mehr als ${PREIS.maxFarben} Druckfarben (${p.farben})</span><span>im Angebot</span></div>`;
-    if (p.namen) html += `<div class="pz"><span>Individuelle Namen (${p.nz} Kappen)</span><span>im Angebot</span></div>`;
-    html += `<div class="pz pz--summe"><span>${euro(zeig(p, p.stueck))} × ${p.m.toLocaleString('de-DE')} Stück</span><span>${euro(basis)}</span></div>`;
+    if (p.nz && !alleNamen) html += `<div class="pz"><span>Kappe mit Namen</span><span>${euro(zeig(p, p.stueckNamen))}</span></div>`;
+    posten(p).forEach((x, i, alle) => {
+      html += `<div class="pz pz--summe"><span>${euro(zeig(p, x.stk))} × ${x.n.toLocaleString('de-DE')} Stück${x.zusatz}</span><span>${euro(alle.length > 1 ? zeig(p, r2(x.stk * x.n)) : basis)}</span></div>`;
+    });
     html += `<div class="pz pz--total"><span>Gesamt netto</span><span>${euro(p.netto)}</span></div>`;
     html += `<div class="pz"><span>zzgl. 19 % MwSt.</span><span>${euro(p.mwst)}</span></div>`;
     html += `<div class="pz pz--total"><span>Gesamt brutto</span><span>${euro(p.brutto)}</span></div>`;
@@ -1695,10 +1720,9 @@
     });
     $('#kasseKonfig').innerHTML = konfigZeilen().map((z) => `<div><dt>${z[0]}</dt><dd>${esc(z[1])}</dd></div>`).join('');
     $('#kasseZeilen').innerHTML = `
-      <div class="pz"><span>${euro(p.stueck)} × ${p.m.toLocaleString('de-DE')} Stück, ${p.zeile}-farbig</span><span>${euro(p.brutto)}</span></div>
+      ${posten(p).map((x) => `<div class="pz"><span>${euro(x.stk)} × ${x.n.toLocaleString('de-DE')} Stück${x.zusatz}, ${p.zeile}-farbig</span><span>${euro(r2(x.stk * x.n))}</span></div>`).join('')}
       <div class="pz"><span>darin 19 % MwSt.</span><span>${euro(p.mwst)}</span></div>
       ${p.ueber ? `<div class="pz"><span>Mehr als ${PREIS.maxFarben} Druckfarben</span><span>im Angebot</span></div>` : ''}
-      ${p.namen ? `<div class="pz"><span>Individuelle Namen (${p.nz} Kappen)</span><span>im Angebot</span></div>` : ''}
       <div class="pz"><span>Versand</span><span>im Angebot</span></div>
       <div class="pz pz--gross"><span>Preisvorschlag brutto</span><span>${euro(p.brutto)}</span></div>`;
     $('#kasseSumMobil').textContent = euro(p.brutto);
@@ -1833,7 +1857,7 @@
     const notiz = [
       ISTPROD ? '' : '[Staging-Test]',
       'Angebotsanfrage aus dem Online-Konfigurator.',
-      `Preisvorschlag: ${euro(p.brutto)} brutto (${euro(p.netto)} netto), ${euro(p.stueck)} je Kappe brutto bei ${p.m.toLocaleString('de-DE')} Stück, ${p.zeile}-farbig (vorne ${p.fv}, hinten ${p.fh})${p.ueber ? `, eigentlich ${p.farben} Farben: Preis im Angebot` : ''}${p.namen ? ', Namen: Preis im Angebot' : ''}.`,
+      `Preisvorschlag: ${euro(p.brutto)} brutto (${euro(p.netto)} netto), ${postenText(p)}, ${p.zeile}-farbig (vorne ${p.fv}, hinten ${p.fh})${p.ueber ? `, eigentlich ${p.farben} Farben: Preis im Angebot` : ''}.`,
       konfigZeilen().map((z) => `${z[0]}: ${z[1]}`).join(' · '),
       st.modus === 'service' && st.service.notiz ? 'Wünsche: ' + st.service.notiz : '',
       st.namen.aktiv && namen.length ? `Namensliste (${namen.length}): ${namen.join(', ').slice(0, 1500)}` : '',
@@ -1849,7 +1873,7 @@
       /* Zusätzlich für das Konfigurator-Szenario in Make */
       quelle: 'konfigurator', telefon: tel, hinweise: hinweis, stueck: p.m,
       termin_text: $('#kTermin').value ? datumKurz(new Date($('#kTermin').value + 'T12:00')) : 'kein fester Termin',
-      preis: `${euro(p.brutto)} brutto · ${euro(p.stueck)} je Kappe · ${p.m.toLocaleString('de-DE')} Stück · ${p.zeile}-farbig${p.ueber || p.namen ? ' · Rest im Angebot' : ''}`
+      preis: `${euro(p.brutto)} brutto · ${postenText(p)} · ${p.zeile}-farbig${p.ueber ? ' · Rest im Angebot' : ''}`
     };
   }
   function belegNr(praefix) {
@@ -1918,9 +1942,8 @@
     const nr = belegNr('P');
     const logo = $('.nav .brand__logo') ? $('.nav .brand__logo').outerHTML : '<b>MySwimcap</b>';
     const d = $('#druck');
-    const zeilen = [[1, `Badekappe ${MODELLE[st.modell].name}, ${FARBTON[st.farbe] ? FARBTON[st.farbe][0] : ''}, ${p.zeile}-farbig bedruckt laut Entwurf`, p.m, euro(p.stueck), euro(p.brutto)]];
-    if (p.ueber) zeilen.push([2, `Mehr als ${PREIS.maxFarben} Druckfarben (${p.farben})`, p.m, 'im Angebot', '']);
-    if (p.namen) zeilen.push([zeilen.length + 1, 'Individuelle Namen', p.m, 'im Angebot', '']);
+    const zeilen = posten(p).map((x, i) => [i + 1, `Badekappe ${MODELLE[st.modell].name}, ${FARBTON[st.farbe] ? FARBTON[st.farbe][0] : ''}, ${p.zeile}-farbig bedruckt laut Entwurf${x.zusatz}`, x.n, euro(x.stk), euro(r2(x.stk * x.n))]);
+    if (p.ueber) zeilen.push([zeilen.length + 1, `Mehr als ${PREIS.maxFarben} Druckfarben (${p.farben})`, p.m, 'im Angebot', '']);
     zeilen.push([zeilen.length + 1, 'Versand', 1, 'im Angebot', '']);
     d.innerHTML = `
       <div class="doc">
@@ -2131,9 +2154,9 @@
       konfigZeilen().forEach((z) => zeile(z[0], z[1]));
       abschnitt('Preisvorschlag (Preisliste 2026, brutto)');
       zeile('Druck', `${p.zeile}-farbig (vorne ${p.fv}, hinten ${p.fh})${p.ueber ? `, eigentlich ${p.farben} Farben: Preis im Angebot` : ''}`);
-      zeile('Je Kappe', `${eur(p.stueck)} bei ${p.m.toLocaleString('de-DE')} Stück`);
+      zeile('Je Kappe', postenText(p).replace(/ €/g, ' EUR'));
       zeile('Gesamt', `${eur(p.brutto)} brutto · ${eur(p.netto)} netto · darin ${eur(p.mwst)} MwSt.`);
-      zeile('Noch offen', ['Versand', p.namen ? 'Namen' : '', p.ueber ? 'Farben über 6' : ''].filter(Boolean).join(', ') + ': Preis im Angebot');
+      zeile('Noch offen', ['Versand', p.ueber ? 'Farben über 6' : ''].filter(Boolean).join(', ') + ': Preis im Angebot');
       /* Jedes Druckelement einzeln */
       if (st.modus === 'service') {
         abschnitt('Gestaltung durch MySwimcap');
