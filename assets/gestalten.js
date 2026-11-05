@@ -8,7 +8,7 @@
      Bogentext). Die Rückseite übernimmt standardmäßig das Motiv von vorne.
      Individuelle Namen nur auf Wunsch (Standard aus), Liste auch als CSV.
    4 Menge & Preis: Staffeln, Preisvorschlag erst hier. Mit Namen zusätzlich:
-     wie viele Kappen Namen bekommen (ab 25), der Rest bleibt ohne.
+     wie viele Kappen Namen bekommen (ab 20), der Rest bleibt ohne.
    5 Angebot anfordern (eigenes Make-Szenario),
      alternativ Preisvorschlag als PDF oder kostenloser Entwurf
    Vorerst keine Bestellung und keine Zahlung (Thomas, 02.11.2026).
@@ -46,10 +46,10 @@
     mwst:      0.19,
     mindest:   50,
     maxFarben: 6,
-    /* Namensdruck ab 25 Kappen, jede mit eigenem Namen. Gemischt (z. B. 25 mit,
-       25 ohne Namen) nur, wenn bei »Menge & Preis« ausdrücklich so gewählt.
+    /* Namensdruck ab 20 Kappen, jede mit eigenem Namen, Bestellung ab 50. Gemischt
+       (z. B. 20 mit, 30 ohne Namen) nur, wenn bei »Menge & Preis« ausdrücklich so gewählt.
        Namen sind Mehraufwand: nur auf Wunsch, Standard aus (Thomas, 04.11.2026). */
-    namenMin:  25
+    namenMin:  20
   };
 
   const MODELLE = {
@@ -1303,7 +1303,7 @@
       toast(`${liste.length} Namen übernommen.${mehr ? ` ${liste.length} Kappen mit Namen.` : ''}`);
     }).catch(() => toast('Die Datei konnte nicht gelesen werden. Speicher sie als CSV oder TXT.'));
   }
-  /* Kappen mit Namen festlegen (ab 25). Die Menge bleibt, der Rest ist ohne
+  /* Kappen mit Namen festlegen (ab 20). Die Menge bleibt, der Rest ist ohne
      Namen. Sollen mehr Kappen Namen bekommen als bestellt, wächst die Menge mit.
      Alle mit Namen (anzahl 0) folgt jeder späteren Mengenänderung. */
   function setNamenAnzahl(mit) {
@@ -2415,12 +2415,12 @@
     $('#namenAn').addEventListener('change', (ev) => setNamenAktiv(ev.target.checked));
     $$('[data-nz]').forEach((b) => b.addEventListener('click', () => {
       const mit = namenAnzahl() + +b.dataset.nz;
-      if (mit < PREIS.namenMin) { toast('Namensdruck geht ab 25 Kappen.'); return; }
+      if (mit < PREIS.namenMin) { toast(`Namensdruck geht ab ${PREIS.namenMin} Kappen.`); return; }
       setNamenAnzahl(mit);
     }));
     $('#nzMit').addEventListener('change', (ev) => {
       const v = parseInt(ev.target.value, 10) || 0;
-      if (v < PREIS.namenMin) toast('Namensdruck geht ab 25 Kappen.');
+      if (v < PREIS.namenMin) toast(`Namensdruck geht ab ${PREIS.namenMin} Kappen.`);
       setNamenAnzahl(v);
     });
     $('#mengeNamen').addEventListener('click', (ev) => {
