@@ -123,10 +123,7 @@
           <button type="button" data-g="kinder">Kinder</button>
           <button type="button" data-g="gemischt">Gemischt</button>
         </div>
-        <div class="field field--klein" id="kinderFeld" hidden>
-          <label for="kinderZahl">Davon Kinderkappen</label>
-          <input type="number" id="kinderZahl" min="0" inputmode="numeric" placeholder="z. B. 30">
-        </div>
+        <p class="hinweis" id="groesseHinweis" hidden></p>
       </div>
 
       <!-- 2 · Farbe -->
@@ -285,6 +282,16 @@
         <div class="staffel" id="staffel"></div>
         <p class="hinweis" id="naechsteStufe" hidden></p>
 
+        <div class="nz nz--menge" id="mengeKinder" hidden>
+          <h2 class="mg__h">Wie viele davon in Kindergröße?</h2>
+          <div class="svc-row">
+            <span class="svc-row__l">Kinderkappen</span>
+            <div class="stepper stepper--feld"><button type="button" data-kinder="-1" aria-label="Eine Kinderkappe weniger">−</button><input type="number" id="kinderZahl" min="0" step="1" inputmode="numeric" aria-label="Kinderkappen"><button type="button" data-kinder="1" aria-label="Eine Kinderkappe mehr">+</button></div>
+          </div>
+          <div class="regler regler--kinder"><input type="range" id="kinderRegler" min="0" step="1" aria-label="Kinderkappen"></div>
+          <p class="nz__summe" id="kinderSumme"></p>
+        </div>
+
         <div class="nz nz--menge" id="mengeNamen" hidden>
           <h2 class="mg__h">Wie viele davon mit Namen?</h2>
           <p class="mini">Jede Kappe mit Namen bekommt einen eigenen Namen. Namensdruck geht ab 20 Kappen, die übrigen Kappen bleiben ohne Namen. Der Stückpreis richtet sich jeweils nach der Menge mit und ohne Namen.</p>
@@ -310,6 +317,7 @@
             <div class="preis__betrag"><b id="pGesamt">0,00 €</b></div>
           </div>
           <p class="preis__unter" id="pUnter"></p>
+          <p class="preis__farben" id="pFarben"></p>
           <details class="preis__details"><summary>Preisdetails</summary><div id="pZeilen"></div></details>
           <p class="preis__liefer" id="pLiefer"></p>
           <button type="button" class="btn btn--light btn--lg preis__cta" id="btnAnfordern"><span class="btn__t"><span>Angebot anfordern</span><span>Angebot anfordern</span></span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11 11 3M5 3h6v6"/></svg></button>

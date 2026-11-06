@@ -1082,6 +1082,7 @@
         msg += ` Jede Farbe kostet extra${spar > 0 ? `, eine weniger spart gerade ${euro(zeig(p, spar))} je Kappe` : ''}. Ihr könnt Farben im Logo-Bereich zusammenlegen.`;
       }
       if (e2.ohneHg) msg += ' Hintergrund automatisch entfernt.';
+      if (cache[e2.id] && cache[e2.id].viele) msg = `Fotos können wir nicht drucken. In diesem Bild stecken mehr als ${PREIS.maxFarben} Farben oder Verläufe.`;
       if (msg) toast(msg.trim());
       return e2;
     });
@@ -1392,9 +1393,27 @@
       b.classList.toggle('is-on', on);
       b.setAttribute('aria-pressed', on);
     });
-    $('#kinderFeld').hidden = st.groesse !== 'gemischt';
-    $('#kinderZahl').value = st.kinder || '';
-    $('#kinderZahl').max = st.menge;
+    /* Hinweis von Teamfreaks: Kindergrößen fallen klein aus. Die Aufteilung kommt
+       erst bei »Menge & Preis«, sonst passt sie nicht zur Gesamtmenge. */
+    const hinweis = $('#groesseHinweis'), gemischt = st.groesse === 'gemischt';
+    hinweis.hidden = st.groesse === 'erwachsene';
+    hinweis.textContent = 'Kindergrößen fallen wirklich klein aus. Kinder ab der 3. oder 4. Klasse können schon die Erwachsenengröße tragen.' + (gemischt ? ' Die Aufteilung legt ihr bei »Menge & Preis« fest.' : '');
+    $('#mengeKinder').hidden = !gemischt;
+    if (gemischt) renderKinder();
+  }
+  function renderKinder() {
+    const k = clamp(st.kinder || 0, 0, st.menge), fmt = (x) => x.toLocaleString('de-DE');
+    const zahl = $('#kinderZahl'), regler = $('#kinderRegler');
+    if (document.activeElement !== zahl) zahl.value = k;
+    zahl.max = st.menge;
+    regler.max = st.menge;
+    regler.value = k;
+    $('#kinderSumme').innerHTML = `<b>${fmt(k)} in Kindergröße</b> und <b>${fmt(st.menge - k)} in Erwachsenengröße</b>, zusammen ${fmt(st.menge)} Kappen.`;
+  }
+  function setKinder(v) {
+    st.kinder = clamp(Math.round(+v) || 0, 0, st.menge);
+    renderKinder();
+    speichernBald();
   }
   function renderSeiten() {
     $$('.seiten__btn').forEach((b) => {
@@ -1473,7 +1492,7 @@
           }).join('')}
           <p class="fz__hinweis">Der Preis richtet sich nach der Zahl der Druckfarben, Vorder- und Rückseite zusammen. Gerade <b>${p.zeile}-farbig: ${euro(zeig(p, p.stueck))}</b> je Kappe${weniger ? `, mit einer Farbe weniger ${euro(zeig(p, weniger))}` : ''} (bei ${p.m.toLocaleString('de-DE')} Stück). Gebt zwei Farben dieselbe Druckfarbe, um sie zusammenzulegen.${e.farbMap ? ' <button type="button" class="linkbtn" data-ins="farbreset">Erkannte Farben wiederherstellen</button>' : ''}</p></div>`;
       }
-      if (c.viele) mitte += `<p class="hinweis hinweis--warn">Mehr als 6 Farben oder Verläufe erkannt. Wir prüfen das beim Druck-Check und schlagen euch eine Lösung vor (meist einfarbig oder Digitaldruck).</p>`;
+      if (c.viele) mitte += `<p class="hinweis hinweis--warn"><b>Fotos können wir nicht drucken.</b> In diesem Bild stecken mehr als ${PREIS.maxFarben} Farben oder Verläufe, im Siebdruck gehen höchstens ${PREIS.maxFarben} Druckfarben. Ladet bitte ein Logo oder eine Grafik mit klaren Farbflächen hoch. Oder wählt oben »Ihr gestaltet für uns«, dann setzen wir euer Motiv um.</p>`;
       if (e.hgErkannt || e.ohneHg) {
         mitte += `<label class="toggle"><input type="checkbox" data-ins-cb="ohneHg"${e.ohneHg ? ' checked' : ''}><span class="toggle__ui"></span><span class="toggle__t"><b>Hintergrund entfernen</b><em>Für Logos mit weißem Kasten</em></span></label>`;
         if (e.ohneHg) {
@@ -1615,9 +1634,16 @@
   function renderPreis() {
     const p = rechne();
     const basis = st.netto ? p.netto : p.brutto;
-    $('#pGesamt').textContent = euro(basis);
+    /* Über 6 Farben endet die Preisliste: der Betrag ist dann eine Untergrenze */
+    const ab = p.ueber ? 'ab ' : '';
+    $('#pGesamt').textContent = ab + euro(basis);
     const proStk = basis / p.m;
     $('#pUnter').textContent = `${euro(proStk)} pro Kappe · ${p.m.toLocaleString('de-DE')} Stück · ${st.netto ? 'zzgl. 19 % MwSt.' : 'inkl. 19 % MwSt.'}`;
+    const pf = $('#pFarben');
+    pf.textContent = p.ueber
+      ? `${p.farben} Druckfarben (vorne ${p.fv} + hinten ${p.fh}). Die Preisliste geht bis ${PREIS.maxFarben} Farben, den genauen Preis nennen wir im Angebot.`
+      : (p.fh ? `${p.farben} Druckfarben: vorne ${p.fv} + hinten ${p.fh}` : (p.farben ? `${p.farben} Druckfarbe${p.farben > 1 ? 'n' : ''}, nur vorne` : ''));
+    pf.classList.toggle('preis__farben--warn', p.ueber);
     $$('.nb button').forEach((b) => b.classList.toggle('is-on', (b.dataset.nb === 'netto') === st.netto));
     $('#namenPreis').textContent = `Ab ${PREIS.namenMin} Kappen · ${euro(zeig(p, p.stueckNamen))} pro Kappe`;
     const seiten = p.fh ? `vorne ${p.fv}, hinten ${p.fh}` : 'nur vorne';
@@ -1636,7 +1662,9 @@
     $('#pZeilen').innerHTML = html;
     const l = lieferung();
     $('#pLiefer').innerHTML = `<svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span>Lieferung bis ca. <b>KW ${kw(l.datum)}</b> · ${l.text} nach Freigabe</span>`;
-    $('#mbarSumme').textContent = euro(basis);
+    const mbar = $('#mbarSumme');
+    mbar.textContent = ab + euro(basis);
+    mbar.classList.toggle('lang', mbar.textContent.length > 10); // sonst rutscht das €-Zeichen in die zweite Zeile
     $('#mbarStk').textContent = `${euro(proStk)} / Kappe · ${st.netto ? 'netto' : 'brutto'}`;
     if (st.modus !== 'service') $('#infoFarben').textContent = `Druckfarben: vorne ${p.fv}, hinten ${p.fh}`;
   }
@@ -1729,8 +1757,8 @@
       <div class="pz"><span>darin 19 % MwSt.</span><span>${euro(p.mwst)}</span></div>
       ${p.ueber ? `<div class="pz"><span>Mehr als ${PREIS.maxFarben} Druckfarben</span><span>im Angebot</span></div>` : ''}
       <div class="pz"><span>Versand</span><span>im Angebot</span></div>
-      <div class="pz pz--gross"><span>Preisvorschlag brutto</span><span>${euro(p.brutto)}</span></div>`;
-    $('#kasseSumMobil').textContent = euro(p.brutto);
+      <div class="pz pz--gross"><span>Preisvorschlag brutto</span><span>${p.ueber ? 'ab ' : ''}${euro(p.brutto)}</span></div>`;
+    $('#kasseSumMobil').textContent = (p.ueber ? 'ab ' : '') + euro(p.brutto);
     $('#kasseWarn').hidden = !(st.modus === 'selbst' && kasseWarnung);
     const min = new Date();
     min.setDate(min.getDate() + lieferung().wochen * 7 + 2);
@@ -2457,7 +2485,11 @@
     $('#rsAnders').addEventListener('change', (ev) => setRueckseite(ev.target.checked ? 'eigen' : 'gleich'));
 
     /* Größe gemischt */
-    $('#kinderZahl').addEventListener('input', (ev) => { st.kinder = clamp(+ev.target.value || 0, 0, st.menge); speichernBald(); });
+    $('#kinderZahl').addEventListener('input', (ev) => setKinder(ev.target.value));
+    $('#kinderZahl').addEventListener('change', (ev) => { setKinder(ev.target.value); ev.target.value = st.kinder; commit(); });
+    $('#kinderRegler').addEventListener('input', (ev) => setKinder(ev.target.value));
+    $('#kinderRegler').addEventListener('change', commit);
+    $$('[data-kinder]').forEach((b) => b.addEventListener('click', () => { setKinder((st.kinder || 0) + +b.dataset.kinder); commit(); }));
 
     /* Menge */
     const mi = $('#menge');
