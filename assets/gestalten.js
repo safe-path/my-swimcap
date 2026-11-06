@@ -22,8 +22,9 @@
 
   /* Preisliste 2026 (TF_2026_Badekappenpreise.xlsx, Thomas 04.11.2026).
      Endpreise je Kappe inkl. 19 % MwSt. Zeile = Anzahl Druckfarben (1 bis 6),
-     Spalte = Staffel ab 50 / 100 / 250 / 500 Stück. Eine bedruckte Rückseite
-     zählt ihre Farben dazu, auch »wie vorne« (vorne 3 + hinten 3 = 6-farbig).
+     Spalte = Staffel ab 50 / 100 / 250 / 500 Stück. Gezählt werden die Siebe:
+     Rückseite wie vorne = gleiches Sieb, zählt nicht extra (2-farbig bleibt 2-farbig).
+     Nur eine andere Rückseite addiert ihre Farben (vorne 2 + hinten 1 = 3-farbig).
      Mehr als 6 Farben und Versand: Preis im Angebot.
      Vorerst nur Preisvorschlag + Angebotsanfrage, keine Online-Zahlung. */
   const PREIS = {
@@ -598,7 +599,6 @@
     if (st.modus === 'service') return Array.from({ length: svcFarben(seite) }, (_, i) => 'F' + i);
     const set = new Set();
     druckElemente(seite).forEach((e) => {
-      if (e.name) return; // Namen sind im Namenspreis enthalten (Einzeldruck)
       if (e.typ === 'text') set.add(druckName(e.farbe));
       else {
         const c = cache[e.id];
@@ -607,6 +607,7 @@
     });
     return Array.from(set);
   }
+  const motivKey = (seite) => JSON.stringify(st.elemente[seite].map(({ id, ...rest }) => rest));
   function rechne(opt) {
     opt = opt || {};
     const m = Math.max(PREIS.mindest, Math.round(opt.menge || st.menge) || PREIS.mindest);
@@ -614,17 +615,22 @@
     const t = stufe(m - nz || m), tn = stufe(nz || m); // Staffel ohne und mit Namen
     const fv = farbenSeite('vorne').length;
     const fh = farbenSeite('hinten').length; // »wie vorne« liefert die Farben der Vorderseite
-    const farben = fv + fh;
+    /* Gleiche Rückseite = gleiches Sieb (Thomas, 06.11.2026). Das gilt auch, wenn
+       die Rückseite auf »anders« steht, die Kopie vom Motiv aber unverändert ist. */
+    const gleich = fh > 0 && (st.rueckseite === 'gleich' || (st.modus === 'selbst' && st.rueckseite === 'eigen' && motivKey('vorne') === motivKey('hinten')));
+    const farben = gleich ? fv : fv + fh;
     const zeile = clamp(farben, 1, PREIS.maxFarben);
     const stueck = PREIS.tabelle[st.modell][zeile - 1][t];
     const stueckNamen = PREIS.tabelleNamen[st.modell][zeile - 1][tn];
     const brutto = r2(stueck * (m - nz) + stueckNamen * nz);
     const netto = r2(brutto / (1 + PREIS.mwst));
-    return { m, t, tn, fv, fh, farben, zeile, ueber: farben > PREIS.maxFarben, namen: st.namen.aktiv, nz, stueck, stueckNamen, brutto, netto, mwst: r2(brutto - netto) };
+    return { m, t, tn, fv, fh, gleich, farben, zeile, ueber: farben > PREIS.maxFarben, namen: st.namen.aktiv, nz, stueck, stueckNamen, brutto, netto, mwst: r2(brutto - netto) };
   }
   /* Kappen mit Namen bei Gesamtmenge m (0 ohne Namen). anzahl 0 heißt: alle Kappen der Bestellung. */
   const namenBei = (m) => (st.namen.aktiv ? clamp(st.namen.anzahl || m, PREIS.namenMin, m) : 0);
   const namenAnzahl = () => namenBei(st.menge);
+  /* Druckseiten als Text: gleiche Rückseite zählt nicht extra */
+  const seitenText = (p) => (p.gleich ? 'vorne und hinten gleich' : (p.fh ? `vorne ${p.fv}, hinten ${p.fh}` : 'nur vorne'));
   /* Preisposten: Kappen ohne und mit Namen getrennt */
   const posten = (p) => [
     { n: p.m - p.nz, stk: p.stueck, zusatz: p.nz ? ' ohne Namen' : '' },
@@ -1249,7 +1255,8 @@
       t = 'Übernimmt das Motiv der Vorderseite, sobald dort etwas steht.';
     } else {
       const a = rueckAufpreis();
-      t = `${st.rueckseite === 'gleich' ? 'Gleiches Motiv wie vorne' : 'Eigenes Motiv'} · Druck auf der Rückseite <b>+${euro(zeig(null, a))}</b> je Kappe`;
+      t = st.rueckseite === 'gleich' ? 'Gleiches Motiv wie vorne, keine zusätzlichen Druckfarben.'
+        : `Eigenes Motiv${a > 0 ? ` · Druck auf der Rückseite <b>+${euro(zeig(null, a))}</b> je Kappe` : ''}`;
     }
     $('#rsInfo').innerHTML = t;
   }
@@ -1273,7 +1280,10 @@
       if (platz < 15.5 * s) l.y = Math.round((l.y - (15.5 * s - platz)) * 10) / 10;
       y = Math.round((l.y + halb + abstand + 15.5 * s) * 10) / 10;
     }
-    return { seite, e: neuerText({ name: true, text: '', x, y, s, farbe: kontrastFarbe(kappeHex()) }) };
+    /* Vorhandene Druckfarbe nehmen, sonst bringt der Name eine neue Farbe und damit einen höheren Preis */
+    const kl = luminanz(kappeHex());
+    const vorhanden = st.modus === 'selbst' ? farbenSeite(seite).map(druckHex).sort((a, b) => Math.abs(luminanz(b) - kl) - Math.abs(luminanz(a) - kl))[0] : null;
+    return { seite, e: neuerText({ name: true, text: '', x, y, s, farbe: vorhanden || kontrastFarbe(kappeHex()) }) };
   }
   /* Namensliste aus CSV/TXT: Spalte »Name«, »Aufdruck« oder »Vorname«, sonst
      die erste Spalte. Excel speichert CSV mit Semikolon. */
@@ -1436,7 +1446,7 @@
     const p = rechne();
     $('#infoFarben').textContent = st.modus === 'service'
       ? 'Gestaltung durch MySwimcap'
-      : `Druckfarben: vorne ${p.fv}, hinten ${p.fh}`;
+      : `Druckfarben: ${p.farben} (${seitenText(p)})`;
     renderSeiten();
   }
   function farbPunkte(aktiv, attr) {
@@ -1490,7 +1500,7 @@
               <svg class="fz__pfeil" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               <span class="fz__wahl"><i class="fz__punkt" style="--c:${druckHex(ziel)}"></i><select data-farbmap="${n}" aria-label="Druckfarbe für ${n}">${DRUCK.map((d) => `<option value="${d[0]}"${d[0] === ziel ? ' selected' : ''}>${d[0]}</option>`).join('')}</select></span></label>`;
           }).join('')}
-          <p class="fz__hinweis">Der Preis richtet sich nach der Zahl der Druckfarben, Vorder- und Rückseite zusammen. Gerade <b>${p.zeile}-farbig: ${euro(zeig(p, p.stueck))}</b> je Kappe${weniger ? `, mit einer Farbe weniger ${euro(zeig(p, weniger))}` : ''} (bei ${p.m.toLocaleString('de-DE')} Stück). Gebt zwei Farben dieselbe Druckfarbe, um sie zusammenzulegen.${e.farbMap ? ' <button type="button" class="linkbtn" data-ins="farbreset">Erkannte Farben wiederherstellen</button>' : ''}</p></div>`;
+          <p class="fz__hinweis">Der Preis richtet sich nach der Zahl der Druckfarben. Eine gleiche Rückseite zählt nicht extra, eine andere schon. Gerade <b>${p.zeile}-farbig: ${euro(zeig(p, p.stueck))}</b> je Kappe${weniger ? `, mit einer Farbe weniger ${euro(zeig(p, weniger))}` : ''} (bei ${p.m.toLocaleString('de-DE')} Stück). Gebt zwei Farben dieselbe Druckfarbe, um sie zusammenzulegen.${e.farbMap ? ' <button type="button" class="linkbtn" data-ins="farbreset">Erkannte Farben wiederherstellen</button>' : ''}</p></div>`;
       }
       if (c.viele) mitte += `<p class="hinweis hinweis--warn"><b>Fotos können wir nicht drucken.</b> In diesem Bild stecken mehr als ${PREIS.maxFarben} Farben oder Verläufe, im Siebdruck gehen höchstens ${PREIS.maxFarben} Druckfarben. Ladet bitte ein Logo oder eine Grafik mit klaren Farbflächen hoch. Oder wählt oben »Ihr gestaltet für uns«, dann setzen wir euer Motiv um.</p>`;
       if (e.hgErkannt || e.ohneHg) {
@@ -1640,13 +1650,13 @@
     const proStk = basis / p.m;
     $('#pUnter').textContent = `${euro(proStk)} pro Kappe · ${p.m.toLocaleString('de-DE')} Stück · ${st.netto ? 'zzgl. 19 % MwSt.' : 'inkl. 19 % MwSt.'}`;
     const pf = $('#pFarben');
-    pf.textContent = p.ueber
-      ? `${p.farben} Druckfarben (vorne ${p.fv} + hinten ${p.fh}). Die Preisliste geht bis ${PREIS.maxFarben} Farben, den genauen Preis nennen wir im Angebot.`
-      : (p.fh ? `${p.farben} Druckfarben: vorne ${p.fv} + hinten ${p.fh}` : (p.farben ? `${p.farben} Druckfarbe${p.farben > 1 ? 'n' : ''}, nur vorne` : ''));
+    const fz = `${p.farben} Druckfarbe${p.farben === 1 ? '' : 'n'}`;
+    const ft = p.gleich ? `${fz}, vorne und hinten gleich` : (p.fh ? `${fz}: vorne ${p.fv} + hinten ${p.fh}` : `${fz}, nur vorne`);
+    pf.textContent = !p.farben ? '' : (p.ueber ? `${ft}. Die Preisliste geht bis ${PREIS.maxFarben} Farben, den genauen Preis nennen wir im Angebot.` : ft);
     pf.classList.toggle('preis__farben--warn', p.ueber);
     $$('.nb button').forEach((b) => b.classList.toggle('is-on', (b.dataset.nb === 'netto') === st.netto));
     $('#namenPreis').textContent = `Ab ${PREIS.namenMin} Kappen · ${euro(zeig(p, p.stueckNamen))} pro Kappe`;
-    const seiten = p.fh ? `vorne ${p.fv}, hinten ${p.fh}` : 'nur vorne';
+    const seiten = seitenText(p);
     const alleNamen = p.nz === p.m;
     let html = `<div class="pz pz--klein"><span>Pro Kappe</span><span></span></div>`;
     html += `<div class="pz"><span>${MODELLE[st.modell].name}, ${p.zeile}-farbiger Druck (${seiten})${alleNamen ? ', mit Namen' : ''}</span><span>${euro(zeig(p, alleNamen ? p.stueckNamen : p.stueck))}</span></div>`;
@@ -1666,7 +1676,7 @@
     mbar.textContent = ab + euro(basis);
     mbar.classList.toggle('lang', mbar.textContent.length > 10); // sonst rutscht das €-Zeichen in die zweite Zeile
     $('#mbarStk').textContent = `${euro(proStk)} / Kappe · ${st.netto ? 'netto' : 'brutto'}`;
-    if (st.modus !== 'service') $('#infoFarben').textContent = `Druckfarben: vorne ${p.fv}, hinten ${p.fh}`;
+    if (st.modus !== 'service') $('#infoFarben').textContent = `Druckfarben: ${p.farben} (${seitenText(p)})`;
   }
   function renderVerlaufBtns() {
     $('#btnUndo').disabled = verlauf.length < 2;
@@ -1716,13 +1726,14 @@
       if (st.modus === 'service') {
         const n = svcFarben(s);
         if (!n) return 'unbedruckt';
-        return (s === 'hinten' && st.rueckseite === 'gleich' ? 'wie Vorderseite · ' : '') + `${n} Druckfarbe${n > 1 ? 'n' : ''} (geschätzt)`;
+        if (s === 'hinten' && st.rueckseite === 'gleich') return 'wie Vorderseite, keine zusätzlichen Farben';
+        return `${n} Druckfarbe${n > 1 ? 'n' : ''} (geschätzt)`;
       }
       const els = druckElemente(s);
       if (!els.length) return 'unbedruckt';
       const n = farbenSeite(s).length;
       const farben = n ? ` · ${n} Druckfarbe${n > 1 ? 'n' : ''}` : '';
-      if (s === 'hinten' && st.rueckseite === 'gleich') return 'wie Vorderseite' + farben;
+      if (s === 'hinten' && st.rueckseite === 'gleich') return 'wie Vorderseite, keine zusätzlichen Farben';
       const schrift = (e) => ` (${schriftName(e)})`;
       const teile = els.map((e) => (e.typ === 'bild' ? 'Logo' : (e.name ? 'Namen' : `»${textInhalt(e)}«`) + schrift(e)));
       return teile.join(', ') + farben;
@@ -1859,6 +1870,7 @@
       : 'Wir machen euch auch gerne einen kostenlosen Entwurf. Unverbindlich, meist innerhalb von 48 Stunden.';
     renderMenge();
     renderPreis();
+    renderNamen(); // Stückpreise in der Aufteilung hängen an den Druckfarben
   }
   function pruefeKasse() {
     const f = $('#kasseForm');
@@ -1890,7 +1902,7 @@
     const notiz = [
       ISTPROD ? '' : '[Staging-Test]',
       'Angebotsanfrage aus dem Online-Konfigurator.',
-      `Preisvorschlag: ${euro(p.brutto)} brutto (${euro(p.netto)} netto), ${postenText(p)}, ${p.zeile}-farbig (vorne ${p.fv}, hinten ${p.fh})${p.ueber ? `, eigentlich ${p.farben} Farben: Preis im Angebot` : ''}.`,
+      `Preisvorschlag: ${euro(p.brutto)} brutto (${euro(p.netto)} netto), ${postenText(p)}, ${p.zeile}-farbig (${seitenText(p)})${p.ueber ? `, eigentlich ${p.farben} Farben: Preis im Angebot` : ''}.`,
       konfigZeilen().map((z) => `${z[0]}: ${z[1]}`).join(' · '),
       st.modus === 'service' && st.service.notiz ? 'Wünsche: ' + st.service.notiz : '',
       st.namen.aktiv && namen.length ? `Namensliste (${namen.length}): ${namen.join(', ').slice(0, 1500)}` : '',
@@ -2186,14 +2198,14 @@
       abschnitt('Konfiguration');
       konfigZeilen().forEach((z) => zeile(z[0], z[1]));
       abschnitt('Preisvorschlag (Preisliste 2026, brutto)');
-      zeile('Druck', `${p.zeile}-farbig (vorne ${p.fv}, hinten ${p.fh})${p.ueber ? `, eigentlich ${p.farben} Farben: Preis im Angebot` : ''}`);
+      zeile('Druck', `${p.zeile}-farbig (${seitenText(p)})${p.ueber ? `, eigentlich ${p.farben} Farben: Preis im Angebot` : ''}`);
       zeile('Je Kappe', postenText(p).replace(/ €/g, ' EUR'));
       zeile('Gesamt', `${eur(p.brutto)} brutto · ${eur(p.netto)} netto · darin ${eur(p.mwst)} MwSt.`);
       zeile('Noch offen', ['Versand', p.ueber ? 'Farben über 6' : ''].filter(Boolean).join(', ') + ': Preis im Angebot');
       /* Jedes Druckelement einzeln */
       if (st.modus === 'service') {
         abschnitt('Gestaltung durch MySwimcap');
-        zeile('Seiten', ['vorne', 'hinten'].filter((s) => svcFarben(s)).map((s) => `${s} (${s === 'hinten' && st.rueckseite === 'gleich' ? 'wie vorne, ' : ''}${svcFarben(s)} Farben geschätzt)`).join(', '));
+        zeile('Seiten', ['vorne', 'hinten'].filter((s) => svcFarben(s)).map((s) => (s === 'hinten' && st.rueckseite === 'gleich' ? 'hinten wie vorne, keine zusätzlichen Farben' : `${s} (${svcFarben(s)} Farben geschätzt)`)).join(', '));
         zeile('Wünsche', st.service.notiz || '(keine)');
         zeile('Datei', st.service.datei || (daten.logo_url ? 'siehe Logo-Link' : '(keine)'));
       } else {
@@ -2245,7 +2257,7 @@
     const notiz = `Aus dem Online-Konfigurator. ${teile}${st.modus === 'service' && st.service.notiz ? ' · Wünsche: ' + st.service.notiz : ''}`;
     const q = new URLSearchParams({
       von: 'gestalten', modell: MODELLE[st.modell].wizard, farbe: f ? f[0] : '',
-      menge: mengenBand(p.m), farben: farbenBand(Math.max(p.fv, p.fh)),
+      menge: mengenBand(p.m), farben: farbenBand(p.farben),
       namen: st.namen.aktiv ? 'Ja, mit Namen' : 'Nein', notiz: notiz.slice(0, 900)
     });
     btn.classList.add('laedt');
