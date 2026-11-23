@@ -215,9 +215,10 @@ section{position:relative}
 @media(max-width:520px){.models{grid-template-columns:1fr 1fr;gap:14px;max-width:none;margin-inline:0;margin-top:32px}}
 .model{display:flex;flex-direction:column}
 .model .pic{position:relative;aspect-ratio:1/1;background:var(--parchment);border-radius:var(--r-card);overflow:hidden;margin-bottom:18px}
-.popular{position:absolute;top:12px;left:12px;z-index:2;display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.02em;text-transform:uppercase;color:#3a2c05;background:linear-gradient(180deg,#ecd06a,#c8a23a);border-radius:var(--r-pill);padding:5px 11px 5px 8px;box-shadow:0 6px 16px -6px rgba(170,130,30,.65),inset 0 1px 0 rgba(255,255,255,.45)}
+/* "Am beliebtesten": schmale Oswald, damit nichts umbricht; Rand mit leichtem Goldverlauf (Thomas, 23.11.2026) */
+.popular{position:absolute;top:12px;left:12px;z-index:2;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-family:'Oswald','Arial Narrow',var(--sans);font-size:11px;font-weight:700;line-height:1.25;letter-spacing:.06em;text-transform:uppercase;color:#3a2c05;border:1px solid transparent;background:linear-gradient(180deg,#ecd06a,#c8a23a) padding-box,linear-gradient(180deg,#fbefb6,#b38c2e 55%,#7f5f16) border-box;border-radius:var(--r-pill);padding:4px 10px 4px 7px;box-shadow:0 6px 16px -6px rgba(170,130,30,.65),inset 0 1px 0 rgba(255,255,255,.45)}
 .popular svg{width:13px;height:13px}
-.mc-pop{position:absolute;top:6px;left:6px;z-index:2;display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:8px;font-weight:500;letter-spacing:.01em;text-transform:uppercase;color:#3a2c05;background:linear-gradient(180deg,#ecd06a,#c8a23a);border-radius:var(--r-pill);padding:3px 6px 3px 5px;box-shadow:0 3px 8px -3px rgba(170,130,30,.55)}
+.mc-pop{position:absolute;top:5px;left:5px;z-index:2;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;font-family:'Oswald','Arial Narrow',var(--sans);font-size:8px;font-weight:700;line-height:1.25;letter-spacing:.02em;text-transform:uppercase;color:#3a2c05;border:1px solid transparent;background:linear-gradient(180deg,#ecd06a,#c8a23a) padding-box,linear-gradient(180deg,#fbefb6,#b38c2e 55%,#7f5f16) border-box;border-radius:var(--r-pill);padding:2px 5px 2px 4px;box-shadow:0 3px 8px -3px rgba(170,130,30,.55),inset 0 1px 0 rgba(255,255,255,.45)}
 .mc-pop svg{width:9px;height:9px}
 .model .pic img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--e)}
 .model:hover .pic img{transform:scale(1.04)}
@@ -226,7 +227,7 @@ section{position:relative}
 .model p{font-size:14px;color:var(--ink-60);line-height:1.55;flex:1}
 .model .order{margin-top:16px;display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);width:fit-content;padding-bottom:3px;box-shadow:inset 0 -1px 0 var(--ink);transition:gap .3s var(--e),box-shadow .3s}
 .model .order:hover{gap:.9em;box-shadow:inset 0 -1px 0 transparent}
-@media(max-width:520px){.model .pic{margin-bottom:10px}.model .tag{font-size:10px}.model h3{font-size:15px;margin:7px 0 4px;letter-spacing:-.01em}.model p{font-size:12px;line-height:1.45}.model .order{display:none}.popular{font-size:9px;top:8px;left:8px;gap:4px;padding:4px 8px 4px 6px}.popular svg{width:11px;height:11px}}
+@media(max-width:520px){.model .pic{margin-bottom:10px}.model .tag{font-size:10px}.model h3{font-size:15px;margin:7px 0 4px;letter-spacing:-.01em}.model p{font-size:12px;line-height:1.45}.model .order{display:none}.popular{font-size:9px;top:8px;left:8px;gap:4px;padding:3px 7px 3px 5px}.popular svg{width:11px;height:11px}}
 .sec--linen .model .pic{background:#fff}
 
 /* ===================== PROCESS (sticky) ===================== */
