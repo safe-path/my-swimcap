@@ -1773,6 +1773,9 @@
     $('#kasseWarn').hidden = !(st.modus === 'selbst' && kasseWarnung);
     const min = new Date();
     min.setDate(min.getDate() + lieferung().wochen * 7 + 2);
+    /* Jahresende: vor dem 08.01.2027 wird nichts mehr geliefert (Thomas, 23.11.2026) */
+    const fruehestens = new Date(2027, 0, 8);
+    if (min < fruehestens) min.setTime(fruehestens.getTime());
     const di = $('#kTermin');
     di.min = `${min.getFullYear()}-${String(min.getMonth() + 1).padStart(2, '0')}-${String(min.getDate()).padStart(2, '0')}`;
     $('#kTerminHinweis').textContent = `Frühester Liefertermin: ${datumKurz(min)}. Feste Wettkampftermine bitte unten notieren.`;
