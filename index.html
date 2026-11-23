@@ -640,6 +640,9 @@ document.querySelectorAll('.q button').forEach(function(btn){
      wandert mit, sobald "Ja, mit Namen" gewaehlt wird. */
   var DP=(function(){
     var VORLAUF=28, VORLAUF_NAMEN=35;           /* Tage */
+    /* Jahresende: vor dem 08.01.2027 wird nichts mehr geliefert (Thomas,
+       23.11.2026). Greift nur, solange die Vorlaufzeit davor endet. */
+    var FRUEHESTENS=new Date(2027,0,8);
     var root=form.querySelector('#dp'); if(!root) return null;
     var btn=root.querySelector('#dpBtn'), pop=root.querySelector('#dpPop'),
         val=root.querySelector('#dpVal'), txt=root.querySelector('#dpTxt');
@@ -657,7 +660,8 @@ document.querySelectorAll('.q button').forEach(function(btn){
     function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
     function tage(){ var g=form.querySelector('[data-group="namen"] .sel');
       return (g&&/Namen/i.test(g.dataset.val||'')) ? VORLAUF_NAMEN : VORLAUF; }
-    function minDatum(){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+tage()); return d; }
+    function minDatum(){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+tage());
+      return d<FRUEHESTENS ? new Date(FRUEHESTENS) : d; }
     var sel=null, view=null;
 
     function lang(d){ return d.toLocaleDateString(window.__lang==='en'?'en-GB':'de-DE',
@@ -693,8 +697,10 @@ document.querySelectorAll('.q button').forEach(function(btn){
     function leadZeile(){
       var e=root.querySelector('.dp__lead');
       if(!e){ e=document.createElement('p'); e.className='dp__lead'; btn.after(e); }
+      var m=minDatum(), h=new Date(); h.setHours(0,0,0,0); h.setDate(h.getDate()+tage());
       e.innerHTML=(window.__lang==='en'?'Earliest date: <b>':'Frühester Termin: <b>')
-        +lang(minDatum())+'</b> ('+Math.round(tage()/7)+(window.__lang==='en'?' weeks lead time)':' Wochen Vorlauf)');
+        +lang(m)+'</b>'+(m.getTime()>h.getTime() ? '' :   /* Jahresgrenze: keine Wochenangabe */
+          ' ('+Math.round(tage()/7)+(window.__lang==='en'?' weeks lead time)':' Wochen Vorlauf)'));
     }
 
     function auf(){ zeichne(); root.classList.add('open'); btn.setAttribute('aria-expanded','true');
